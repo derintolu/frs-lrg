@@ -10,7 +10,7 @@ const partnershipPortalRoot =
 
 // Mount Loan Officer Portal (uses [lrh_portal] or [frs_partnership_portal] shortcode)
 if (partnershipPortalRoot) {
-  const config = (window as any).lrhPortalConfig || {
+  const config = (window as any).frsPortalConfig || {
     userId: 0,
     userName: '',
     userEmail: '',

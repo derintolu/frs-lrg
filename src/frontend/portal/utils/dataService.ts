@@ -121,7 +121,7 @@ export interface DashboardStats {
 
 declare global {
   interface Window {
-    lrhPortalConfig: {
+    frsPortalConfig: {
       apiUrl: string;
       restNonce: string;
       userId: number;
@@ -144,12 +144,12 @@ declare global {
 
 class DataService {
   private static getBaseUrl(): string {
-    return (window as any).lrhPortalConfig?.apiUrl || '/wp-json/lrh/v1/';
+    return (window as any).frsPortalConfig?.apiUrl || '/wp-json/lrh/v1/';
   }
 
   // Get WordPress localized data
   private static getWpData() {
-    return window.lrhPortalConfig || {
+    return window.frsPortalConfig || {
       apiUrl: '/wp-json/lrh/v1/',
       restNonce: '',
       userId: 0,
@@ -167,7 +167,10 @@ class DataService {
   }
 
   private static async request(endpoint: string, options: RequestInit = {}) {
-    const url = `${this.getBaseUrl()}${endpoint}`;
+    // Remove leading slash from endpoint if base URL ends with slash
+    const baseUrl = this.getBaseUrl();
+    const cleanEndpoint = endpoint.startsWith('/') ? endpoint.slice(1) : endpoint;
+    const url = `${baseUrl}${cleanEndpoint}`;
     const wpData = this.getWpData();
 
     const defaultOptions: RequestInit = {

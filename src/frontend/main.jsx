@@ -11,7 +11,7 @@ import { PortalSidebarApp } from "./portal/components/PortalSidebarApp";
  * Plugin Boilerplate pattern where one entry point serves all frontend apps.
  *
  * CRITICAL: Configuration is passed via wp_localize_script which creates
- * window.lrhPortalConfig. This is MORE RELIABLE than wp_add_inline_script
+ * window.frsPortalConfig. This is MORE RELIABLE than wp_add_inline_script
  * for ES6 modules because wp_localize_script ensures proper execution order.
  */
 
