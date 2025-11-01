@@ -227,7 +227,7 @@ export function WelcomeBento({ userId, onNavigate }: WelcomeBentoProps) {
           <div className="grid grid-cols-2 gap-3">
             {/* Clock with AM/PM */}
             <div
-              className="shadow-xl rounded-lg overflow-hidden"
+              className="shadow-xl rounded-sm overflow-hidden"
               style={{
                 background: 'linear-gradient(135deg, var(--brand-primary-blue) 0%, var(--brand-rich-teal) 100%)',
                 paddingTop: '10%'
@@ -266,7 +266,7 @@ export function WelcomeBento({ userId, onNavigate }: WelcomeBentoProps) {
             </div>
 
             {/* Tear-off Calendar */}
-            <div className="shadow-xl rounded-lg overflow-hidden bg-white">
+            <div className="shadow-xl rounded-sm overflow-hidden bg-white">
               {/* Month header (tear-off top) */}
               <div
                 className="text-center py-1.5"
