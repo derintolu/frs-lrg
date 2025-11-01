@@ -80,51 +80,12 @@ class Shortcode {
 			return '';
 		}
 
-		// Get current user data
-		$current_user = wp_get_current_user();
-		$user_id      = $current_user->ID;
-
-		// Determine user role
-		$user_role = $this->get_primary_portal_role( $current_user );
-
-		// Get menu items for this user role
-		$menu_items = $this->get_menu_items_for_user( $current_user );
-
-		// Enqueue main frontend bundle (handles both portal and sidebar)
-		\LendingResourceHub\Libs\Assets\enqueue_asset(
-			LRH_DIR . '/assets/frontend/dist',
-			'src/frontend/main.jsx',
-			array(
-				'dependencies' => array( 'react', 'react-dom' ),
-				'handle'       => 'lrh-frontend',
-				'in-footer'    => true,
-			)
-		);
-
-		// Pass configuration to JavaScript
-		// Uses same config object as Frontend.php for consistency
-		wp_localize_script(
-			'lrh-frontend',
-			'lrhPortalConfig',
-			array(
-				'userId'      => $user_id,
-				'userName'    => $current_user->display_name,
-				'userEmail'   => $current_user->user_email,
-				'userAvatar'  => get_avatar_url( $user_id ),
-				'userRole'    => $user_role,
-				'restNonce'   => wp_create_nonce( 'wp_rest' ),
-				'apiUrl'      => rest_url( LRH_ROUTE_PREFIX . '/' ),
-				'siteUrl'     => get_site_url(),
-				'portalUrl'   => get_site_url() . '/portal',
-				'gradientUrl' => LRH_URL . 'assets/images/Blue-Dark-Blue-Gradient-Color-and-Style-Video-Background-1.mp4',
-				'menuItems'   => $menu_items,
-			)
-		);
-
 		// Add body class for sidebar styling
 		add_filter( 'body_class', array( $this, 'add_sidebar_body_class' ) );
 
-		// Return root element for React to mount
+		// Return ONLY the container div
+		// Frontend.php handles ALL asset loading and configuration
+		// when it detects this shortcode via should_load_portal()
 		return '<div id="lrh-portal-sidebar-root" data-lrh-component="portal-sidebar"></div>';
 	}
 

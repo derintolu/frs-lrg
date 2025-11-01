@@ -203,8 +203,8 @@ class Frontend {
 				'roles'  => $current_user->roles,
 			),
 
-			// Menu items for sidebar (empty for now, can be filtered)
-			'menuItems'    => apply_filters( 'lrh_portal_menu_items', array() ),
+			// Menu items for sidebar
+			'menuItems'    => apply_filters( 'lrh_portal_menu_items', $this->get_menu_items_for_user( $current_user ) ),
 
 			// Additional metadata
 			'nonce'        => wp_create_nonce( 'wp_rest' ), // Alias for restNonce
@@ -255,5 +255,46 @@ class Frontend {
 			return wp_get_attachment_image_url( $custom_logo_id, 'full' ) ?: '';
 		}
 		return '';
+	}
+
+	/**
+	 * Get menu items for user based on role.
+	 *
+	 * @param \WP_User $user The user object.
+	 * @return array Menu items array.
+	 */
+	private function get_menu_items_for_user( $user ) {
+		$role = $this->get_user_role( $user );
+
+		// Base menu items for all users
+		$menu_items = array(
+			array(
+				'id'    => 'home',
+				'label' => 'Home',
+				'icon'  => 'Home',
+				'url'   => home_url(),
+			),
+		);
+
+		// Add role-specific menu items
+		if ( $role === 'loan_officer' || $role === 'admin' ) {
+			$menu_items[] = array(
+				'id'    => 'dashboard',
+				'label' => 'Dashboard',
+				'icon'  => 'LayoutDashboard',
+				'url'   => home_url( '/portal' ),
+			);
+		}
+
+		if ( $role === 'realtor' ) {
+			$menu_items[] = array(
+				'id'    => 'partnerships',
+				'label' => 'My Loan Officers',
+				'icon'  => 'Users',
+				'url'   => home_url( '/portal' ),
+			);
+		}
+
+		return $menu_items;
 	}
 }
