@@ -1,11 +1,12 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
- 
+
 
 
 @layer base {
   :root {
+    /* shadcn/ui theme variables */
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
@@ -33,6 +34,38 @@
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
+
+    /* 21st Century Lending Brand Colors */
+    --brand-dark-navy: #171A1F;
+    --brand-medium-navy: #263042;
+    --brand-slate: #444B57;
+    --brand-steel-blue: #405C7A;
+    --brand-electric-blue: #2563EB;
+    --brand-cyan: #2DD4DA;
+    --brand-light-blue: #7DB3E8;
+    --brand-powder-blue: #B6C7D9;
+    --brand-pale-blue: #C3D9F1;
+    --brand-light-gray: #DADEE3;
+    --brand-off-white: #F8F7F9;
+    --brand-pure-white: #FFFFFF;
+
+    /* Gradients */
+    --brand-navy: #263042;
+    --brand-primary-blue: #2563eb;
+    --brand-rich-teal: #2dd4da;
+
+    --gradient-primary: linear-gradient(135deg, var(--brand-navy) 0%, var(--brand-primary-blue) 25%, var(--brand-rich-teal) 75%, var(--brand-light-blue) 100%);
+    --gradient-hero: linear-gradient(135deg, var(--brand-primary-blue) 0%, var(--brand-rich-teal) 100%);
+    --gradient-subtle: linear-gradient(180deg, var(--brand-off-white) 0%, var(--brand-light-blue) 100%);
+    --gradient-button-hover: linear-gradient(45deg, var(--brand-primary-blue) 0%, var(--brand-rich-teal) 50%, var(--brand-primary-blue) 100%);
+    --gradient-brand-blue: linear-gradient(45deg, var(--brand-primary-blue) 0%, var(--brand-light-blue) 50%, var(--brand-primary-blue) 100%);
+    --gradient-brand-teal: linear-gradient(45deg, var(--brand-rich-teal) 0%, var(--brand-light-blue) 50%, var(--brand-rich-teal) 100%);
+    --gradient-brand-navy: linear-gradient(45deg, var(--brand-navy) 0%, var(--brand-primary-blue) 50%, var(--brand-navy) 100%);
+    --gradient-brand-accent: linear-gradient(90deg, #3851DD 0%, #5CE1E6 100%);
+
+    /* Border Radius */
+    --radius-button: 8px;
+    --radius-card: 8px;
   }
 
   .dark {
@@ -65,7 +98,7 @@
   }
 }
 
- 
+
 @layer base {
   * {
     @apply border-border;
@@ -73,6 +106,151 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  /* Form field styling */
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="password"],
+  input[type="number"],
+  textarea,
+  select {
+    border: 1px solid var(--brand-light-gray);
+    border-radius: 6px;
+    padding: 8px 12px;
+    background-color: var(--brand-pure-white);
+    color: var(--brand-dark-navy);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  input:focus,
+  textarea:focus,
+  select:focus {
+    outline: none;
+    border-color: var(--brand-electric-blue);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  }
+}
+
+@layer components {
+  /* Utility classes for brand colors */
+  .bg-brand-electric-blue { background-color: var(--brand-electric-blue); }
+  .bg-brand-cyan { background-color: var(--brand-cyan); }
+  .bg-brand-navy { background-color: var(--brand-navy); }
+  .bg-brand-powder-blue { background-color: var(--brand-powder-blue); }
+  .bg-brand-off-white { background-color: var(--brand-off-white); }
+
+  .text-brand-electric-blue { color: var(--brand-electric-blue); }
+  .text-brand-cyan { color: var(--brand-cyan); }
+  .text-brand-navy { color: var(--brand-navy); }
+  .text-brand-dark-navy { color: var(--brand-dark-navy); }
+  .text-brand-slate { color: var(--brand-slate); }
+
+  .border-brand-electric-blue { border-color: var(--brand-electric-blue); }
+  .border-brand-cyan { border-color: var(--brand-cyan); }
+  .border-brand-light-gray { border-color: var(--brand-light-gray); }
+
+  /* Gradient backgrounds */
+  .bg-gradient-hero { background: var(--gradient-hero); }
+  .bg-gradient-primary { background: var(--gradient-primary); }
+  .bg-gradient-brand-blue { background: var(--gradient-brand-blue); }
+  .bg-gradient-brand-teal { background: var(--gradient-brand-teal); }
+  .bg-gradient-brand-navy { background: var(--gradient-brand-navy); }
+}
+
+/* ==================== REMOVE ALL HOVER LINES FROM FORM FIELDS ==================== */
+
+/* REMOVE ALL HOVER LINES - Users should never see hover effects on form fields */
+input:hover,
+textarea:hover,
+select:hover,
+input[type="text"]:hover,
+input[type="email"]:hover,
+input[type="tel"]:hover,
+input[type="phone"]:hover,
+input[type="password"]:hover,
+input[type="number"]:hover,
+input[type="url"]:hover,
+input[type="search"]:hover,
+input[type="date"]:hover,
+input[type="time"]:hover,
+input[type="datetime-local"]:hover,
+input[type="month"]:hover,
+input[type="week"]:hover,
+[data-slot="input"]:hover,
+[data-slot="textarea"]:hover,
+[data-slot="select-trigger"]:hover {
+  border-bottom: none !important;
+  border-bottom-width: 0 !important;
+  border-bottom-color: transparent !important;
+  text-decoration: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+  background-image: none !important;
+}
+
+/* Remove hover effects from all input containers */
+.input-container:hover input,
+.form-field:hover input,
+.form-group:hover input,
+div:hover > input,
+div:hover > textarea,
+div:hover > select {
+  border-bottom: none !important;
+  border-bottom-width: 0 !important;
+  border-bottom-color: transparent !important;
+  text-decoration: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* Keep focus ring for accessibility, but remove bottom border */
+input:focus,
+textarea:focus,
+select:focus,
+[data-slot="input"]:focus,
+[data-slot="textarea"]:focus,
+[data-slot="select-trigger"]:focus {
+  border-bottom: none !important;
+  border-bottom-width: 0 !important;
+  border-bottom-color: transparent !important;
+  text-decoration: none !important;
+}
+
+/* Remove any pseudo-elements that might create lines */
+input:hover::before,
+input:hover::after,
+textarea:hover::before,
+textarea:hover::after,
+select:hover::before,
+select:hover::after,
+[data-slot="input"]:hover::before,
+[data-slot="input"]:hover::after {
+  content: none !important;
+  display: none !important;
+  border: none !important;
+  background: none !important;
+}
+
+/* Prevent any transitions that might show lines on hover */
+input,
+textarea,
+select,
+[data-slot="input"],
+[data-slot="textarea"],
+[data-slot="select-trigger"] {
+  transition-property: color, background-color, border-color, box-shadow, opacity !important;
+}
+
+/* Helper class to force remove hover lines */
+.no-hover-line:hover,
+.no-hover-line:hover input,
+.no-hover-line:hover textarea,
+.no-hover-line:hover select {
+  border-bottom: none !important;
+  text-decoration: none !important;
+  box-shadow: none !important;
+  outline: none !important;
 }
 
 #wpcontent {
