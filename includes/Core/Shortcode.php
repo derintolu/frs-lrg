@@ -90,21 +90,22 @@ class Shortcode {
 		// Get menu items for this user role
 		$menu_items = $this->get_menu_items_for_user( $current_user );
 
-		// Enqueue portal sidebar assets
+		// Enqueue main frontend bundle (handles both portal and sidebar)
 		\LendingResourceHub\Libs\Assets\enqueue_asset(
 			LRH_DIR . '/assets/frontend/dist',
-			'src/frontend/portal/portal-sidebar-main.tsx',
+			'src/frontend/main.jsx',
 			array(
 				'dependencies' => array( 'react', 'react-dom' ),
-				'handle'       => 'lrh-portal-sidebar',
+				'handle'       => 'lrh-frontend',
 				'in-footer'    => true,
 			)
 		);
 
 		// Pass configuration to JavaScript
+		// Uses same config object as Frontend.php for consistency
 		wp_localize_script(
-			'lrh-portal-sidebar',
-			'lrhGlobalSidebarConfig',
+			'lrh-frontend',
+			'lrhPortalConfig',
 			array(
 				'userId'      => $user_id,
 				'userName'    => $current_user->display_name,
@@ -112,6 +113,7 @@ class Shortcode {
 				'userAvatar'  => get_avatar_url( $user_id ),
 				'userRole'    => $user_role,
 				'restNonce'   => wp_create_nonce( 'wp_rest' ),
+				'apiUrl'      => rest_url( LRH_ROUTE_PREFIX . '/' ),
 				'siteUrl'     => get_site_url(),
 				'portalUrl'   => get_site_url() . '/portal',
 				'gradientUrl' => LRH_URL . 'assets/images/Blue-Dark-Blue-Gradient-Color-and-Style-Video-Background-1.mp4',
