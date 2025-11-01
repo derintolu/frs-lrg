@@ -3,6 +3,8 @@
 namespace LendingResourceHub\Admin;
 
 use LendingResourceHub\Traits\Base;
+use LendingResourceHub\Admin\Dashboard;
+use LendingResourceHub\Admin\SystemDiagnostic;
 
 /**
  * Class Menu
@@ -44,18 +46,10 @@ class Menu {
 			__( 'LRH Portal', 'lending-resource-hub' ),
 			'manage_options',
 			$this->parent_slug,
-			array( $this, 'admin_page' ),
+			array( $this, 'dashboard_page' ),
 			'dashicons-groups',
 			3
 		);
-
-		$plugin_url = admin_url( '/admin.php?page=' . $this->parent_slug );
-
-		$current_page = get_admin_page_parent();
-
-		if ( $current_page === $this->parent_slug ) {
-			$plugin_url = '';
-		}
 
 		$submenu_pages = array(
 			// Main
@@ -65,7 +59,7 @@ class Menu {
 				'menu_title'  => __( 'Dashboard', 'lending-resource-hub' ),
 				'capability'  => 'manage_options',
 				'menu_slug'   => $this->parent_slug,
-				'function'    => array( $this, 'admin_page' ),
+				'function'    => array( $this, 'dashboard_page' ),
 			),
 
 			// Management
@@ -74,50 +68,50 @@ class Menu {
 				'page_title'  => __( 'Partnerships', 'lending-resource-hub' ),
 				'menu_title'  => __( 'Partnerships', 'lending-resource-hub' ),
 				'capability'  => 'manage_options',
-				'menu_slug'   => $plugin_url . '/#/partnerships',
-				'function'    => null,
+				'menu_slug'   => 'lrh-partnerships',
+				'function'    => array( $this, 'partnerships_page' ),
 			),
 			array(
 				'parent_slug' => $this->parent_slug,
 				'page_title'  => __( 'Bulk Invites', 'lending-resource-hub' ),
 				'menu_title'  => __( 'Bulk Invites', 'lending-resource-hub' ),
 				'capability'  => 'manage_options',
-				'menu_slug'   => $plugin_url . '/#/bulk-invites',
-				'function'    => null,
+				'menu_slug'   => 'lrh-bulk-invites',
+				'function'    => array( $this, 'bulk_invites_page' ),
 			),
 			array(
 				'parent_slug' => $this->parent_slug,
 				'page_title'  => __( 'Leads', 'lending-resource-hub' ),
 				'menu_title'  => __( 'Leads', 'lending-resource-hub' ),
 				'capability'  => 'manage_options',
-				'menu_slug'   => $plugin_url . '/#/leads',
-				'function'    => null,
+				'menu_slug'   => 'lrh-leads',
+				'function'    => array( $this, 'leads_page' ),
 			),
 
 			// System
 			array(
 				'parent_slug' => $this->parent_slug,
 				'page_title'  => __( 'System Diagnostic', 'lending-resource-hub' ),
-				'menu_title'  => __( '🔍 System Diagnostic', 'lending-resource-hub' ),
+				'menu_title'  => __( 'System Diagnostic', 'lending-resource-hub' ),
 				'capability'  => 'manage_options',
-				'menu_slug'   => $plugin_url . '/#/system-diagnostic',
-				'function'    => null,
+				'menu_slug'   => 'lrh-system-diagnostic',
+				'function'    => array( $this, 'system_diagnostic_page' ),
 			),
 			array(
 				'parent_slug' => $this->parent_slug,
 				'page_title'  => __( 'Integrations', 'lending-resource-hub' ),
 				'menu_title'  => __( 'Integrations', 'lending-resource-hub' ),
 				'capability'  => 'manage_options',
-				'menu_slug'   => $plugin_url . '/#/integrations',
-				'function'    => null,
+				'menu_slug'   => 'lrh-integrations',
+				'function'    => array( $this, 'integrations_page' ),
 			),
 			array(
 				'parent_slug' => $this->parent_slug,
 				'page_title'  => __( 'Settings', 'lending-resource-hub' ),
 				'menu_title'  => __( 'Settings', 'lending-resource-hub' ),
 				'capability'  => 'manage_options',
-				'menu_slug'   => $plugin_url . '/#/settings',
-				'function'    => null,
+				'menu_slug'   => 'lrh-settings',
+				'function'    => array( $this, 'settings_page' ),
 			),
 		);
 
@@ -137,13 +131,100 @@ class Menu {
 	}
 
 	/**
-	 * Callback function for the main admin menu page.
+	 * Dashboard page callback.
 	 *
 	 * @return void
 	 */
-	public function admin_page() {
+	public function dashboard_page() {
+		Dashboard::get_instance()->render();
+	}
+
+	/**
+	 * Partnerships page callback.
+	 *
+	 * @return void
+	 */
+	public function partnerships_page() {
 		?>
-		<div id="lrh-admin-root" class="lrh-admin-app"></div>
+		<div class="wrap">
+			<h1><?php esc_html_e( 'Partnerships', 'lending-resource-hub' ); ?></h1>
+			<div class="notice notice-info inline">
+				<p><?php esc_html_e( 'Partnerships management page - coming soon', 'lending-resource-hub' ); ?></p>
+			</div>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Bulk Invites page callback.
+	 *
+	 * @return void
+	 */
+	public function bulk_invites_page() {
+		?>
+		<div class="wrap">
+			<h1><?php esc_html_e( 'Bulk Invites', 'lending-resource-hub' ); ?></h1>
+			<div class="notice notice-info inline">
+				<p><?php esc_html_e( 'Bulk invites page - coming soon', 'lending-resource-hub' ); ?></p>
+			</div>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Leads page callback.
+	 *
+	 * @return void
+	 */
+	public function leads_page() {
+		?>
+		<div class="wrap">
+			<h1><?php esc_html_e( 'Leads', 'lending-resource-hub' ); ?></h1>
+			<div class="notice notice-info inline">
+				<p><?php esc_html_e( 'Leads management page - coming soon', 'lending-resource-hub' ); ?></p>
+			</div>
+		</div>
+		<?php
+	}
+
+	/**
+	 * System Diagnostic page callback.
+	 *
+	 * @return void
+	 */
+	public function system_diagnostic_page() {
+		SystemDiagnostic::get_instance()->render();
+	}
+
+	/**
+	 * Integrations page callback.
+	 *
+	 * @return void
+	 */
+	public function integrations_page() {
+		?>
+		<div class="wrap">
+			<h1><?php esc_html_e( 'Integrations', 'lending-resource-hub' ); ?></h1>
+			<div class="notice notice-info inline">
+				<p><?php esc_html_e( 'Integrations page - coming soon', 'lending-resource-hub' ); ?></p>
+			</div>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Settings page callback.
+	 *
+	 * @return void
+	 */
+	public function settings_page() {
+		?>
+		<div class="wrap">
+			<h1><?php esc_html_e( 'Settings', 'lending-resource-hub' ); ?></h1>
+			<div class="notice notice-info inline">
+				<p><?php esc_html_e( 'Settings page - coming soon', 'lending-resource-hub' ); ?></p>
+			</div>
+		</div>
 		<?php
 	}
 }

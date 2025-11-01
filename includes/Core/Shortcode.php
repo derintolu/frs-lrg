@@ -34,8 +34,8 @@ class Shortcode {
 		add_shortcode( 'lrh_portal', array( $this, 'render_portal' ) );
 		add_shortcode( 'lrh_portal_sidebar', array( $this, 'render_portal_sidebar' ) );
 
-		// Legacy shortcode from old plugin (alias for backward compatibility)
-		add_shortcode( 'frs_partnership_portal', array( $this, 'render_portal' ) );
+		// Legacy shortcode from old plugin (backward compatibility)
+		add_shortcode( 'frs_partnership_portal', array( $this, 'render_legacy_portal' ) );
 	}
 
 	/**
@@ -50,6 +50,22 @@ class Shortcode {
 
 		// Return root element for React to mount
 		return '<div id="lrh-portal-root"></div>';
+	}
+
+	/**
+	 * Render the legacy portal shortcode (backward compatibility).
+	 *
+	 * Uses the old root element ID that the legacy React app expects.
+	 *
+	 * @param array $atts Shortcode attributes.
+	 * @return string The rendered shortcode HTML.
+	 */
+	public function render_legacy_portal( $atts ) {
+		// Enqueue portal assets directly when shortcode is rendered
+		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_portal_assets_public();
+
+		// Return legacy root element ID for backward compatibility
+		return '<div id="frs-partnership-portal-root"></div>';
 	}
 
 	/**

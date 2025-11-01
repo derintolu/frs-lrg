@@ -111,4 +111,18 @@ class Partnership extends Model {
 	public function scopePending( $query ) {
 		return $query->where( 'status', 'pending' );
 	}
+
+	/**
+	 * Decode JSON custom_data field.
+	 */
+	public function getCustomDataAttribute( $value ) {
+		return $value ? json_decode( $value, true ) : array();
+	}
+
+	/**
+	 * Encode JSON custom_data field.
+	 */
+	public function setCustomDataAttribute( $value ) {
+		$this->attributes['custom_data'] = is_array( $value ) ? wp_json_encode( $value ) : $value;
+	}
 }

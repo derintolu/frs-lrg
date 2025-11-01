@@ -24,7 +24,9 @@ use WP_Error;
 class Actions {
 
 	/**
-	 * Get current user data.
+	 * Get current user data with profile integration.
+	 *
+	 * Integrates with frs-wp-users plugin to provide complete profile data.
 	 *
 	 * @param WP_REST_Request $request The REST request object.
 	 * @return WP_REST_Response|WP_Error The response.
@@ -38,17 +40,25 @@ class Actions {
 
 		$user = get_userdata( $user_id );
 
+		// Determine user role
 		$role = 'loan_officer';
 		if ( in_array( 'realtor_partner', $user->roles ) || in_array( 'realtor', $user->roles ) ) {
 			$role = 'realtor';
 		} elseif ( in_array( 'manager', $user->roles ) ) {
 			$role = 'manager';
-		} elseif ( in_array( 'frs_admin', $user->roles ) ) {
+		} elseif ( in_array( 'frs_admin', $user->roles ) || in_array( 'administrator', $user->roles ) ) {
 			$role = 'admin';
 		}
 
+		// Try to get profile from frs-wp-users plugin
+		$profile = null;
+		if ( class_exists( 'FRSUsers\\Models\\Profile' ) ) {
+			$profile = \FRSUsers\Models\Profile::where( 'user_id', $user_id )->first();
+		}
+
+		// Base response with WordPress user data
 		$response = array(
-			'id'        => $user->ID,
+			'id'        => (string) $user->ID,
 			'name'      => $user->display_name,
 			'email'     => $user->user_email,
 			'role'      => $role,
@@ -57,11 +67,65 @@ class Actions {
 			'createdAt' => $user->user_registered,
 		);
 
+		// Merge profile data if available
+		if ( $profile ) {
+			$response = array_merge(
+				$response,
+				array(
+					'profile_id'       => $profile->id,
+					'user_id'          => $profile->user_id,
+					'phone'            => $profile->phone_number,
+					'mobile_number'    => $profile->mobile_number,
+					'company'          => $profile->office,
+					'office'           => $profile->office,
+					'headshot_id'      => $profile->headshot_id,
+					'headshot_url'     => $profile->headshot_id ? wp_get_attachment_url( $profile->headshot_id ) : null,
+					'location'         => $profile->city_state,
+					'city_state'       => $profile->city_state,
+					'region'           => $profile->region,
+					'title'            => $profile->job_title,
+					'job_title'        => $profile->job_title,
+					'biography'        => $profile->biography,
+					'nmls'             => $profile->nmls ?: $profile->nmls_number,
+					'nmls_number'      => $profile->nmls_number,
+					'license_number'   => $profile->license_number,
+					'dre_license'      => $profile->dre_license,
+					'brand'            => $profile->brand,
+					'select_person_type' => $profile->select_person_type,
+					// Social media
+					'facebook_url'     => $profile->facebook_url,
+					'instagram_url'    => $profile->instagram_url,
+					'linkedin_url'     => $profile->linkedin_url,
+					'twitter_url'      => $profile->twitter_url,
+					'youtube_url'      => $profile->youtube_url,
+					'tiktok_url'       => $profile->tiktok_url,
+					'linkedin'         => $profile->linkedin_url,
+					// Professional arrays (decode JSON)
+					'specialties'      => is_string( $profile->specialties ) ? json_decode( $profile->specialties, true ) : $profile->specialties,
+					'specialties_lo'   => is_string( $profile->specialties_lo ) ? json_decode( $profile->specialties_lo, true ) : $profile->specialties_lo,
+					'languages'        => is_string( $profile->languages ) ? json_decode( $profile->languages, true ) : $profile->languages,
+					'awards'           => is_string( $profile->awards ) ? json_decode( $profile->awards, true ) : $profile->awards,
+					'nar_designations' => is_string( $profile->nar_designations ) ? json_decode( $profile->nar_designations, true ) : $profile->nar_designations,
+					'namb_certifications' => is_string( $profile->namb_certifications ) ? json_decode( $profile->namb_certifications, true ) : $profile->namb_certifications,
+					// Tools & Platforms
+					'arrive'           => $profile->arrive,
+					'canva_folder_link' => $profile->canva_folder_link,
+					'niche_bio_content' => $profile->niche_bio_content,
+					'personal_branding_images' => is_string( $profile->personal_branding_images ) ? json_decode( $profile->personal_branding_images, true ) : $profile->personal_branding_images,
+					// Additional
+					'frs_agent_id'     => $profile->frs_agent_id,
+					'is_guest'         => empty( $profile->user_id ),
+				)
+			);
+		}
+
 		return new WP_REST_Response( $response, 200 );
 	}
 
 	/**
-	 * Get user by ID.
+	 * Get user by ID with profile integration.
+	 *
+	 * Integrates with frs-wp-users plugin to provide complete profile data.
 	 *
 	 * @param WP_REST_Request $request The REST request object.
 	 * @return WP_REST_Response|WP_Error The response.
@@ -74,17 +138,25 @@ class Actions {
 			return new WP_Error( 'user_not_found', 'User not found', array( 'status' => 404 ) );
 		}
 
+		// Determine user role
 		$role = 'loan_officer';
 		if ( in_array( 'realtor_partner', $user->roles ) || in_array( 'realtor', $user->roles ) ) {
 			$role = 'realtor';
 		} elseif ( in_array( 'manager', $user->roles ) ) {
 			$role = 'manager';
-		} elseif ( in_array( 'frs_admin', $user->roles ) ) {
+		} elseif ( in_array( 'frs_admin', $user->roles ) || in_array( 'administrator', $user->roles ) ) {
 			$role = 'admin';
 		}
 
+		// Try to get profile from frs-wp-users plugin
+		$profile = null;
+		if ( class_exists( 'FRSUsers\\Models\\Profile' ) ) {
+			$profile = \FRSUsers\Models\Profile::where( 'user_id', $user_id )->first();
+		}
+
+		// Base response with WordPress user data
 		$response = array(
-			'id'        => $user->ID,
+			'id'        => (string) $user->ID,
 			'name'      => $user->display_name,
 			'email'     => $user->user_email,
 			'role'      => $role,
@@ -92,6 +164,58 @@ class Actions {
 			'avatar'    => get_avatar_url( $user->ID ),
 			'createdAt' => $user->user_registered,
 		);
+
+		// Merge profile data if available
+		if ( $profile ) {
+			$response = array_merge(
+				$response,
+				array(
+					'profile_id'       => $profile->id,
+					'user_id'          => $profile->user_id,
+					'phone'            => $profile->phone_number,
+					'mobile_number'    => $profile->mobile_number,
+					'company'          => $profile->office,
+					'office'           => $profile->office,
+					'headshot_id'      => $profile->headshot_id,
+					'headshot_url'     => $profile->headshot_id ? wp_get_attachment_url( $profile->headshot_id ) : null,
+					'location'         => $profile->city_state,
+					'city_state'       => $profile->city_state,
+					'region'           => $profile->region,
+					'title'            => $profile->job_title,
+					'job_title'        => $profile->job_title,
+					'biography'        => $profile->biography,
+					'nmls'             => $profile->nmls ?: $profile->nmls_number,
+					'nmls_number'      => $profile->nmls_number,
+					'license_number'   => $profile->license_number,
+					'dre_license'      => $profile->dre_license,
+					'brand'            => $profile->brand,
+					'select_person_type' => $profile->select_person_type,
+					// Social media
+					'facebook_url'     => $profile->facebook_url,
+					'instagram_url'    => $profile->instagram_url,
+					'linkedin_url'     => $profile->linkedin_url,
+					'twitter_url'      => $profile->twitter_url,
+					'youtube_url'      => $profile->youtube_url,
+					'tiktok_url'       => $profile->tiktok_url,
+					'linkedin'         => $profile->linkedin_url,
+					// Professional arrays (decode JSON)
+					'specialties'      => is_string( $profile->specialties ) ? json_decode( $profile->specialties, true ) : $profile->specialties,
+					'specialties_lo'   => is_string( $profile->specialties_lo ) ? json_decode( $profile->specialties_lo, true ) : $profile->specialties_lo,
+					'languages'        => is_string( $profile->languages ) ? json_decode( $profile->languages, true ) : $profile->languages,
+					'awards'           => is_string( $profile->awards ) ? json_decode( $profile->awards, true ) : $profile->awards,
+					'nar_designations' => is_string( $profile->nar_designations ) ? json_decode( $profile->nar_designations, true ) : $profile->nar_designations,
+					'namb_certifications' => is_string( $profile->namb_certifications ) ? json_decode( $profile->namb_certifications, true ) : $profile->namb_certifications,
+					// Tools & Platforms
+					'arrive'           => $profile->arrive,
+					'canva_folder_link' => $profile->canva_folder_link,
+					'niche_bio_content' => $profile->niche_bio_content,
+					'personal_branding_images' => is_string( $profile->personal_branding_images ) ? json_decode( $profile->personal_branding_images, true ) : $profile->personal_branding_images,
+					// Additional
+					'frs_agent_id'     => $profile->frs_agent_id,
+					'is_guest'         => empty( $profile->user_id ),
+				)
+			);
+		}
 
 		return new WP_REST_Response( $response, 200 );
 	}

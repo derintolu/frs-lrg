@@ -2,10 +2,11 @@
 use LendingResourceHub\Core\Api;
 use LendingResourceHub\Core\Shortcode;
 use LendingResourceHub\Core\PostTypes;
+use LendingResourceHub\Core\Redirects;
 use LendingResourceHub\Admin\Menu;
 use LendingResourceHub\Core\Template;
 use LendingResourceHub\Assets\Frontend;
-use LendingResourceHub\Assets\Admin;
+// use LendingResourceHub\Assets\Admin; // Not needed - admin uses PHP templates, not React
 use LendingResourceHub\Integrations\FluentBooking;
 use LendingResourceHub\Traits\Base;
 
@@ -48,15 +49,18 @@ final class LendingResourceHub {
 	public function init() {
 		if ( is_admin() ) {
 			Menu::get_instance()->init();
-			Admin::get_instance()->bootstrap();
+			// Note: Admin interface uses PHP templates (not React)
+			// React is only used for frontend shortcodes
+			// Admin::get_instance()->bootstrap(); // Removed - not needed for PHP admin
 		}
 
-		// Initialze core functionalities.
+		// Initialize core functionalities.
 		Frontend::get_instance()->bootstrap();
 		API::get_instance()->init();
 		Template::get_instance()->init();
 		Shortcode::get_instance()->init();
 		PostTypes::get_instance()->init();
+		Redirects::get_instance()->init();
 
 		// Initialize integrations
 		FluentBooking::get_instance()->init();

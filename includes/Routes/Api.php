@@ -41,6 +41,7 @@ Route::prefix(
 		$route->get( '/partnerships/loan-officers', '\LendingResourceHub\Controllers\Partnerships\Actions@get_loan_officers' );
 		$route->get( '/partners/lo/{id}', '\LendingResourceHub\Controllers\Partnerships\Actions@get_partners_for_lo' );
 		$route->get( '/realtor-partners', '\LendingResourceHub\Controllers\Partnerships\Actions@get_realtor_partners' );
+		$route->put( '/partnerships/{id}/notifications', '\LendingResourceHub\Controllers\Partnerships\Actions@update_notification_preferences' );
 
 		// ====== LEAD ROUTES ======
 		$route->get( '/leads', '\LendingResourceHub\Controllers\Leads\Actions@get_leads' );

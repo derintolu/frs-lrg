@@ -2,11 +2,161 @@
 
 **THIS IS THE CORRECT WAY TO BUILD WITH THIS BOILERPLATE**
 
-Study these patterns from the working frs-wp-users plugin and ALWAYS follow them.
+Study these patterns from working plugins (frs-wp-users, frs-partnership-portal) and ALWAYS follow them.
+
+---
+
+## Rule #0: Admin Architecture (MOST IMPORTANT)
+
+### 🚨 CRITICAL: Admin = PHP Templates, Frontend = React Apps
+
+**The WordPress admin interface uses traditional PHP templates, NOT React.**
+
+**React is ONLY used for frontend shortcodes.**
+
+### ✅ CORRECT Pattern (from frs-partnership-portal)
+
+**Admin Menu with PHP Callbacks:**
+```php
+// includes/Admin/Menu.php
+class Menu {
+    use Base;
+
+    public function menu() {
+        add_menu_page(
+            'My Plugin',
+            'My Plugin',
+            'manage_options',
+            'my-plugin',
+            array($this, 'dashboard_page'), // ← PHP callback method
+            'dashicons-admin-generic',
+            3
+        );
+
+        add_submenu_page(
+            'my-plugin',
+            'Dashboard',
+            'Dashboard',
+            'manage_options',
+            'my-plugin',
+            array($this, 'dashboard_page') // ← PHP callback
+        );
+
+        add_submenu_page(
+            'my-plugin',
+            'Partnerships',
+            'Partnerships',
+            'manage_options',
+            'my-partnerships', // ← Real slug, not hash route
+            array($this, 'partnerships_page') // ← PHP callback
+        );
+    }
+
+    public function dashboard_page() {
+        Dashboard::get_instance()->render();
+    }
+
+    public function partnerships_page() {
+        Partnerships::get_instance()->render();
+    }
+}
+```
+
+**Admin Page Class:**
+```php
+// includes/Admin/Dashboard.php
+namespace MyPlugin\Admin;
+
+use MyPlugin\Models\Partnership;
+use MyPlugin\Traits\Base;
+
+class Dashboard {
+    use Base;
+
+    public function render() {
+        // Get data using Eloquent
+        $total = Partnership::count();
+        $active = Partnership::where('status', 'active')->count();
+
+        // Load PHP template
+        include MY_PLUGIN_DIR . 'views/admin/dashboard.php';
+    }
+}
+```
+
+**Admin Template:**
+```php
+// views/admin/dashboard.php
+<div class="wrap">
+    <h1><?php esc_html_e('Dashboard', 'my-plugin'); ?></h1>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+        <div style="background: #fff; padding: 20px; border-left: 4px solid #2271b1;">
+            <h3 style="font-size: 32px; color: #2271b1;">
+                <?php echo esc_html($active); ?>
+            </h3>
+            <p style="color: #646970;">
+                <?php esc_html_e('Active Partnerships', 'my-plugin'); ?>
+            </p>
+        </div>
+    </div>
+</div>
+```
+
+**Plugin Initialization:**
+```php
+// plugin.php
+public function init() {
+    if (is_admin()) {
+        Menu::get_instance()->init();
+        // NOTE: Do NOT bootstrap Admin assets class
+        // Admin uses PHP templates, not React
+    }
+
+    // Frontend assets for shortcodes (React apps)
+    Frontend::get_instance()->bootstrap();
+}
+```
+
+### ❌ WRONG Pattern - Do NOT do this!
+
+```php
+// ❌ WRONG - Hash routes in menu
+add_submenu_page(
+    'my-plugin',
+    'Partnerships',
+    'Partnerships',
+    'manage_options',
+    'my-plugin/#/partnerships', // ❌ Hash route doesn't work
+    null // ❌ No callback
+);
+
+// ❌ WRONG - React div in admin page
+public function admin_page() {
+    ?>
+    <div id="my-plugin-admin-root"></div> <!-- ❌ This is for frontend, not admin -->
+    <?php
+}
+
+// ❌ WRONG - Bootstrapping React admin assets
+if (is_admin()) {
+    Admin::get_instance()->bootstrap(); // ❌ Remove this!
+}
+```
+
+**Why This Matters:**
+- WordPress admin pages expect PHP callbacks, not React routers
+- Hash routes (`#/route`) don't work with WordPress menu system
+- React admin apps add unnecessary complexity
+- Traditional PHP admin pages are faster and more maintainable
+- React should only be used for complex frontend UIs (shortcodes)
 
 ---
 
 ## Rule #1: Admin Asset Enqueuing Pattern
+
+**NOTE: This rule applies ONLY if you need React for a specific admin feature (rare).**
+**For most admin pages, use Rule #0 (PHP templates) instead.**
 
 ### ✅ CORRECT Pattern (from frs-wp-users)
 

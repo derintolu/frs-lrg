@@ -54,11 +54,14 @@ class Stats {
 		// Co-branded pages (partnerships with active status)
 		$cobranded_pages = $active_partnerships;
 
-		// Conversion rate (placeholder - needs tracking data)
-		$conversion_rate = 0;
+		// Conversion rate - calculate percentage of closed leads
+		$closed_leads    = LeadSubmission::where( 'loan_officer_id', $lo_id )
+			->where( 'status', 'closed' )
+			->count();
+		$conversion_rate = $total_leads > 0 ? round( ( $closed_leads / $total_leads ) * 100, 2 ) : 0;
 
-		// Top performing pages (placeholder)
-		$top_performing_pages = array();
+		// Top performing pages - partnerships ranked by lead count
+		$top_performing_pages = $this->get_top_performing_partnerships( $lo_id, 'loan_officer' );
 
 		return new WP_REST_Response(
 			array(
@@ -105,8 +108,14 @@ class Stats {
 		// Co-branded pages
 		$cobranded_pages = $active_partnerships;
 
-		// Conversion rate
-		$conversion_rate = 0;
+		// Conversion rate - calculate percentage of closed leads
+		$closed_leads    = LeadSubmission::where( 'agent_id', $realtor_id )
+			->where( 'status', 'closed' )
+			->count();
+		$conversion_rate = $total_leads > 0 ? round( ( $closed_leads / $total_leads ) * 100, 2 ) : 0;
+
+		// Top performing pages - partnerships ranked by lead count
+		$top_performing_pages = $this->get_top_performing_partnerships( $realtor_id, 'realtor' );
 
 		return new WP_REST_Response(
 			array(
@@ -117,10 +126,62 @@ class Stats {
 				'conversionRate'      => $conversion_rate,
 				'coBrandedPages'      => $cobranded_pages,
 				'newLeadsThisMonth'   => $new_leads_this_month,
-				'topPerformingPages'  => array(),
+				'topPerformingPages'  => $top_performing_pages,
 			),
 			200
 		);
+	}
+
+	/**
+	 * Get top performing partnerships ranked by lead count.
+	 *
+	 * @param int    $user_id The user ID.
+	 * @param string $user_type Type of user (loan_officer or realtor).
+	 * @return array Top performing partnerships.
+	 */
+	private function get_top_performing_partnerships( $user_id, $user_type = 'loan_officer' ) {
+		global $wpdb;
+
+		$id_field = $user_type === 'loan_officer' ? 'loan_officer_id' : 'agent_id';
+
+		// Get partnerships with lead counts
+		$results = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT
+					p.id as partnership_id,
+					p.partner_name,
+					p.partner_email,
+					p.status,
+					COUNT(l.id) as lead_count,
+					SUM(CASE WHEN l.status = 'closed' THEN 1 ELSE 0 END) as closed_count
+				FROM {$wpdb->prefix}partnerships p
+				LEFT JOIN {$wpdb->prefix}lead_submissions l ON p.id = l.partnership_id
+				WHERE p.{$id_field} = %d AND p.status = 'active'
+				GROUP BY p.id
+				ORDER BY lead_count DESC, closed_count DESC
+				LIMIT 5",
+				$user_id
+			)
+		);
+
+		// Format results
+		$top_pages = array();
+		foreach ( $results as $row ) {
+			$conversion_rate = $row->lead_count > 0
+				? round( ( $row->closed_count / $row->lead_count ) * 100, 2 )
+				: 0;
+
+			$top_pages[] = array(
+				'partnershipId'  => (int) $row->partnership_id,
+				'partnerName'    => $row->partner_name,
+				'partnerEmail'   => $row->partner_email,
+				'leadCount'      => (int) $row->lead_count,
+				'closedCount'    => (int) $row->closed_count,
+				'conversionRate' => $conversion_rate,
+			);
+		}
+
+		return $top_pages;
 	}
 
 	/**
