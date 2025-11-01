@@ -172,6 +172,14 @@ class Frontend {
 		$user_id      = $current_user->ID;
 		$user_role    = $this->get_user_role( $current_user );
 
+		$gradient_url = LRH_URL . 'assets/images/Blue-Dark-Blue-Gradient-Color-and-Style-Video-Background-1.mp4';
+
+		// Debug logging
+		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+			error_log( '[LRH] Config data - LRH_URL: ' . LRH_URL );
+			error_log( '[LRH] Config data - gradientUrl: ' . $gradient_url );
+		}
+
 		return array(
 			// Primary config (used directly by React components)
 			'userId'       => $user_id,
@@ -181,7 +189,7 @@ class Frontend {
 			'userRole'     => $user_role,
 			'restNonce'    => wp_create_nonce( 'wp_rest' ),
 			'apiUrl'       => rest_url( LRH_ROUTE_PREFIX . '/' ),
-			'gradientUrl'  => LRH_URL . 'assets/images/Blue-Dark-Blue-Gradient-Color-and-Style-Video-Background-1.mp4',
+			'gradientUrl'  => $gradient_url,
 			'siteUrl'      => home_url(),
 			'portalUrl'    => home_url( '/portal' ),
 
