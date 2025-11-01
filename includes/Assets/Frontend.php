@@ -182,6 +182,8 @@ class Frontend {
 			'restNonce'    => wp_create_nonce( 'wp_rest' ),
 			'apiUrl'       => rest_url( LRH_ROUTE_PREFIX . '/' ),
 			'gradientUrl'  => LRH_URL . 'assets/images/Blue-Dark-Blue-Gradient-Color-and-Style-Video-Background-1.mp4',
+			'siteUrl'      => home_url(),
+			'portalUrl'    => home_url( '/portal' ),
 
 			// Compatibility structure for DataService fallback
 			// Matches old frs-partnership-portal window.frsPortalData.currentUser
@@ -192,6 +194,9 @@ class Frontend {
 				'avatar' => get_avatar_url( $user_id ),
 				'roles'  => $current_user->roles,
 			),
+
+			// Menu items for sidebar (empty for now, can be filtered)
+			'menuItems'    => apply_filters( 'lrh_portal_menu_items', array() ),
 
 			// Additional metadata
 			'nonce'        => wp_create_nonce( 'wp_rest' ), // Alias for restNonce
