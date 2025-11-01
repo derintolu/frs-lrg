@@ -35,9 +35,9 @@ class Frontend {
 	/**
 	 * JS Object name for portal configuration.
 	 *
-	 * Creates: window.lrhPortalConfig
+	 * Creates: window.frsPortalConfig (kept from legacy for compatibility)
 	 */
-	const OBJ_NAME = 'lrhPortalConfig';
+	const OBJ_NAME = 'frsPortalConfig';
 
 	/**
 	 * Development script path (Vite entry point).

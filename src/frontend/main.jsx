@@ -16,7 +16,8 @@ import { PortalSidebarApp } from "./portal/components/PortalSidebarApp";
  */
 
 // Get configuration from wp_localize_script (created by Frontend.php)
-const config = window.lrhPortalConfig || {
+// Uses frsPortalConfig (legacy name) for compatibility
+const config = window.frsPortalConfig || {
   userId: 0,
   userName: '',
   userEmail: '',
@@ -36,7 +37,7 @@ const config = window.lrhPortalConfig || {
 
 // Debug logging
 console.log('[LRH] Frontend entry point loaded');
-console.log('[LRH] Config available:', !!window.lrhPortalConfig);
+console.log('[LRH] Config available:', !!window.frsPortalConfig);
 console.log('[LRH] Config data:', config);
 
 // Check for Loan Officer Portal root (new or legacy for backward compatibility)

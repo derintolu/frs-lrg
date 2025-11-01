@@ -29,7 +29,7 @@ export function DashboardLayout({ activeView, onViewChange, children, currentUse
   });
 
   // Get gradient URL from WordPress data
-  const gradientUrl = (window as any).lrhPortalConfig?.gradientUrl || (window as any).frsPortalConfig?.gradientUrl || (window as any).frsSidebarData?.gradientUrl || '';
+  const gradientUrl = (window as any).frsPortalConfig?.gradientUrl || (window as any).frsSidebarData?.gradientUrl || '';
 
   // Calculate total offset (header + admin bar)
   useEffect(() => {
