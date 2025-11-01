@@ -2,35 +2,35 @@
 
 declare(strict_types=1);
 
-namespace WordPressPluginBoilerplate\Assets;
+namespace LendingResourceHub\Assets;
 
-use WordPressPluginBoilerplate\Core\Template;
-use WordPressPluginBoilerplate\Traits\Base;
-use WordPressPluginBoilerplate\Libs\Assets;
+use LendingResourceHub\Core\Template;
+use LendingResourceHub\Traits\Base;
+use LendingResourceHub\Libs\Assets;
 
 /**
  * Class Admin
  *
- * Handles admin functionalities for the WordPressPluginBoilerplate.
+ * Handles admin functionalities for the LendingResourceHub.
  *
- * @package WordPressPluginBoilerplate\Admin
+ * @package LendingResourceHub\Admin
  */
 class Admin {
 
 	use Base;
 
 	/**
-	 * Script handle for WordPressPluginBoilerplate.
+	 * Script handle for LendingResourceHub.
 	 */
-	const HANDLE = 'wordpress-plugin-boilerplate';
+	const HANDLE = 'lrh-admin';
 
 	/**
-	 * JS Object name for WordPressPluginBoilerplate.
+	 * JS Object name for LendingResourceHub.
 	 */
-	const OBJ_NAME = 'wordpressPluginBoilerplate';
+	const OBJ_NAME = 'lrhAdmin';
 
 	/**
-	 * Development script path for WordPressPluginBoilerplate.
+	 * Development script path for LendingResourceHub.
 	 */
 	const DEV_SCRIPT = 'src/admin/main.jsx';
 
@@ -40,7 +40,7 @@ class Admin {
 	 * @var array
 	 */
 	private $allowed_screens = array(
-		'toplevel_page_wordpress-plugin-boilerplate',
+		'toplevel_page_lending-resource-hub',
 	);
 
 	/**
@@ -74,7 +74,7 @@ class Admin {
 
 		if ( in_array( $current_screen, $this->allowed_screens, true ) ) {
 			Assets\enqueue_asset(
-				WORDPRESS_PLUGIN_BOILERPLATE_DIR . '/assets/admin/dist',
+				LRH_DIR . '/assets/admin/dist',
 				self::DEV_SCRIPT,
 				$this->get_config()
 			);
@@ -101,11 +101,16 @@ class Admin {
 	 * @return array The localized script data.
 	 */
 	public function get_data() {
+		$current_user = wp_get_current_user();
 
 		return array(
 			'developer' => 'prappo',
 			'isAdmin'   => is_admin(),
-			'apiUrl'    => rest_url(),
+			'apiUrl'    => rest_url( LRH_ROUTE_PREFIX . '/' ),
+			'nonce'     => wp_create_nonce( 'wp_rest' ),
+			'userId'    => $current_user->ID,
+			'userName'  => $current_user->display_name,
+			'userEmail' => $current_user->user_email,
 			'userInfo'  => $this->get_user_data(),
 		);
 	}

@@ -1,13 +1,13 @@
 <?php
 
-namespace WordPressPluginBoilerplate\Controllers\Accounts;
+namespace LendingResourceHub\Controllers\Accounts;
 
 /**
  * Class Messages
  *
  * Provides static methods to generate standardized messages related to accounts actions.
  *
- * @package WordPressPluginBoilerplate\Controllers\Accounts
+ * @package LendingResourceHub\Controllers\Accounts
  */
 class Messages {
 

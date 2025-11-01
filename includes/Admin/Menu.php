@@ -1,15 +1,15 @@
 <?php
 
-namespace WordPressPluginBoilerplate\Admin;
+namespace LendingResourceHub\Admin;
 
-use WordPressPluginBoilerplate\Traits\Base;
+use LendingResourceHub\Traits\Base;
 
 /**
  * Class Menu
  *
- * Represents the admin menu management for the WordPressPluginBoilerplate plugin.
+ * Represents the admin menu management for the LendingResourceHub plugin.
  *
- * @package WordPressPluginBoilerplate\Admin
+ * @package LendingResourceHub\Admin
  */
 class Menu {
 
@@ -20,7 +20,7 @@ class Menu {
 	 *
 	 * @var string
 	 */
-	private $parent_slug = 'wordpress-plugin-boilerplate';
+	private $parent_slug = 'lending-resource-hub';
 
 	/**
 	 * Initializes the admin menu.
@@ -40,12 +40,12 @@ class Menu {
 	public function menu() {
 
 		add_menu_page(
-			__( 'MyPlugin', 'wordpress-plugin-boilerplate' ),
-			__( 'MyPlugin', 'wordpress-plugin-boilerplate' ),
+			__( 'Lending Resource Hub', 'lending-resource-hub' ),
+			__( 'LRH Portal', 'lending-resource-hub' ),
 			'manage_options',
 			$this->parent_slug,
 			array( $this, 'admin_page' ),
-			'dashicons-email',
+			'dashicons-groups',
 			3
 		);
 
@@ -60,41 +60,55 @@ class Menu {
 		$submenu_pages = array(
 			array(
 				'parent_slug' => $this->parent_slug,
-				'page_title'  => __( 'Dashboard', 'wordpress-plugin-boilerplate' ),
-				'menu_title'  => __( 'Dashboard', 'wordpress-plugin-boilerplate' ),
+				'page_title'  => __( 'Dashboard', 'lending-resource-hub' ),
+				'menu_title'  => __( 'Dashboard', 'lending-resource-hub' ),
 				'capability'  => 'manage_options',
 				'menu_slug'   => $this->parent_slug,
-				'function'    => array( $this, 'admin_page' ), // Uses the same callback function as parent menu.
+				'function'    => array( $this, 'admin_page' ),
 			),
 			array(
 				'parent_slug' => $this->parent_slug,
-				'page_title'  => __( 'Inbox', 'wordpress-plugin-boilerplate' ),
-				'menu_title'  => __( 'Inbox', 'wordpress-plugin-boilerplate' ),
+				'page_title'  => __( 'Partnerships', 'lending-resource-hub' ),
+				'menu_title'  => __( 'Partnerships', 'lending-resource-hub' ),
 				'capability'  => 'manage_options',
-				'menu_slug'   => $plugin_url . '/#/inbox',
-				'function'    => null, // Uses the same callback function as parent menu.
+				'menu_slug'   => $plugin_url . '/#/partnerships',
+				'function'    => null,
 			),
-
 			array(
 				'parent_slug' => $this->parent_slug,
-				'page_title'  => __( 'Chart', 'wordpress-plugin-boilerplate' ),
-				'menu_title'  => __( 'Chart', 'wordpress-plugin-boilerplate' ),
+				'page_title'  => __( 'Bulk Invites', 'lending-resource-hub' ),
+				'menu_title'  => __( 'Bulk Invites', 'lending-resource-hub' ),
 				'capability'  => 'manage_options',
-				'menu_slug'   => $plugin_url . '/#/charts',
-				'function'    => null, // Uses the same callback function as parent menu.
+				'menu_slug'   => $plugin_url . '/#/bulk-invites',
+				'function'    => null,
 			),
-
 			array(
 				'parent_slug' => $this->parent_slug,
-				'page_title'  => __( 'Settings', 'wordpress-plugin-boilerplate' ),
-				'menu_title'  => __( 'Settings', 'wordpress-plugin-boilerplate' ),
+				'page_title'  => __( 'Leads', 'lending-resource-hub' ),
+				'menu_title'  => __( 'Leads', 'lending-resource-hub' ),
+				'capability'  => 'manage_options',
+				'menu_slug'   => $plugin_url . '/#/leads',
+				'function'    => null,
+			),
+			array(
+				'parent_slug' => $this->parent_slug,
+				'page_title'  => __( 'Integrations', 'lending-resource-hub' ),
+				'menu_title'  => __( 'Integrations', 'lending-resource-hub' ),
+				'capability'  => 'manage_options',
+				'menu_slug'   => $plugin_url . '/#/integrations',
+				'function'    => null,
+			),
+			array(
+				'parent_slug' => $this->parent_slug,
+				'page_title'  => __( 'Settings', 'lending-resource-hub' ),
+				'menu_title'  => __( 'Settings', 'lending-resource-hub' ),
 				'capability'  => 'manage_options',
 				'menu_slug'   => $plugin_url . '/#/settings',
-				'function'    => null, // Uses the same callback function as parent menu.
+				'function'    => null,
 			),
 		);
 
-		$plugin_submenu_pages = apply_filters( 'wordpress_plugin_boilerplate_submenu_pages', $submenu_pages );
+		$plugin_submenu_pages = apply_filters( 'lrh_submenu_pages', $submenu_pages );
 
 		foreach ( $plugin_submenu_pages as $submenu ) {
 
@@ -110,13 +124,13 @@ class Menu {
 	}
 
 	/**
-	 * Callback function for the main "MyPlugin" menu page.
+	 * Callback function for the main admin menu page.
 	 *
 	 * @return void
 	 */
 	public function admin_page() {
 		?>
-		<div id="myplugin" class="myplugin-app"></div>
+		<div id="lrh-admin-root" class="lrh-admin-app"></div>
 		<?php
 	}
 }

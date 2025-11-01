@@ -1,21 +1,24 @@
 <?php
-use WordPressPluginBoilerplate\Core\Api;
-use WordPressPluginBoilerplate\Admin\Menu;
-use WordPressPluginBoilerplate\Core\Template;
-use WordPressPluginBoilerplate\Assets\Frontend;
-use WordPressPluginBoilerplate\Assets\Admin;
-use WordPressPluginBoilerplate\Traits\Base;
+use LendingResourceHub\Core\Api;
+use LendingResourceHub\Core\Shortcode;
+use LendingResourceHub\Core\PostTypes;
+use LendingResourceHub\Admin\Menu;
+use LendingResourceHub\Core\Template;
+use LendingResourceHub\Assets\Frontend;
+use LendingResourceHub\Assets\Admin;
+use LendingResourceHub\Integrations\FluentBooking;
+use LendingResourceHub\Traits\Base;
 
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Class WordPressPluginBoilerplate
+ * Class LendingResourceHub
  *
  * The main class for the Coldmailar plugin, responsible for initialization and setup.
  *
  * @since 1.0.0
  */
-final class WordPressPluginBoilerplate {
+final class LendingResourceHub {
 
 	use Base;
 
@@ -26,12 +29,12 @@ final class WordPressPluginBoilerplate {
 	 * @return void
 	 */
 	public function __construct() {
-		define( 'WORDPRESS_PLUGIN_BOILERPLATE_VERSION', '1.0.0' );
-		define( 'WORDPRESS_PLUGIN_BOILERPLATE_PLUGIN_FILE', __FILE__ );
-		define( 'WORDPRESS_PLUGIN_BOILERPLATE_DIR', plugin_dir_path( __FILE__ ) );
-		define( 'WORDPRESS_PLUGIN_BOILERPLATE_URL', plugin_dir_url( __FILE__ ) );
-		define( 'WORDPRESS_PLUGIN_BOILERPLATE_ASSETS_URL', WORDPRESS_PLUGIN_BOILERPLATE_URL . '/assets' );
-		define( 'WORDPRESS_PLUGIN_BOILERPLATE_ROUTE_PREFIX', 'wordpress-plugin-boilerplate/v1' );
+		define( 'LRH_VERSION', '1.0.0' );
+		define( 'LRH_PLUGIN_FILE', __FILE__ );
+		define( 'LRH_DIR', plugin_dir_path( __FILE__ ) );
+		define( 'LRH_URL', plugin_dir_url( __FILE__ ) );
+		define( 'LRH_ASSETS_URL', LRH_URL . '/assets' );
+		define( 'LRH_ROUTE_PREFIX', 'lrh/v1' );
 	}
 
 	/**
@@ -52,6 +55,11 @@ final class WordPressPluginBoilerplate {
 		Frontend::get_instance()->bootstrap();
 		API::get_instance()->init();
 		Template::get_instance()->init();
+		Shortcode::get_instance()->init();
+		PostTypes::get_instance()->init();
+
+		// Initialize integrations
+		FluentBooking::get_instance()->init();
 
 		add_action( 'init', array( $this, 'i18n' ) );
 		add_action( 'init', array( $this, 'register_blocks' ) );
@@ -71,6 +79,6 @@ final class WordPressPluginBoilerplate {
 	 * @return void
 	 */
 	public function i18n() {
-		load_plugin_textdomain( 'wordpress-plugin-boilerplate', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+		load_plugin_textdomain( 'lending-resource-hub', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 	}
 }

@@ -1,15 +1,15 @@
 <?php
 
-namespace WordPressPluginBoilerplate\Controllers\Accounts;
+namespace LendingResourceHub\Controllers\Accounts;
 
-use WordPressPluginBoilerplate\Models\Accounts;
+use LendingResourceHub\Models\Accounts;
 
 /**
  * Class Actions
  *
  * Handles account-related actions such as creation, retrieval, deletion, and update.
  *
- * @package WordPressPluginBoilerplate\Controllers\Accounts
+ * @package LendingResourceHub\Controllers\Accounts
  */
 class Actions {
 

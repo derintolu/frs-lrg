@@ -2,21 +2,21 @@
 /**
  * Class Users
  *
- * Represents the Users model for WordPressPluginBoilerplate.
+ * Represents the Users model for LendingResourceHub.
  *
- * @package WordPressPluginBoilerplate\Models
+ * @package LendingResourceHub\Models
  */
 
-namespace WordPressPluginBoilerplate\Models;
+namespace LendingResourceHub\Models;
 
 use Prappo\WpEloquent\Database\Eloquent\Model;
 
 /**
  * Class Users
  *
- * Represents the Users model for WordPressPluginBoilerplate.
+ * Represents the Users model for LendingResourceHub.
  *
- * @package WordPressPluginBoilerplate\Models
+ * @package LendingResourceHub\Models
  */
 class Users extends Model {
 

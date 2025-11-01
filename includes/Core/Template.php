@@ -1,22 +1,22 @@
 <?php
 
-namespace WordPressPluginBoilerplate\Core;
+namespace LendingResourceHub\Core;
 
-use WordPressPluginBoilerplate\Traits\Base;
+use LendingResourceHub\Traits\Base;
 
 /**
  * Class Template
  *
- * Represents the Template class for WordPressPluginBoilerplate.
+ * Represents the Template class for LendingResourceHub.
  *
- * @package WordPressPluginBoilerplate\Core
+ * @package LendingResourceHub\Core
  */
 class Template {
 
 	use Base;
 
 	const FRONTEND_TEMPLATE      = 'frontend-template.php';
-	const FRONTEND_TEMPLATE_NAME = 'WordPressPluginBoilerplate';
+	const FRONTEND_TEMPLATE_NAME = 'LendingResourceHub';
 	const FRONTEND_TEMPLATE_SLUG = 'wordpress-plugin-boilerplate';
 
 	/**
@@ -48,7 +48,7 @@ class Template {
 	 */
 	public function load_custom_template( $template ) {
 		if ( get_page_template_slug() === self::FRONTEND_TEMPLATE ) {
-			$template_file_dir = WORDPRESS_PLUGIN_BOILERPLATE_DIR . 'views/templates/' . self::FRONTEND_TEMPLATE;
+			$template_file_dir = LRH_DIR . 'views/templates/' . self::FRONTEND_TEMPLATE;
 
 			if ( file_exists( $template_file_dir ) ) {
 				return $template_file_dir;

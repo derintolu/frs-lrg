@@ -7,9 +7,9 @@
  * @since 1.0.0
  */
 
-namespace WordPressPluginBoilerplate\Controllers\Posts;
+namespace LendingResourceHub\Controllers\Posts;
 
-use WordPressPluginBoilerplate\Models\Posts;
+use LendingResourceHub\Models\Posts;
 
 class Actions {
 	public function get_all_posts() {

@@ -6,9 +6,9 @@
  * @since 1.0.0
  */
 
-namespace WordPressPluginBoilerplate\Libs\API;
+namespace LendingResourceHub\Libs\API;
 
-use WordPressPluginBoilerplate\Libs\API\ApiRouteException;
+use LendingResourceHub\Libs\API\ApiRouteException;
 
 /**
  * Class ApiRoute

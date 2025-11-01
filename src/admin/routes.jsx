@@ -2,10 +2,11 @@ import { createHashRouter } from "react-router-dom";
 import ApplicationLayout from "../components/application-layout/LayoutOne";
 import Settings from "./pages/settings";
 import ErrorPage from "./pages/error/Error";
-import Inbox from "./pages/inbox";
 import Dashboard from "./pages/dashboard";
-import LoginPage from "./pages/login";
-import Charts from "./pages/charts";
+import Partnerships from "./pages/partnerships";
+import BulkInvites from "./pages/bulk-invites";
+import Leads from "./pages/leads";
+import Integrations from "./pages/integrations";
 
 export const router = createHashRouter([
   {
@@ -22,21 +23,24 @@ export const router = createHashRouter([
         element: <Dashboard />,
       },
       {
-        path: "inbox",
-        element: <Inbox />,
+        path: "partnerships",
+        element: <Partnerships />,
       },
-     
+      {
+        path: "bulk-invites",
+        element: <BulkInvites />,
+      },
+      {
+        path: "leads",
+        element: <Leads />,
+      },
+      {
+        path: "integrations",
+        element: <Integrations />,
+      },
       {
         path: "settings",
         element: <Settings />,
-      },
-      {
-        path: "login",
-        element: <LoginPage />,
-      },
-      {
-        path: "charts",
-        element: <Charts />,
       }
     ],
   },

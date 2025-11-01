@@ -1,11 +1,13 @@
 import {
     CircleUser,
     Home,
-    Mail,
     Menu,
     SlidersHorizontal,
     Package2,
-    BarChart
+    Users,
+    MailPlus,
+    ClipboardList,
+    Blocks
 
 } from "lucide-react"
 import { useEffect } from "react";
@@ -34,28 +36,39 @@ const navigation = [
         current: true,
     },
     {
-        name: "Inbox",
-        href: "inbox",
-        icon: Mail,
+        name: "Partnerships",
+        href: "partnerships",
+        icon: Users,
         current: false,
     },
-
+    {
+        name: "Bulk Invites",
+        href: "bulk-invites",
+        icon: MailPlus,
+        current: false,
+    },
+    {
+        name: "Leads",
+        href: "leads",
+        icon: ClipboardList,
+        current: false,
+    },
+    {
+        name: "Integrations",
+        href: "integrations",
+        icon: Blocks,
+        current: false,
+    },
     {
         name: "Settings",
         href: "settings",
         icon: SlidersHorizontal,
         current: false,
-    },
-    {
-        name: "Charts",
-        href: "charts",
-        icon: BarChart,
-        current: false,
     }
 ];
 
 export default function LayoutOne() {
-    let showApplicationLayout = !wordpressPluginBoilerplate.isAdmin;
+    let showApplicationLayout = !lrhAdmin.isAdmin;
     let location = useLocation();
     const navigate = useNavigate();
     const pageTitle = location.pathname.split("/")[1];

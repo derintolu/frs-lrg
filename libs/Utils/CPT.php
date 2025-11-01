@@ -1,5 +1,5 @@
 <?php
-namespace WordPressPluginBoilerplate\Libs\Utils;
+namespace LendingResourceHub\Libs\Utils;
 
 /**
  * Custom Post Type

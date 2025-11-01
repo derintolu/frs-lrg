@@ -6,7 +6,7 @@
  * @since 1.0.0
  */
 
-namespace WordPressPluginBoilerplate\Libs\API;
+namespace LendingResourceHub\Libs\API;
 
 use Exception;
 

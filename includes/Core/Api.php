@@ -1,29 +1,29 @@
 <?php
 
-namespace WordPressPluginBoilerplate\Core;
+namespace LendingResourceHub\Core;
 
-use WordPressPluginBoilerplate\Traits\Base;
-use WordPressPluginBoilerplate\Libs\API\Config;
+use LendingResourceHub\Traits\Base;
+use LendingResourceHub\Libs\API\Config;
 
 /**
  * Class API
  *
- * Initializes and configures the API for the WordPressPluginBoilerplate.
+ * Initializes and configures the API for the LendingResourceHub.
  *
- * @package WordPressPluginBoilerplate\Core
+ * @package LendingResourceHub\Core
  */
 class API {
 
 	use Base;
 
 	/**
-	 * Initializes the API for the WordPressPluginBoilerplate.
+	 * Initializes the API for the LendingResourceHub.
 	 *
 	 * @return void
 	 */
 	public function init() {
-		Config::set_route_file( WORDPRESS_PLUGIN_BOILERPLATE_DIR . '/includes/Routes/Api.php' )
-			->set_namespace( 'WordPressPluginBoilerplate\Api' )
+		Config::set_route_file( LRH_DIR . '/includes/Routes/Api.php' )
+			->set_namespace( 'LendingResourceHub\Api' )
 			->init();
 	}
 }

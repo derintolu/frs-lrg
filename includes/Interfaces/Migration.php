@@ -1,13 +1,13 @@
 <?php
 
-namespace WordPressPluginBoilerplate\Interfaces;
+namespace LendingResourceHub\Interfaces;
 
 /**
  * Interface Migration
  *
  * Defines the contract for database migration operations.
  *
- * @package WordPressPluginBoilerplate\Interfaces
+ * @package LendingResourceHub\Interfaces
  */
 interface Migration {
 

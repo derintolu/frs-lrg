@@ -2,22 +2,22 @@
 /**
  * Class Accounts
  *
- * Represents the Accounts model for WordPressPluginBoilerplate.
+ * Represents the Accounts model for LendingResourceHub.
  *
- * @package WordPressPluginBoilerplate\Models
+ * @package LendingResourceHub\Models
  * @since 1.0.0
  */
 
-namespace WordPressPluginBoilerplate\Models;
+namespace LendingResourceHub\Models;
 
 use Prappo\WpEloquent\Database\Eloquent\Model;
 
 /**
  * Class Accounts
  *
- * Represents the Accounts model for WordPressPluginBoilerplate.
+ * Represents the Accounts model for LendingResourceHub.
  *
- * @package WordPressPluginBoilerplate\Models
+ * @package LendingResourceHub\Models
  */
 class Accounts extends Model {
 

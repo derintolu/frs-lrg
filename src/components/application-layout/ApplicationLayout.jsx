@@ -43,7 +43,7 @@ const navigation = [
 
 const ApplicationLayout = () => {
   // const showApplicationLayout = true;
-  const showApplicationLayout = !myplugin.isAdmin;
+  const showApplicationLayout = !lrhAdmin.isAdmin;
   const navigate = useNavigate();
   let location = useLocation();
   const pageTitle = location.pathname.split("/")[1];
@@ -136,14 +136,14 @@ const ApplicationLayout = () => {
                         <ModeToggle />
                           <Avatar>
                             <AvatarImage
-                              src={wordpressPluginBoilerplate.userInfo.avatar}
-                              alt={wordpressPluginBoilerplate.userInfo.username}
+                              src={lrhAdmin.userInfo.avatar}
+                              alt={lrhAdmin.userInfo.username}
                             />
                             <AvatarFallback>CN</AvatarFallback>
                           </Avatar>
                         </div>
                         <div className="text-neutral-600 text-xs font-medium leading-none">
-                          {wordpressPluginBoilerplate.userInfo.username}
+                          {lrhAdmin.userInfo.username}
                         </div>
                         <div className="text-neutral-600 text-xs font-medium leading-none">
                           <Icons.DownIcon />
