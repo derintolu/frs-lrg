@@ -37,6 +37,16 @@ export function PortalSidebarApp({
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [activeView, setActiveView] = useState<string>('home');
 
+  // Debug logging
+  console.log('[PortalSidebarApp] Props received:', {
+    userId,
+    userName,
+    userEmail,
+    gradientUrl,
+    siteUrl,
+    portalUrl,
+  });
+
   // Calculate total offset (header + admin bar)
   useEffect(() => {
     const calculateHeaderHeight = () => {

@@ -62,6 +62,8 @@ const sidebarRoot = document.getElementById("lrh-portal-sidebar-root");
 
 if (sidebarRoot) {
   console.log('[LRH] Mounting Portal Sidebar');
+  console.log('[LRH] Config data:', config);
+  console.log('[LRH] gradientUrl:', config.gradientUrl);
 
   try {
     createRoot(sidebarRoot).render(
