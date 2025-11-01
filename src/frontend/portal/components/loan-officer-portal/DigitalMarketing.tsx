@@ -177,7 +177,7 @@ export function DigitalMarketing({ userId, currentUser, defaultTab = 'biolink' }
   return (
     <div className="space-y-6">
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4" style={{ gap: '0.09rem', borderRadius: '4px' }}>
+        <TabsList className="grid w-full grid-cols-4 rounded-sm" style={{ gap: '0.09rem' }}>
           <TabsTrigger value="biolink">Biolink</TabsTrigger>
           <TabsTrigger value="landing-pages">Landing Pages</TabsTrigger>
           <TabsTrigger value="email-campaigns">Email Campaigns</TabsTrigger>

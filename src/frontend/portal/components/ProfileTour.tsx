@@ -198,7 +198,7 @@ export function ProfileTour({ isOpen, onClose }: ProfileTourProps) {
           width: highlightPosition.width + 8,
           height: highlightPosition.height + 8,
           border: '3px solid #3B82F6',
-          borderRadius: '8px',
+          borderRadius: 'calc(var(--radius) - 4px)',
           boxShadow: '0 0 0 3px rgba(59, 130, 246, 0.4), 0 0 20px rgba(59, 130, 246, 0.8)',
           backgroundColor: 'rgba(255, 255, 255, 0.1)',
         }}
