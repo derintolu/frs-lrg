@@ -55,17 +55,13 @@ class Shortcode {
 	/**
 	 * Render the legacy portal shortcode (backward compatibility).
 	 *
-	 * Uses the old root element ID that the legacy React app expects.
+	 * Just an alias for render_portal() - does exactly the same thing.
 	 *
 	 * @param array $atts Shortcode attributes.
 	 * @return string The rendered shortcode HTML.
 	 */
 	public function render_legacy_portal( $atts ) {
-		// Enqueue portal assets directly when shortcode is rendered
-		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_portal_assets_public();
-
-		// Return legacy root element ID for backward compatibility
-		return '<div id="frs-partnership-portal-root"></div>';
+		return $this->render_portal( $atts );
 	}
 
 	/**
