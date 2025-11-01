@@ -62,10 +62,6 @@
     --gradient-brand-teal: linear-gradient(45deg, var(--brand-rich-teal) 0%, var(--brand-light-blue) 50%, var(--brand-rich-teal) 100%);
     --gradient-brand-navy: linear-gradient(45deg, var(--brand-navy) 0%, var(--brand-primary-blue) 50%, var(--brand-navy) 100%);
     --gradient-brand-accent: linear-gradient(90deg, #3851DD 0%, #5CE1E6 100%);
-
-    /* Border Radius */
-    --radius-button: 8px;
-    --radius-card: 8px;
   }
 
   .dark {
