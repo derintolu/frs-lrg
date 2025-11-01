@@ -4,14 +4,19 @@ declare(strict_types=1);
 
 namespace LendingResourceHub\Assets;
 
-use LendingResourceHub\Core\Template;
 use LendingResourceHub\Traits\Base;
 use LendingResourceHub\Libs\Assets;
 
 /**
  * Class Frontend
  *
- * Handles frontend functionalities for the LendingResourceHub.
+ * Handles frontend asset loading for the LendingResourceHub.
+ *
+ * CRITICAL: This follows the WordPress Plugin Boilerplate pattern:
+ * - Single handle for all frontend assets
+ * - Single entry point (src/frontend/main.jsx)
+ * - Uses wp_localize_script for reliable config injection
+ * - Automatic dev/prod detection via @kucrut/vite-for-wp
  *
  * @package LendingResourceHub\Assets
  */
@@ -20,28 +25,26 @@ class Frontend {
 	use Base;
 
 	/**
-	 * Script handle for LendingResourceHub.
+	 * Script handle for frontend assets.
+	 *
+	 * IMPORTANT: This is the ONLY handle used for all frontend scripts.
+	 * Do not create multiple handles for the same entry point.
 	 */
-	const HANDLE = 'wordpress-plugin-boilerplate-frontend';
+	const HANDLE = 'lrh-frontend';
 
 	/**
-	 * JS Object name for LendingResourceHub.
+	 * JS Object name for portal configuration.
+	 *
+	 * Creates: window.lrhPortalConfig
 	 */
-	const OBJ_NAME = 'wordpressPluginBoilerplateFrontend';
+	const OBJ_NAME = 'lrhPortalConfig';
 
 	/**
-	 * Development script path for LendingResourceHub.
+	 * Development script path (Vite entry point).
+	 *
+	 * This matches the 'input' in vite.frontend.config.js
 	 */
 	const DEV_SCRIPT = 'src/frontend/main.jsx';
-
-	/**
-	 * List of allowed screens for script enqueue.
-	 *
-	 * @var array
-	 */
-	private $allowed_screens = array(
-		'toplevel_page_wordpress-plugin-boilerplate',
-	);
 
 	/**
 	 * Frontend bootstrapper.
@@ -49,227 +52,195 @@ class Frontend {
 	 * @return void
 	 */
 	public function bootstrap() {
-		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_script' ) );
+		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 	}
 
 	/**
-	 * Enqueue script based on the current screen.
+	 * Enqueue frontend scripts and styles.
 	 *
-	 * @param string $screen The current screen.
-	 */
-	public function enqueue_script( $screen ) {
-		global $post;
-
-		$current_screen     = $screen;
-		$template_file_name = Template::FRONTEND_TEMPLATE;
-
-		// Check for portal shortcodes - more robust checking
-		$has_portal_shortcode = false;
-		if ( ! is_admin() ) {
-			// Check global post content
-			if ( $post && is_object( $post ) && isset( $post->post_content ) ) {
-				if ( has_shortcode( $post->post_content, 'lrh_portal' ) ||
-					has_shortcode( $post->post_content, 'frs_partnership_portal' ) ||
-					has_shortcode( $post->post_content, 'lrh_portal_sidebar' ) ) {
-					$has_portal_shortcode = true;
-				}
-			}
-
-			// Also check if we're on a page that typically uses the portal
-			// This is a fallback for when shortcodes are in widgets or custom fields
-			if ( ! $has_portal_shortcode && is_page() ) {
-				global $wpdb;
-				$post_id = get_the_ID();
-				if ( $post_id ) {
-					// Check post content and meta for shortcodes
-					$content = get_post_field( 'post_content', $post_id );
-					if ( $content && (
-						strpos( $content, '[lrh_portal' ) !== false ||
-						strpos( $content, '[frs_partnership_portal' ) !== false
-					) ) {
-						$has_portal_shortcode = true;
-					}
-				}
-			}
-
-			// Force load on specific pages (add page slugs as needed)
-			$portal_pages = array( 'portal', 'loan-officer-portal', 'my-portal', 'partnership-portal', 'dashboard' );
-			if ( is_page( $portal_pages ) ) {
-				$has_portal_shortcode = true;
-			}
-		}
-
-		// Debug logging (remove in production)
-		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-			error_log( sprintf(
-				'LRH Portal Detection - Page: %s, Has Shortcode: %s, Post ID: %s',
-				is_page() ? get_the_title() : 'not a page',
-				$has_portal_shortcode ? 'YES' : 'NO',
-				get_the_ID() ?: 'none'
-			) );
-		}
-
-		// Ensure we always check the content one more time
-		if ( ! $has_portal_shortcode && is_singular() ) {
-			$content = get_the_content();
-			if ( $content && (
-				strpos( $content, '[lrh_portal' ) !== false ||
-				strpos( $content, '[frs_partnership_portal' ) !== false
-			) ) {
-				$has_portal_shortcode = true;
-			}
-		}
-
-		if ( ! is_admin() ) {
-			$template_slug = get_page_template_slug();
-			if ( $template_slug ) {
-
-				if ( $template_slug === $template_file_name ) {
-					array_push( $this->allowed_screens, $template_file_name );
-					$current_screen = $template_file_name;
-				}
-			}
-		}
-
-		// Allow filtering portal detection
-		$has_portal_shortcode = apply_filters( 'lrh_force_load_portal_assets', $has_portal_shortcode );
-
-		// Enqueue portal assets if shortcode is present
-		if ( $has_portal_shortcode ) {
-			$this->enqueue_portal_assets();
-		}
-
-		if ( in_array( $current_screen, $this->allowed_screens, true ) ) {
-			Assets\enqueue_asset(
-				LRH_DIR . '/assets/frontend/dist',
-				self::DEV_SCRIPT,
-				$this->get_config()
-			);
-			wp_localize_script( self::HANDLE, self::OBJ_NAME, $this->get_data() );
-		}
-	}
-
-	/**
-	 * Enqueue portal assets.
+	 * Loads assets only when portal shortcodes are present or on specific pages.
 	 *
 	 * @return void
 	 */
-	public function enqueue_portal_assets_public() {
-		$this->enqueue_portal_assets();
-	}
+	public function enqueue_scripts() {
+		// Skip if in admin
+		if ( is_admin() ) {
+			return;
+		}
 
-	/**
-	 * Enqueue portal assets (internal).
-	 *
-	 * @return void
-	 */
-	private function enqueue_portal_assets() {
-		// Ensure React dependencies are enqueued first
+		// Check if we should load portal assets
+		if ( ! $this->should_load_portal() ) {
+			return;
+		}
+
+		// Enqueue React dependencies first (from WordPress core)
 		wp_enqueue_script( 'react' );
 		wp_enqueue_script( 'react-dom' );
 
+		// Enqueue the main frontend bundle
+		// This uses @kucrut/vite-for-wp which automatically detects:
+		// - Development: Loads from vite-dev-server.json (localhost:5173)
+		// - Production: Loads from manifest.json (hashed assets)
 		Assets\enqueue_asset(
 			LRH_DIR . '/assets/frontend/dist',
-			'src/frontend/portal/main.tsx',
+			self::DEV_SCRIPT,
 			array(
+				'handle'       => self::HANDLE,
 				'dependencies' => array( 'react', 'react-dom' ),
-				'handle'       => 'lrh-portal',
 				'in-footer'    => true,
 			)
 		);
 
-		// Add portal config inline script
-		$current_user = wp_get_current_user();
-		$user_id      = $current_user->ID;
+		// Add configuration data using wp_localize_script
+		// This is MORE RELIABLE than wp_add_inline_script for ES6 modules
+		wp_localize_script( self::HANDLE, self::OBJ_NAME, $this->get_config_data() );
 
-		$user_role = 'loan_officer';
-		if ( $user_id > 0 ) {
-			if ( in_array( 'realtor_partner', $current_user->roles ) || in_array( 'realtor', $current_user->roles ) ) {
-				$user_role = 'realtor';
-			} elseif ( in_array( 'manager', $current_user->roles ) ) {
-				$user_role = 'manager';
-			} elseif ( in_array( 'frs_admin', $current_user->roles ) || in_array( 'administrator', $current_user->roles ) ) {
-				$user_role = 'admin';
+		// Debug logging
+		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+			error_log( sprintf(
+				'[LRH] Portal assets enqueued on page: %s (ID: %s)',
+				is_page() ? get_the_title() : get_post_type(),
+				get_the_ID() ?: 'none'
+			) );
+		}
+	}
+
+	/**
+	 * Public method to enqueue portal assets (for direct calls).
+	 *
+	 * Used by shortcode handlers that need to force asset loading.
+	 *
+	 * @return void
+	 */
+	public function enqueue_portal_assets_public() {
+		$this->enqueue_scripts();
+	}
+
+	/**
+	 * Determine if portal assets should be loaded.
+	 *
+	 * Checks for:
+	 * - Portal shortcodes in post content
+	 * - Specific page slugs
+	 * - Filter override
+	 *
+	 * @return bool True if portal assets should load.
+	 */
+	private function should_load_portal() {
+		global $post;
+
+		// Check for portal shortcodes
+		if ( $post && is_object( $post ) && isset( $post->post_content ) ) {
+			if ( has_shortcode( $post->post_content, 'lrh_portal' ) ||
+				has_shortcode( $post->post_content, 'frs_partnership_portal' ) ||
+				has_shortcode( $post->post_content, 'lrh_portal_sidebar' ) ) {
+				return true;
 			}
 		}
 
-		wp_add_inline_script(
-			'lrh-portal',
-			sprintf(
-				'window.lrhPortalConfig = {
-					userId: %d,
-					userName: "%s",
-					userEmail: "%s",
-					userAvatar: "%s",
-					userRole: "%s",
-					restNonce: "%s",
-					apiUrl: "%s",
-					gradientUrl: "%s"
-				};',
-				$user_id,
-				esc_js( $current_user->display_name ),
-				esc_js( $current_user->user_email ),
-				esc_url( get_avatar_url( $user_id ) ),
-				esc_js( $user_role ),
-				wp_create_nonce( 'wp_rest' ),
-				rest_url( LRH_ROUTE_PREFIX . '/' ),
-				esc_url( LRH_URL . 'assets/images/Blue-Dark-Blue-Gradient-Color-and-Style-Video-Background-1.mp4' )
-			),
-			'before'
+		// Check specific page slugs where portal should load
+		$portal_pages = array(
+			'portal',
+			'loan-officer-portal',
+			'my-portal',
+			'partnership-portal',
+			'dashboard',
 		);
-	}
 
-	/**
-	 * Get the script configuration.
-	 *
-	 * @return array The script configuration.
-	 */
-	public function get_config() {
-		return array(
-			'dependencies' => array( 'react', 'react-dom' ),
-			'handle'       => self::HANDLE,
-			'in-footer'    => true,
-		);
-	}
-
-	/**
-	 * Get data for script localization.
-	 *
-	 * @return array The localized script data.
-	 */
-	public function get_data() {
-
-		return array(
-			'developer' => 'prappo',
-			'isAdmin'   => is_admin(),
-			'apiUrl'    => rest_url(),
-			'userInfo'  => $this->get_user_data(),
-		);
-	}
-
-	/**
-	 * Get user data for script localization.
-	 *
-	 * @return array The user data.
-	 */
-	private function get_user_data() {
-		$username   = '';
-		$avatar_url = '';
-
-		if ( is_user_logged_in() ) {
-			// Get current user's data .
-			$current_user = wp_get_current_user();
-
-			// Get username.
-			$username = $current_user->user_login; // or use user_nicename, display_name, etc.
-
-			// Get avatar URL.
-			$avatar_url = get_avatar_url( $current_user->ID );
+		if ( is_page( $portal_pages ) ) {
+			return true;
 		}
 
+		// Allow filtering
+		return apply_filters( 'lrh_should_load_portal', false );
+	}
+
+	/**
+	 * Get configuration data for JavaScript.
+	 *
+	 * This creates window.lrhPortalConfig with:
+	 * - Current user data
+	 * - REST API configuration
+	 * - Portal settings
+	 *
+	 * Structure matches old frs-partnership-portal for compatibility.
+	 *
+	 * @return array Configuration data.
+	 */
+	private function get_config_data() {
+		$current_user = wp_get_current_user();
+		$user_id      = $current_user->ID;
+		$user_role    = $this->get_user_role( $current_user );
+
 		return array(
-			'username' => $username,
-			'avatar'   => $avatar_url,
+			// Primary config (used directly by React components)
+			'userId'       => $user_id,
+			'userName'     => $current_user->display_name,
+			'userEmail'    => $current_user->user_email,
+			'userAvatar'   => get_avatar_url( $user_id ),
+			'userRole'     => $user_role,
+			'restNonce'    => wp_create_nonce( 'wp_rest' ),
+			'apiUrl'       => rest_url( LRH_ROUTE_PREFIX . '/' ),
+			'gradientUrl'  => LRH_URL . 'assets/images/Blue-Dark-Blue-Gradient-Color-and-Style-Video-Background-1.mp4',
+
+			// Compatibility structure for DataService fallback
+			// Matches old frs-partnership-portal window.frsPortalData.currentUser
+			'currentUser'  => array(
+				'id'     => $user_id,
+				'name'   => $current_user->display_name,
+				'email'  => $current_user->user_email,
+				'avatar' => get_avatar_url( $user_id ),
+				'roles'  => $current_user->roles,
+			),
+
+			// Additional metadata
+			'nonce'        => wp_create_nonce( 'wp_rest' ), // Alias for restNonce
+			'siteName'     => get_bloginfo( 'name' ),
+			'siteLogo'     => $this->get_site_logo(),
+			'logoutUrl'    => wp_logout_url( home_url() ),
 		);
+	}
+
+	/**
+	 * Get primary user role for portal.
+	 *
+	 * Maps WordPress roles to simplified portal roles.
+	 *
+	 * @param \WP_User $user WordPress user object.
+	 * @return string Portal role (loan_officer|realtor|manager|admin).
+	 */
+	private function get_user_role( $user ) {
+		if ( ! $user || ! $user->roles ) {
+			return 'loan_officer';
+		}
+
+		if ( in_array( 'realtor_partner', $user->roles, true ) ||
+			 in_array( 'realtor', $user->roles, true ) ) {
+			return 'realtor';
+		}
+
+		if ( in_array( 'manager', $user->roles, true ) ) {
+			return 'manager';
+		}
+
+		if ( in_array( 'frs_admin', $user->roles, true ) ||
+			 in_array( 'administrator', $user->roles, true ) ) {
+			return 'admin';
+		}
+
+		return 'loan_officer';
+	}
+
+	/**
+	 * Get site logo URL.
+	 *
+	 * @return string Logo URL or empty string.
+	 */
+	private function get_site_logo() {
+		$custom_logo_id = get_theme_mod( 'custom_logo' );
+		if ( $custom_logo_id ) {
+			return wp_get_attachment_image_url( $custom_logo_id, 'full' ) ?: '';
+		}
+		return '';
 	}
 }
