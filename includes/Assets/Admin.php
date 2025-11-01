@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace LendingResourceHub\Assets;
 
-use LendingResourceHub\Core\Template;
 use LendingResourceHub\Traits\Base;
 use LendingResourceHub\Libs\Assets;
 
@@ -58,21 +57,7 @@ class Admin {
 	 * @param string $screen The current screen.
 	 */
 	public function enqueue_script( $screen ) {
-		$current_screen     = $screen;
-		$template_file_name = Template::FRONTEND_TEMPLATE;
-
-		if ( ! is_admin() ) {
-			$template_slug = get_page_template_slug();
-			if ( $template_slug ) {
-
-				if ( $template_slug === $template_file_name ) {
-					array_push( $this->allowed_screens, $template_file_name );
-					$current_screen = $template_file_name;
-				}
-			}
-		}
-
-		if ( in_array( $current_screen, $this->allowed_screens, true ) ) {
+		if ( in_array( $screen, $this->allowed_screens, true ) ) {
 			Assets\enqueue_asset(
 				LRH_DIR . '/assets/admin/dist',
 				self::DEV_SCRIPT,

@@ -58,6 +58,7 @@ class Menu {
 		}
 
 		$submenu_pages = array(
+			// Main
 			array(
 				'parent_slug' => $this->parent_slug,
 				'page_title'  => __( 'Dashboard', 'lending-resource-hub' ),
@@ -66,6 +67,8 @@ class Menu {
 				'menu_slug'   => $this->parent_slug,
 				'function'    => array( $this, 'admin_page' ),
 			),
+
+			// Management
 			array(
 				'parent_slug' => $this->parent_slug,
 				'page_title'  => __( 'Partnerships', 'lending-resource-hub' ),
@@ -88,6 +91,16 @@ class Menu {
 				'menu_title'  => __( 'Leads', 'lending-resource-hub' ),
 				'capability'  => 'manage_options',
 				'menu_slug'   => $plugin_url . '/#/leads',
+				'function'    => null,
+			),
+
+			// System
+			array(
+				'parent_slug' => $this->parent_slug,
+				'page_title'  => __( 'System Diagnostic', 'lending-resource-hub' ),
+				'menu_title'  => __( '🔍 System Diagnostic', 'lending-resource-hub' ),
+				'capability'  => 'manage_options',
+				'menu_slug'   => $plugin_url . '/#/system-diagnostic',
 				'function'    => null,
 			),
 			array(

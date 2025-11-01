@@ -7,6 +7,7 @@ import Partnerships from "./pages/partnerships";
 import BulkInvites from "./pages/bulk-invites";
 import Leads from "./pages/leads";
 import Integrations from "./pages/integrations";
+import SystemDiagnostic from "./pages/system-diagnostic";
 
 export const router = createHashRouter([
   {
@@ -37,6 +38,10 @@ export const router = createHashRouter([
       {
         path: "integrations",
         element: <Integrations />,
+      },
+      {
+        path: "system-diagnostic",
+        element: <SystemDiagnostic />,
       },
       {
         path: "settings",

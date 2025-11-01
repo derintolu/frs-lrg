@@ -92,6 +92,9 @@ Route::prefix(
 		$route->get( '/calendar/users', '\LendingResourceHub\Controllers\Calendar\Actions@get_calendar_users' );
 		$route->post( '/calendar/reset', '\LendingResourceHub\Controllers\Calendar\Actions@reset_calendar' );
 
+		// ====== SYSTEM DIAGNOSTIC ROUTES ======
+		$route->get( '/system/diagnostics', '\LendingResourceHub\Controllers\System\Actions@get_diagnostics' );
+
 		// Allow hooks to add more custom API routes.
 		do_action( 'lrh_api', $route );
 	}
