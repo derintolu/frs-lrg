@@ -103,7 +103,7 @@ ob_start();
 <div class="frs-biolink-page" id="frs-biolink-page-<?php echo esc_attr($user_id); ?>">
 
     <!-- Header Section -->
-    <div class="frs-biolink-header">
+    <div class="frs-biolink-header" style="background: <?php echo $bg_color; ?>;">
         <!-- Video Background -->
         <video autoplay muted loop playsinline>
             <source src="<?php echo esc_url($bg_video_url); ?>" type="video/mp4">
