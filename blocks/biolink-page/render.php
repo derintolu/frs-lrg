@@ -92,8 +92,8 @@ if ($person_data && is_array($person_data)) {
 
 $company = '21st Century Lending';
 $bg_color = 'linear-gradient(135deg, #000000 43%, #180a62 154%)';
-$bg_video_url = FRS_PORTAL_PLUGIN_URL . 'assets/images/Blue-Dark-Blue-Gradient-Color-and-Style-Video-Background-1.mp4';
-$company_logo_url = FRS_PORTAL_PLUGIN_URL . 'assets/images/21C-Wordmark-White.svg';
+$bg_video_url = LRH_URL . 'assets/images/Blue-Dark-Blue-Gradient-Color-and-Style-Video-Background-1.mp4';
+$company_logo_url = LRH_URL . 'assets/images/21C-Wordmark-White.svg';
 
 // Phone URL for call button
 $phone_url = !empty($phone) ? 'tel:' . preg_replace('/[^0-9+]/', '', $phone) : '';
