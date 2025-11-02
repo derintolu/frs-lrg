@@ -1,96 +1,205 @@
-/**
- * Biolink Page Block Styles
- * Shared styles for both frontend and editor
- */
-
+/* Biolink Page Styles */
 .frs-biolink-page {
-    font-family: 'Mona Sans Extended', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    line-height: 1.5;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
-.frs-biolink-page-editor {
-    min-height: 200px;
-}
-
-.frs-biolink-page-preview {
-    position: relative;
-}
-
+/* Header */
 .frs-biolink-header {
     position: relative;
+    padding: 40px 0;
+    text-align: center;
+    color: white;
     overflow: hidden;
+    min-height: 400px;
+    font-family: 'Mona Sans Extended', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 .frs-biolink-header video {
-    pointer-events: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
 }
 
-.frs-biolink-button {
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    cursor: pointer;
-    font-family: inherit;
-    font-size: inherit;
-    border: none;
-    outline: none;
+.frs-biolink-header > div {
+    position: relative;
+    z-index: 3;
+    max-width: 570px;
+    margin: 0 auto;
+    padding: 10px 20px 0 20px;
+    box-sizing: border-box;
 }
 
-.frs-biolink-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+.frs-biolink-header img:first-of-type {
+    max-width: 200px;
+    height: auto;
+    margin: 0 auto 15px auto;
+    margin-top: 0;
+    display: block;
+    filter: brightness(1) contrast(1);
+    transform: translateY(-10px);
 }
 
-.frs-biolink-button:active {
-    transform: translateY(0);
+.frs-biolink-header img[alt*="headshot"],
+.frs-biolink-header img[src*="avatar"] {
+    width: clamp(120px, 14vw, 150px);
+    height: clamp(120px, 14vw, 150px);
+    border-radius: 50%;
+    margin: 0 auto 5px auto;
+    display: block;
+    border: 4px solid rgba(255,255,255,0.3);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    object-fit: cover;
+    margin-top: 0;
+    transform: translateY(-5px);
+}
+
+.frs-biolink-header h1 {
+    margin: 0 0 5px 0;
+    font-size: 2.2rem;
+    font-weight: bold;
+    color: white;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    font-family: 'Mona Sans Extended', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    transform: translateY(-5px);
+}
+
+.frs-biolink-header p {
+    margin: 0 0 5px 0;
+    font-size: 1.2rem;
+    opacity: 0.95;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+    font-family: 'Mona Sans Extended', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    transform: translateY(-5px);
+}
+
+.frs-biolink-header p:last-child {
+    margin: 0;
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+/* Social Section */
+.frs-biolink-social {
+    padding: 20px;
+    text-align: center;
+    background: white;
+}
+
+.frs-biolink-social > div {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
 }
 
 .frs-biolink-social a {
-    transition: transform 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    text-decoration: none;
+    font-size: 24px;
+    transition: transform 0.2s;
 }
 
 .frs-biolink-social a:hover {
     transform: scale(1.1);
 }
 
-.frs-hidden-form {
-    animation: slideDown 0.3s ease-out;
-}
-
-@keyframes slideDown {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.frs-thank-you-overlay {
-    backdrop-filter: blur(4px);
-}
-
-.frs-biolink-error {
+/* Buttons Section */
+.frs-biolink-buttons {
     padding: 20px;
-    background: #fee;
-    border: 1px solid #f88;
-    border-radius: 4px;
-    color: #a00;
-    text-align: center;
+    background: white;
+    max-width: 400px;
+    margin: 0 auto;
 }
 
-/* Responsive adjustments */
-@media (max-width: 480px) {
-    .frs-biolink-header {
-        min-height: 350px;
-        padding: 30px 0;
-    }
+.frs-biolink-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 15px 20px;
+    margin-bottom: 15px;
+    background: #ffffff;
+    color: #000000;
+    border: 1px solid #ddd;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    width: 100%;
+    cursor: pointer;
+}
 
-    .frs-biolink-buttons {
-        padding: 15px;
-    }
+.frs-biolink-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
 
-    .frs-biolink-social {
-        padding: 15px;
-    }
+.frs-biolink-button.frs-primary {
+    background: #1e3a8a;
+    color: #ffffff;
+    border: none;
+}
+
+.frs-biolink-button span {
+    font-size: 20px;
+}
+
+/* Hidden Forms */
+.frs-hidden-form {
+    margin-top: 15px;
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 10px;
+}
+
+/* Thank You Overlay */
+.frs-thank-you-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.frs-thank-you-overlay > div {
+    background: white;
+    padding: 40px;
+    border-radius: 10px;
+    text-align: center;
+    max-width: 400px;
+    margin: 20px;
+}
+
+.frs-thank-you-overlay h2 {
+    margin: 0 0 15px 0;
+    color: #1e3a8a;
+}
+
+.frs-thank-you-overlay p {
+    margin: 0 0 20px 0;
+    color: #666;
+}
+
+.frs-thank-you-overlay button {
+    background: #1e3a8a;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
 }
