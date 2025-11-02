@@ -34,6 +34,45 @@ class FluentBooking {
 
 		// Create calendar when user role changes to loan_officer
 		add_action( 'set_user_role', array( $this, 'create_calendar_on_role_change' ), 10, 3 );
+
+		// Fix FluentBooking frontend CSS conflicts with Blocksy theme - load EARLY to prevent flash
+		add_action( 'wp_head', array( $this, 'fix_blocksy_css_conflicts' ), 1 ); // Priority 1 (very early)
+		add_action( 'fluent_booking/front_head', array( $this, 'fix_blocksy_css_conflicts' ), 1 );
+	}
+
+	/**
+	 * Fix FluentBooking frontend CSS conflicts with Blocksy theme.
+	 *
+	 * Hides Blocksy drawer canvas that interferes with FluentBooking frontend dashboard.
+	 *
+	 * @return void
+	 */
+	public function fix_blocksy_css_conflicts() {
+		?>
+		<style>
+			/* Fix Blocksy theme drawer canvas conflict with FluentBooking dashboard */
+			html body.fluentboards_page_fluent_booking.sticky-menu div.ct-drawer-canvas div.ct-drawer-inner,
+			html body.fluentboards_page_fluent_booking.sticky-menu div.ct-drawer-canvas div.ct-drawer-inner * {
+				display: none !important;
+				visibility: hidden !important;
+			}
+
+			/* Remove padding/margins from FluentBooking dashboard containers */
+			body.fluent-booking-page,
+			body.fluent-booking-page .fframe_wrapper,
+			body.fluent-booking-page .fframe_app,
+			body.fluent-booking-page .fframe_content,
+			body.fluent-booking-page .container,
+			body.fluent-booking-page .wrap,
+			body.fluent-booking-page > div,
+			#fluent-booking-app,
+			#fluent-booking-app > div {
+				padding: 0 !important;
+				margin: 0 !important;
+				max-width: 100% !important;
+			}
+		</style>
+		<?php
 	}
 
 	/**

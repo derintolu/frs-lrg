@@ -98,7 +98,7 @@ export function FluentBookingCalendar({ userId }: FluentBookingCalendarProps) {
   }
 
   return (
-    <div className="h-full relative">
+    <div className="h-full relative" style={{ marginTop: '-32px' }}>
       {/* Calendar Tour Overlay */}
       {showTour && (
         <CalendarTour
