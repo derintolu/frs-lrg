@@ -103,104 +103,104 @@ ob_start();
 <div class="frs-biolink-page" id="frs-biolink-page-<?php echo esc_attr($user_id); ?>">
 
     <!-- Header Section -->
-    <div class="frs-biolink-header" style="position: relative; padding: 40px 0; text-align: center; color: white; overflow: hidden; min-height: 400px; background: <?php echo $bg_color; ?>; font-family: 'Mona Sans Extended', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+    <div class="frs-biolink-header">
         <!-- Video Background -->
-        <video style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1;" autoplay muted loop playsinline>
+        <video autoplay muted loop playsinline>
             <source src="<?php echo esc_url($bg_video_url); ?>" type="video/mp4">
             Your browser does not support the video tag.
         </video>
 
         <!-- Content -->
-        <div style="position: relative; z-index: 3; max-width: 570px; margin: 0 auto; padding: 10px 20px 0 20px; box-sizing: border-box;">
+        <div>
             <?php if ($company_logo_url): ?>
-                <img src="<?php echo esc_url($company_logo_url); ?>" alt="21st Century Lending" style="max-width: 200px; height: auto; margin: 0 auto 15px auto; margin-top: 0; display: block; filter: brightness(1) contrast(1); transform: translateY(-10px);">
+                <img src="<?php echo esc_url($company_logo_url); ?>" alt="21st Century Lending">
             <?php endif; ?>
 
             <?php if ($logo_url): ?>
-                <img src="<?php echo esc_url($logo_url); ?>" alt="<?php echo esc_attr($name); ?>" style="width: clamp(120px, 14vw, 150px); height: clamp(120px, 14vw, 150px); border-radius: 50%; margin: 0 auto 5px auto; display: block; border: 4px solid rgba(255,255,255,0.3); box-shadow: 0 4px 20px rgba(0,0,0,0.3); object-fit: cover; margin-top: 0; transform: translateY(-5px);">
+                <img src="<?php echo esc_url($logo_url); ?>" alt="<?php echo esc_attr($name); ?>">
             <?php endif; ?>
 
             <?php if ($name): ?>
-                <h1 style="margin: 0 0 5px 0; font-size: 2.2rem; font-weight: bold; color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.5); font-family: 'Mona Sans Extended', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; transform: translateY(-5px);"><?php echo esc_html($name); ?></h1>
+                <h1><?php echo esc_html($name); ?></h1>
             <?php endif; ?>
 
             <?php if ($title): ?>
-                <p style="margin: 0 0 5px 0; font-size: 1.2rem; opacity: 0.95; text-shadow: 0 1px 2px rgba(0,0,0,0.5); font-family: 'Mona Sans Extended', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; transform: translateY(-5px);"><?php echo esc_html($title); ?></p>
+                <p><?php echo esc_html($title); ?></p>
             <?php endif; ?>
 
             <?php if ($company): ?>
-                <p style="margin: 0; font-size: 1.1rem; opacity: 0.9; text-shadow: 0 1px 2px rgba(0,0,0,0.5); font-family: 'Mona Sans Extended', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; transform: translateY(-5px);"><?php echo esc_html($company); ?></p>
+                <p><?php echo esc_html($company); ?></p>
             <?php endif; ?>
         </div>
     </div>
 
     <!-- Social Media Section -->
-    <div class="frs-biolink-social" style="padding: 20px; text-align: center; background: white;">
-        <div style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
-            <a href="mailto:<?php echo esc_attr($email); ?>" style="display: inline-flex; align-items: center; justify-content: center; width: 50px; height: 50px; background: #4a90e2; color: white; border-radius: 50%; text-decoration: none; font-size: 24px; transition: transform 0.2s;">📧</a>
-            <a href="#" style="display: inline-flex; align-items: center; justify-content: center; width: 50px; height: 50px; background: #3b5998; color: white; border-radius: 50%; text-decoration: none; font-size: 24px; transition: transform 0.2s;">📘</a>
-            <a href="#" style="display: inline-flex; align-items: center; justify-content: center; width: 50px; height: 50px; background: #e4405f; color: white; border-radius: 50%; text-decoration: none; font-size: 24px; transition: transform 0.2s;">📷</a>
-            <a href="#" style="display: inline-flex; align-items: center; justify-content: center; width: 50px; height: 50px; background: #0077b5; color: white; border-radius: 50%; text-decoration: none; font-size: 24px; transition: transform 0.2s;">💼</a>
+    <div class="frs-biolink-social">
+        <div>
+            <a href="mailto:<?php echo esc_attr($email); ?>">📧</a>
+            <a href="#">📘</a>
+            <a href="#">📷</a>
+            <a href="#">💼</a>
         </div>
     </div>
 
     <!-- Action Buttons Section -->
-    <div class="frs-biolink-buttons" style="padding: 20px; background: white; max-width: 400px; margin: 0 auto;">
+    <div class="frs-biolink-buttons">
 
         <!-- Call Me Now Button -->
         <?php if ($phone_url): ?>
-        <a href="<?php echo esc_url($phone_url); ?>" class="frs-biolink-button" style="display: flex; align-items: center; justify-content: center; gap: 10px; padding: 15px 20px; margin-bottom: 15px; background: #ffffff; color: #000000; border: 1px solid #ddd; border-radius: 25px; text-decoration: none; font-weight: 500; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-            <span style="font-size: 20px;">📞</span>
+        <a href="<?php echo esc_url($phone_url); ?>" class="frs-biolink-button">
+            <span>📞</span>
             <?php _e('Call Me Now', 'lending-resource-hub'); ?>
         </a>
         <?php endif; ?>
 
         <!-- Schedule Appointment Button -->
-        <div class="frs-biolink-button-with-form" style="margin-bottom: 15px;">
-            <button onclick="showForm('appointment')" class="frs-biolink-button" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 15px 20px; background: #ffffff; color: #000000; border: 1px solid #ddd; border-radius: 25px; font-weight: 500; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                <span style="font-size: 20px;">📅</span>
+        <div class="frs-biolink-button-with-form">
+            <button onclick="showForm('appointment')" class="frs-biolink-button">
+                <span>📅</span>
                 <?php _e('Schedule Appointment', 'lending-resource-hub'); ?>
             </button>
 
             <!-- Hidden Form Container -->
-            <div id="form-appointment" class="frs-hidden-form" style="display: none; margin-top: 15px; padding: 20px; background: #f9f9f9; border-radius: 10px;">
+            <div id="form-appointment" class="frs-hidden-form">
                 <?php echo do_shortcode('[fluentform id="7"]'); ?>
             </div>
         </div>
 
         <!-- Get Pre-Approved Button -->
         <?php if ($arrive_link): ?>
-        <a href="<?php echo esc_url($arrive_link); ?>" target="_blank" class="frs-biolink-button frs-primary" style="display: flex; align-items: center; justify-content: center; gap: 10px; padding: 15px 20px; margin-bottom: 15px; background: #1e3a8a; color: #ffffff; border: none; border-radius: 25px; text-decoration: none; font-weight: 500; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-            <span style="font-size: 20px;">✅</span>
+        <a href="<?php echo esc_url($arrive_link); ?>" target="_blank" class="frs-biolink-button frs-primary">
+            <span>✅</span>
             <?php _e('Get Pre-Approved', 'lending-resource-hub'); ?>
         </a>
         <?php else: ?>
-        <div class="frs-biolink-button" style="display: flex; align-items: center; justify-content: center; gap: 10px; padding: 15px 20px; margin-bottom: 15px; background: #f5f5f5; color: #999; border: 1px solid #ddd; border-radius: 25px; font-weight: 500;">
-            <span style="font-size: 20px;">✅</span>
+        <div class="frs-biolink-button">
+            <span>✅</span>
             <?php _e('Get Pre-Approved', 'lending-resource-hub'); ?>
         </div>
         <?php endif; ?>
 
         <!-- Free Rate Quote Button -->
-        <div class="frs-biolink-button-with-form" style="margin-bottom: 15px;">
-            <button onclick="showForm('rate_quote')" class="frs-biolink-button" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 15px 20px; background: #ffffff; color: #000000; border: 1px solid #ddd; border-radius: 25px; font-weight: 500; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                <span style="font-size: 20px;">🧮</span>
+        <div class="frs-biolink-button-with-form">
+            <button onclick="showForm('rate_quote')" class="frs-biolink-button">
+                <span>🧮</span>
                 <?php _e('Free Rate Quote', 'lending-resource-hub'); ?>
             </button>
 
             <!-- Hidden Form Container -->
-            <div id="form-rate_quote" class="frs-hidden-form" style="display: none; margin-top: 15px; padding: 20px; background: #f9f9f9; border-radius: 10px;">
+            <div id="form-rate_quote" class="frs-hidden-form">
                 <?php echo do_shortcode('[fluentform id="6"]'); ?>
             </div>
         </div>
     </div>
 
     <!-- Thank You Overlay (Hidden by default) -->
-    <div id="frs-thank-you-overlay" class="frs-thank-you-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; display: flex; align-items: center; justify-content: center;">
-        <div style="background: white; padding: 40px; border-radius: 10px; text-align: center; max-width: 400px; margin: 20px;">
-            <h2 style="margin: 0 0 15px 0; color: #1e3a8a;"><?php _e('Thank You!', 'lending-resource-hub'); ?></h2>
-            <p style="margin: 0 0 20px 0; color: #666;"><?php _e('Your submission has been received. I will get back to you within 24 hours.', 'lending-resource-hub'); ?></p>
-            <button onclick="hideThankYou()" style="background: #1e3a8a; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;"><?php _e('Close', 'lending-resource-hub'); ?></button>
+    <div id="frs-thank-you-overlay" class="frs-thank-you-overlay">
+        <div>
+            <h2><?php _e('Thank You!', 'lending-resource-hub'); ?></h2>
+            <p><?php _e('Your submission has been received. I will get back to you within 24 hours.', 'lending-resource-hub'); ?></p>
+            <button onclick="hideThankYou()"><?php _e('Close', 'lending-resource-hub'); ?></button>
         </div>
     </div>
 </div>
