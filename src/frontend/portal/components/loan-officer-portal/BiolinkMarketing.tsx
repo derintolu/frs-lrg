@@ -33,8 +33,18 @@ export function BiolinkMarketing({ userId, currentUser }: BiolinkMarketingProps)
   });
   const [isLoadingBiolinkStats, setIsLoadingBiolinkStats] = useState(true);
 
-  // Get biolink URL for preview
-  const userSlug = currentUser.name.split(' ')[0].toLowerCase();
+  // Get biolink URL for preview - sanitize first name to match WordPress sanitize_title()
+  const sanitizeSlug = (text: string) => {
+    return text
+      .toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, '') // Remove special characters
+      .replace(/\s+/g, '-') // Replace spaces with hyphens
+      .replace(/-+/g, '-') // Replace multiple hyphens with single
+      .replace(/^-+|-+$/g, ''); // Trim hyphens from start/end
+  };
+
+  const firstName = currentUser.name.split(' ')[0];
+  const userSlug = sanitizeSlug(firstName);
   const biolinkUrl = `${window.location.origin}/${userSlug}`;
 
   // Recent leads from biolink
@@ -248,8 +258,8 @@ export function BiolinkMarketing({ userId, currentUser }: BiolinkMarketingProps)
                   className="rounded-[60px] p-[2px] relative"
                   style={{
                     background: 'linear-gradient(135deg, #2563eb 0%, #2dd4da 100%)',
-                    width: '359px',
-                    height: '776px',
+                    width: '320px',
+                    height: '640px',
                     boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
                   }}
                 >

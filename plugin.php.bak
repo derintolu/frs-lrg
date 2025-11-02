@@ -3,12 +3,12 @@ use LendingResourceHub\Core\Api;
 use LendingResourceHub\Core\Shortcode;
 use LendingResourceHub\Core\PostTypes;
 use LendingResourceHub\Core\Redirects;
+use LendingResourceHub\Core\BiolinkBlocks;
 use LendingResourceHub\Admin\Menu;
 use LendingResourceHub\Core\Template;
 use LendingResourceHub\Assets\Frontend;
 // use LendingResourceHub\Assets\Admin; // Not needed - admin uses PHP templates, not React
 use LendingResourceHub\Integrations\FluentBooking;
-use LendingResourceHub\Controllers\Biolinks\Blocks;
 use LendingResourceHub\Traits\Base;
 
 defined( 'ABSPATH' ) || exit;
@@ -61,13 +61,26 @@ final class LendingResourceHub {
 		Template::get_instance()->init();
 		Shortcode::get_instance()->init();
 		PostTypes::get_instance()->init();
-		Redirects::get_instance()->init();
-		Blocks::get_instance()->init();
+		BiolinkBlocks::get_instance()->init();
+		// Redirects::get_instance()->init(); // Disabled - old plugin had this commented out
 
 		// Initialize integrations
 		FluentBooking::get_instance()->init();
 
 		add_action( 'init', array( $this, 'i18n' ) );
+		add_action( 'init', array( $this, 'register_blocks' ) );
+	}
+
+	public function register_blocks() {
+		register_block_type( __DIR__ . '/assets/blocks/block-1' );
+
+		// Register biolink block with render callback
+		register_block_type(
+			__DIR__ . '/blocks/biolink-page',
+			array(
+				'render_callback' => array( BiolinkBlocks::get_instance(), 'render_biolink_page_block' ),
+			)
+		);
 	}
 
 

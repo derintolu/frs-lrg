@@ -1,0 +1,27 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "lrh/biolink-social",
+	"version": "1.0.0",
+	"title": "Biolink Social Links",
+	"category": "frs-biolink",
+	"description": "Social media links for biolink pages",
+	"keywords": ["biolink", "social", "links", "media"],
+	"textdomain": "lending-resource-hub",
+	"editorScript": "file:./edit.js",
+	"attributes": {
+		"links": {
+			"type": "array",
+			"default": []
+		},
+		"layout": {
+			"type": "string",
+			"default": "horizontal"
+		}
+	},
+	"supports": {
+		"html": false,
+		"customClassName": false
+	},
+	"example": {}
+}

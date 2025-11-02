@@ -1,0 +1,25 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "lrh/prequal-subheading",
+    "version": "1.0.0",
+    "title": "Prequal Subheading",
+    "category": "frs-blocks",
+    "description": "Edit the subheading for the pre-qualification page",
+    "supports": {
+        "html": false,
+        "multiple": false,
+        "reusable": false
+    },
+    "attributes": {
+        "subheading": {
+            "type": "string",
+            "source": "meta",
+            "meta": "_frs_prequal_subheading",
+            "default": "Get pre-qualified in minutes with our streamlined process."
+        }
+    },
+    "textdomain": "lending-resource-hub",
+    "editorScript": "file:./index.js",
+    "render": "file:./render.php"
+}

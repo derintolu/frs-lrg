@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+the import React, { useState } from 'react';
 import { Home, Calculator, Shield, Star, Users, TrendingDown, Clock, CheckCircle, ArrowRight, Phone, Mail } from 'lucide-react';
 
 const MortgageLandingPages = () => {
@@ -163,11 +163,11 @@ const MortgageLandingPages = () => {
     const [price, setPrice] = useState(350000);
     const [down, setDown] = useState(70000);
     const [rate, setRate] = useState(6.5);
-    
+
     const loanAmount = price - down;
     const monthlyRate = rate / 100 / 12;
     const numPayments = 360; // 30 years
-    const monthlyPayment = (loanAmount * monthlyRate * Math.pow(1 + monthlyRate, numPayments)) / 
+    const monthlyPayment = (loanAmount * monthlyRate * Math.pow(1 + monthlyRate, numPayments)) /
                           (Math.pow(1 + monthlyRate, numPayments) - 1);
 
     return (
@@ -181,11 +181,11 @@ const MortgageLandingPages = () => {
             <div className="space-y-6">
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">Home Price</label>
-                <input 
-                  type="range" 
-                  min="100000" 
-                  max="1000000" 
-                  step="10000" 
+                <input
+                  type="range"
+                  min="100000"
+                  max="1000000"
+                  step="10000"
                   value={price}
                   onChange={(e) => setPrice(Number(e.target.value))}
                   className="w-full"
@@ -194,11 +194,11 @@ const MortgageLandingPages = () => {
               </div>
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">Down Payment</label>
-                <input 
-                  type="range" 
-                  min="0" 
-                  max={price * 0.5} 
-                  step="5000" 
+                <input
+                  type="range"
+                  min="0"
+                  max={price * 0.5}
+                  step="5000"
                   value={down}
                   onChange={(e) => setDown(Number(e.target.value))}
                   className="w-full"
@@ -207,11 +207,11 @@ const MortgageLandingPages = () => {
               </div>
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">Interest Rate</label>
-                <input 
-                  type="range" 
-                  min="3" 
-                  max="10" 
-                  step="0.125" 
+                <input
+                  type="range"
+                  min="3"
+                  max="10"
+                  step="0.125"
                   value={rate}
                   onChange={(e) => setRate(Number(e.target.value))}
                   className="w-full"
@@ -235,7 +235,7 @@ const MortgageLandingPages = () => {
   // Multi-Step Form Component
   const MultiStepForm = ({ formType }) => {
     const isRateQuote = formType.includes('rate-quote');
-    
+
     const renderStep = () => {
       switch(formStep) {
         case 1:
@@ -280,7 +280,7 @@ const MortgageLandingPages = () => {
                   )}
                 </div>
               </div>
-              <button 
+              <button
                 onClick={() => setFormStep(2)}
                 className="w-full bg-blue-600 text-white py-4 rounded-lg font-semibold text-lg hover:bg-blue-700 transition"
               >
@@ -316,13 +316,13 @@ const MortgageLandingPages = () => {
                 </div>
               </div>
               <div className="flex gap-4">
-                <button 
+                <button
                   onClick={() => setFormStep(1)}
                   className="flex-1 border-2 border-gray-300 text-gray-700 py-4 rounded-lg font-semibold hover:bg-gray-50 transition"
                 >
                   Back
                 </button>
-                <button 
+                <button
                   onClick={() => setFormStep(3)}
                   className="flex-1 bg-blue-600 text-white py-4 rounded-lg font-semibold hover:bg-blue-700 transition"
                 >
@@ -371,19 +371,19 @@ const MortgageLandingPages = () => {
                 <div className="flex items-start gap-3">
                   <CheckCircle className="text-blue-600 mt-1" size={20} />
                   <div className="text-sm text-gray-700">
-                    By submitting, you agree to receive calls and texts about your mortgage inquiry. 
+                    By submitting, you agree to receive calls and texts about your mortgage inquiry.
                     Your information is secure and will never be sold.
                   </div>
                 </div>
               </div>
               <div className="flex gap-4">
-                <button 
+                <button
                   onClick={() => setFormStep(2)}
                   className="flex-1 border-2 border-gray-300 text-gray-700 py-4 rounded-lg font-semibold hover:bg-gray-50 transition"
                 >
                   Back
                 </button>
-                <button 
+                <button
                   className="flex-1 bg-green-600 text-white py-4 rounded-lg font-semibold hover:bg-green-700 transition flex items-center justify-center gap-2"
                 >
                   {isRateQuote ? "Get My Personalized Rate Quote" : "Submit My Application"}
@@ -408,13 +408,13 @@ const MortgageLandingPages = () => {
                 <span className="text-sm font-semibold text-blue-600">{Math.round((formStep/3)*100)}% Complete</span>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-2">
-                <div 
+                <div
                   className="bg-blue-600 h-2 rounded-full transition-all duration-300"
                   style={{width: `${(formStep/3)*100}%`}}
                 ></div>
               </div>
             </div>
-            
+
             {renderStep()}
           </div>
         </div>
@@ -509,12 +509,12 @@ const MortgageLandingPages = () => {
         </div>
         <div className="border-t border-gray-700 pt-8 text-sm text-gray-400">
           <p className="mb-4">
-            © 2025 21st Century Lending. All rights reserved. Licensed by the Department of Financial Protection 
+            © 2025 21st Century Lending. All rights reserved. Licensed by the Department of Financial Protection
             and Innovation under the California Residential Mortgage Lending Act. NMLS Consumer Access.
           </p>
           <p className="text-xs">
-            This is not a commitment to lend. All loans subject to credit approval. Rates, program terms and 
-            conditions are subject to change without notice. Not all products are available in all states or for 
+            This is not a commitment to lend. All loans subject to credit approval. Rates, program terms and
+            conditions are subject to change without notice. Not all products are available in all states or for
             all amounts. Other restrictions and limitations apply.
           </p>
         </div>
@@ -549,7 +549,7 @@ const MortgageLandingPages = () => {
 
     return (
       <>
-        <HeroSection 
+        <HeroSection
           title={heroContent[activePage].title}
           subtitle={heroContent[activePage].subtitle}
           isCoBranded={isCoBranded}
@@ -571,7 +571,7 @@ const MortgageLandingPages = () => {
         <div className="max-w-6xl mx-auto">
           <div className="flex items-center justify-between mb-4">
             <h1 className="text-xl font-bold">Landing Page Mockups - 21st Century Lending</h1>
-            <button 
+            <button
               onClick={() => setFormStep(1)}
               className="bg-blue-600 px-4 py-2 rounded text-sm hover:bg-blue-700"
             >
@@ -587,8 +587,8 @@ const MortgageLandingPages = () => {
                   setFormStep(1);
                 }}
                 className={`px-4 py-2 rounded font-medium transition ${
-                  activePage === page.id 
-                    ? 'bg-blue-600 text-white' 
+                  activePage === page.id
+                    ? 'bg-blue-600 text-white'
                     : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
                 }`}
               >
