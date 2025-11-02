@@ -241,17 +241,15 @@ class Blocks {
 
 		ob_start();
 		?>
-		<div class="lrh-biolink-social" style="text-align: center; padding: 10px 0; background: white;">
-			<div style="max-width: 570px; margin: 0 auto; padding: 0 15px; box-sizing: border-box;">
-				<div style="display: flex; justify-content: center; align-items: center; gap: 15px; flex-wrap: wrap;">
-					<?php foreach ( $links as $link ) : ?>
-						<?php if ( ! empty( $link['url'] ) && $link['url'] !== '#' ) : ?>
-							<a href="<?php echo esc_url( $link['url'] ); ?>" target="_blank" rel="noopener noreferrer" style="display: flex; align-items: center; justify-content: center; width: 50px; height: 50px; background: white; border-radius: 6px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); text-decoration: none; transition: transform 0.2s;">
-								<?php echo $this->get_social_icon( $link['platform'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-							</a>
-						<?php endif; ?>
-					<?php endforeach; ?>
-				</div>
+		<div class="lrh-biolink-social" style="text-align: center; background: white; padding: 15px;">
+			<div style="display: flex; justify-content: center; align-items: center; gap: 15px; flex-wrap: wrap;">
+				<?php foreach ( $links as $link ) : ?>
+					<?php if ( ! empty( $link['url'] ) && $link['url'] !== '#' ) : ?>
+						<a href="<?php echo esc_url( $link['url'] ); ?>" target="_blank" rel="noopener noreferrer" style="display: flex; align-items: center; justify-content: center; width: 50px; height: 50px; background: white; border-radius: 6px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); text-decoration: none; transition: transform 0.2s;">
+							<?php echo $this->get_social_icon( $link['platform'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+						</a>
+					<?php endif; ?>
+				<?php endforeach; ?>
 			</div>
 		</div>
 		<?php
@@ -327,13 +325,11 @@ class Blocks {
 	private function render_button( $text, $url, $icon ) {
 		ob_start();
 		?>
-		<div class="lrh-biolink-button" style="padding: 8px 0; background: white;">
-			<div style="max-width: 570px; margin: 0 auto; padding: 0 15px; box-sizing: border-box;">
-				<a href="<?php echo esc_url( $url ); ?>" style="display: flex; align-items: center; justify-content: center; gap: 12px; background: linear-gradient(145deg, #f8f9fa, #e9ecef); color: #212529; text-decoration: none; padding: 18px 32px; border-radius: 12px; box-shadow: 0 8px 16px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04); font-size: 17.6px; font-weight: 500; transition: all 0.3s ease; border: 1px solid rgba(255,255,255,0.8);" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 12px 24px rgba(0,0,0,0.12), 0 4px 8px rgba(0,0,0,0.06)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 16px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04)'">
-					<?php echo $this->get_action_icon( $icon ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-					<span><?php echo esc_html( $text ); ?></span>
-				</a>
-			</div>
+		<div class="lrh-biolink-button" style="background: white; padding: 0 15px; box-sizing: border-box;">
+			<a href="<?php echo esc_url( $url ); ?>" style="display: flex; align-items: center; justify-content: center; gap: 12px; background: linear-gradient(145deg, #f8f9fa, #e9ecef); color: #212529; text-decoration: none; padding: 18px 32px; margin-bottom: 8px; border-radius: 12px; box-shadow: 0 8px 16px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04); font-size: 17.6px; font-weight: 500; transition: all 0.3s ease; border: 1px solid rgba(255,255,255,0.8);" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 12px 24px rgba(0,0,0,0.12), 0 4px 8px rgba(0,0,0,0.06)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 16px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04)'">
+				<?php echo $this->get_action_icon( $icon ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+				<span><?php echo esc_html( $text ); ?></span>
+			</a>
 		</div>
 		<?php
 		return ob_get_clean();
