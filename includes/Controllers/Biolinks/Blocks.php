@@ -51,13 +51,8 @@ class Blocks {
 	 * @return void
 	 */
 	public function register_blocks() {
-		// Register single dynamic biolink page block
-		register_block_type(
-			LRH_DIR . 'blocks/biolink-page/block.json',
-			array(
-				'render_callback' => array( $this, 'render_biolink_page_block' ),
-			)
-		);
+		// Register single dynamic biolink page block - uses render.php from blocks directory
+		register_block_type( LRH_DIR . 'blocks/biolink-page/block.json' );
 	}
 
 	/**
@@ -114,18 +109,8 @@ class Blocks {
 			'arrive'  => $profile->arrive,
 		);
 
-		// Render all biolink sections
-		$output  = $this->render_header_block( $user_data );
-		$output .= $this->render_social_block( $user_data );
-		$output .= $this->render_call_button( $user_data );
-		$output .= $this->render_schedule_button();
-		$output .= $this->render_schedule_form(); // Hidden form - Form ID: 7
-		$output .= $this->render_preapproval_button( $user_data );
-		$output .= $this->render_ratequote_button();
-		$output .= $this->render_ratequote_form(); // Hidden form - Form ID: 6
-		$output .= $this->render_thankyou_block( $user_data );
-
-		return $output;
+		// Render complete biolink page using legacy styling
+		return $this->render_all_sections( $user_data );
 	}
 
 	/**
@@ -185,37 +170,109 @@ class Blocks {
 	}
 
 	/**
-	 * Render header block with video background.
+	 * Render complete biolink page content.
 	 *
 	 * @param array $user_data User data array.
 	 * @return string Rendered HTML.
 	 */
-	private function render_header_block( $user_data ) {
+	private function render_all_sections( $user_data ) {
 		$video_url  = LRH_URL . 'assets/images/Blue-Dark-Blue-Gradient-Color-and-Style-Video-Background-1.mp4';
 		$logo_url   = LRH_URL . 'assets/images/21C-Wordmark-White.svg';
-		$bg_color   = 'linear-gradient(135deg, #1e3a8a 0%, #2563eb 50%, #2dd4da 100%)';
+		$bg_color   = 'linear-gradient(135deg, #000000 43%, #180a62 154%)';
 
 		ob_start();
 		?>
-		<div class="lrh-biolink-header" style="position: relative; padding: 40px 0; text-align: center; color: white; overflow: hidden; min-height: 400px; background: <?php echo esc_attr( $bg_color ); ?>; font-family: 'Mona Sans Extended', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
-			<!-- Video Background -->
+		<!-- Header Section -->
+		<div class="frs-biolink-header" style="position: relative; padding: 40px 0; text-align: center; color: white; overflow: hidden; min-height: 400px; background: <?php echo $bg_color; ?>; font-family: 'Mona Sans Extended', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
 			<video style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1;" autoplay muted loop playsinline>
 				<source src="<?php echo esc_url( $video_url ); ?>" type="video/mp4">
 			</video>
 
-			<!-- Content -->
 			<div style="position: relative; z-index: 3; max-width: 570px; margin: 0 auto; padding: 10px 20px 0 20px; box-sizing: border-box;">
-				<img src="<?php echo esc_url( $logo_url ); ?>" alt="21st Century Lending" style="max-width: 200px; height: auto; margin: 0 auto 15px auto; display: block; transform: translateY(-10px);">
+				<img src="<?php echo esc_url( $logo_url ); ?>" alt="21st Century Lending" style="max-width: 200px; height: auto; margin: 0 auto 15px auto; margin-top: 0; display: block; filter: brightness(1) contrast(1); transform: translateY(-10px);">
 
 				<?php if ( $user_data['avatar'] ) : ?>
-					<img src="<?php echo esc_url( $user_data['avatar'] ); ?>" alt="<?php echo esc_attr( $user_data['name'] ); ?>" style="width: clamp(120px, 14vw, 150px); height: clamp(120px, 14vw, 150px); border-radius: 50%; margin: 0 auto 5px auto; display: block; border: 4px solid rgba(255,255,255,0.3); box-shadow: 0 4px 20px rgba(0,0,0,0.3); object-fit: cover; transform: translateY(-5px);">
+					<img src="<?php echo esc_url( $user_data['avatar'] ); ?>" alt="<?php echo esc_attr( $user_data['name'] ); ?>" style="width: clamp(120px, 14vw, 150px); height: clamp(120px, 14vw, 150px); border-radius: 50%; margin: 0 auto 5px auto; display: block; border: 4px solid rgba(255,255,255,0.3); box-shadow: 0 4px 20px rgba(0,0,0,0.3); object-fit: cover; margin-top: 0; transform: translateY(-5px);">
 				<?php endif; ?>
 
-				<h1 style="margin: 0 0 5px 0; font-size: 2.2rem; font-weight: bold; color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.5); transform: translateY(-5px);"><?php echo esc_html( $user_data['name'] ); ?></h1>
-				<p style="margin: 0 0 5px 0; font-size: 1.2rem; opacity: 0.95; text-shadow: 0 1px 2px rgba(0,0,0,0.5); transform: translateY(-5px);"><?php echo esc_html( $user_data['title'] ); ?></p>
-				<p style="margin: 0; font-size: 1.1rem; opacity: 0.9; text-shadow: 0 1px 2px rgba(0,0,0,0.5); transform: translateY(-5px);"><?php echo esc_html( $user_data['company'] ); ?></p>
+				<h1 style="margin: 0 0 5px 0; font-size: 2.2rem; font-weight: bold; color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.5); font-family: 'Mona Sans Extended', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; transform: translateY(-5px);"><?php echo esc_html( $user_data['name'] ); ?></h1>
+				<p style="margin: 0 0 5px 0; font-size: 1.2rem; opacity: 0.95; text-shadow: 0 1px 2px rgba(0,0,0,0.5); font-family: 'Mona Sans Extended', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; transform: translateY(-5px);"><?php echo esc_html( $user_data['title'] ); ?></p>
+				<p style="margin: 0; font-size: 1.1rem; opacity: 0.9; text-shadow: 0 1px 2px rgba(0,0,0,0.5); font-family: 'Mona Sans Extended', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; transform: translateY(-5px);"><?php echo esc_html( $user_data['company'] ); ?></p>
 			</div>
 		</div>
+
+		<!-- Social Media Section -->
+		<div class="frs-biolink-social" style="padding: 20px; text-align: center; background: white;">
+			<div style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
+				<a href="mailto:<?php echo esc_attr( $user_data['email'] ); ?>" style="display: inline-flex; align-items: center; justify-content: center; width: 50px; height: 50px; background: white; border-radius: 6px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); text-decoration: none; transition: transform 0.2s;">
+					<?php echo $this->get_social_icon( 'email' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+				</a>
+			</div>
+		</div>
+
+		<!-- Action Buttons Section -->
+		<div class="frs-biolink-buttons" style="padding: 20px; background: white; max-width: 400px; margin: 0 auto;">
+			<?php
+			$phone_url = ! empty( $user_data['phone'] ) ? 'tel:' . preg_replace( '/[^0-9+]/', '', $user_data['phone'] ) : '';
+			if ( $phone_url ) :
+			?>
+			<a href="<?php echo esc_url( $phone_url ); ?>" class="frs-biolink-button" style="display: flex; align-items: center; justify-content: center; gap: 10px; padding: 15px 20px; margin-bottom: 15px; background: #ffffff; color: #000000; border: 1px solid #ddd; border-radius: 25px; text-decoration: none; font-weight: 500; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+				<?php echo $this->get_action_icon( 'phone' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+				<span><?php _e( 'Call Me Now', 'lending-resource-hub' ); ?></span>
+			</a>
+			<?php endif; ?>
+
+			<button onclick="showForm('scheduling')" class="frs-biolink-button" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 15px 20px; margin-bottom: 15px; background: #ffffff; color: #000000; border: 1px solid #ddd; border-radius: 25px; font-weight: 500; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+				<?php echo $this->get_action_icon( 'calendar' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+				<span><?php _e( 'Schedule Appointment', 'lending-resource-hub' ); ?></span>
+			</button>
+
+			<?php if ( $user_data['arrive'] ) : ?>
+			<a href="<?php echo esc_url( $user_data['arrive'] ); ?>" target="_blank" class="frs-biolink-button frs-primary" style="display: flex; align-items: center; justify-content: center; gap: 10px; padding: 15px 20px; margin-bottom: 15px; background: #1e3a8a; color: #ffffff; border: none; border-radius: 25px; text-decoration: none; font-weight: 500; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+				<?php echo $this->get_action_icon( 'check-circle' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+				<span><?php _e( 'Get Pre-Approved', 'lending-resource-hub' ); ?></span>
+			</a>
+			<?php endif; ?>
+
+			<button onclick="showForm('rate-quote')" class="frs-biolink-button" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 15px 20px; margin-bottom: 15px; background: #ffffff; color: #000000; border: 1px solid #ddd; border-radius: 25px; font-weight: 500; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+				<?php echo $this->get_action_icon( 'calculator' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+				<span><?php _e( 'Free Rate Quote', 'lending-resource-hub' ); ?></span>
+			</button>
+		</div>
+
+		<!-- Hidden Form: Schedule Appointment -->
+		<div id="scheduling" data-form-id="7" style="display: none; padding: 20px; background: white;">
+			<div style="width: 100%; max-width: 600px; margin: 0 auto;">
+				<h2 style="color: #333; margin-bottom: 30px; text-align: center; font-size: 28px;"><?php _e( 'Schedule Appointment', 'lending-resource-hub' ); ?></h2>
+				<?php
+				if ( function_exists( 'wpFluentForm' ) ) {
+					echo do_shortcode( '[fluentform type="conversational" id="7"]' );
+				}
+				?>
+			</div>
+		</div>
+
+		<!-- Hidden Form: Rate Quote -->
+		<div id="rate-quote" data-form-id="6" style="display: none; padding: 20px; background: white;">
+			<div style="width: 100%; max-width: 600px; margin: 0 auto;">
+				<h2 style="color: #333; margin-bottom: 30px; text-align: center; font-size: 28px;"><?php _e( 'Free Rate Quote', 'lending-resource-hub' ); ?></h2>
+				<?php
+				if ( function_exists( 'wpFluentForm' ) ) {
+					echo do_shortcode( '[fluentform type="conversational" id="6"]' );
+				}
+				?>
+			</div>
+		</div>
+
+		<script>
+		function showForm(formType) {
+			const form = document.getElementById(formType);
+			if (form) {
+				form.style.display = 'block';
+				form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+			}
+		}
+		</script>
 		<?php
 		return ob_get_clean();
 	}
