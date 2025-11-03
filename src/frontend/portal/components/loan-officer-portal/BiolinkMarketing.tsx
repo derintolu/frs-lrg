@@ -253,19 +253,19 @@ export function BiolinkMarketing({ userId, currentUser }: BiolinkMarketingProps)
                 <Globe className="h-4 w-4" style={{ color: 'var(--brand-steel-blue)' }} />
               </div>
               <div className="flex items-center justify-center flex-1">
-                {/* Gradient Border Container - Wider and Taller */}
+                {/* Gradient Border Container */}
                 <div
                   className="rounded-[60px] p-[2px] relative"
                   style={{
                     background: 'linear-gradient(135deg, #2563eb 0%, #2dd4da 100%)',
-                    width: '480px',
-                    height: '900px',
+                    width: '320px',
+                    height: '640px',
                     boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
                   }}
                 >
                   {/* iPhone Mockup */}
                   <div className="bg-black rounded-[59px] p-2.5 relative w-full h-full">
-                    <div className="w-full h-full bg-white rounded-[50px] overflow-y-scroll overflow-x-hidden relative scrollbar-hide">
+                    <div className="w-full h-full bg-white rounded-[50px] overflow-hidden relative">
                       {/* Dynamic Island */}
                       <div
                         className="absolute top-[15px] left-1/2 -translate-x-1/2 bg-black rounded-[18.5px] z-10"
@@ -278,9 +278,9 @@ export function BiolinkMarketing({ userId, currentUser }: BiolinkMarketingProps)
                           src={`${biolinkUrl}?preview=1&t=${Date.now()}`}
                           className="border-0 absolute inset-0"
                           style={{
-                            width: '100%',
-                            height: '150%',
-                            transform: 'scale(1)',
+                            width: '125%',
+                            height: '125%',
+                            transform: 'scale(0.8)',
                             transformOrigin: 'top center'
                           }}
                           title="Biolink Preview"
