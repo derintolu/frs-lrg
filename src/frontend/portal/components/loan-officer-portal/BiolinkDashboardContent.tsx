@@ -535,8 +535,8 @@ export function BiolinkDashboard({ userId, currentUser: initialUser }: BiolinkDa
         </Card>
       </div>
 
-      {/* Biolink Preview - Second (Takes 2 columns) */}
-      <div className="lg:col-span-2">
+      {/* Biolink Preview - Full Width */}
+      <div className="lg:col-span-3">
         <Card className="shadow-lg border-l-4 rounded-lg border-l-blue-500">
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-2">
@@ -575,16 +575,16 @@ export function BiolinkDashboard({ userId, currentUser: initialUser }: BiolinkDa
                 </div>
               </div>
             </div>
-            <div className="flex justify-center py-6">
-              <div className="relative">
-                {/* Full Size Phone Frame with scrolled view */}
-                <div className="w-96 h-auto bg-black rounded-[3rem] p-2 shadow-2xl">
-                  <div className="w-full h-full bg-white rounded-[2.5rem] overflow-hidden">
+            <div className="py-6">
+              <div className="relative w-full flex justify-center">
+                {/* Phone Frame - wider viewport, less zoom */}
+                <div className="w-full max-w-[600px] h-[900px] bg-black rounded-[3rem] p-3 shadow-2xl">
+                  <div className="w-full h-full bg-white rounded-[2.5rem] overflow-y-scroll scrollbar-hide">
                     <iframe
                       key={previewKey}
                       src={`${biolinkUrl}?preview=1&t=${Date.now()}`}
                       className="w-full border-0"
-                      style={{ height: 'calc(100% + 205px)', marginTop: '-105px' }}
+                      style={{ height: '1400px', minHeight: '1400px' }}
                       title="Biolink Preview"
                     />
                   </div>

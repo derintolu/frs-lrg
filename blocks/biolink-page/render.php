@@ -131,7 +131,7 @@ ob_start();
 
 
     <!-- Content -->
-    <div style="position: relative; z-index: 3; max-width: 570px; margin: 0 auto; padding: 10px 20px 0 20px; box-sizing: border-box;">
+    <div style="position: relative; z-index: 3; width: 100%; margin: 0 auto; padding: 10px 0 0 0; box-sizing: border-box;">
         <?php if ($company_logo_url): ?>
             <img src="<?php echo esc_url($company_logo_url); ?>" alt="21st Century Lending" style="max-width: 200px; height: auto; margin: 0 auto 15px auto; margin-top: 0; display: block; filter: brightness(1) contrast(1); transform: translateY(-10px);">
         <?php endif; ?>
@@ -156,7 +156,7 @@ ob_start();
 
 <!-- Social Media Section -->
 <div class="frs-biolink-social" style="text-align: center; padding: 10px 0; background: transparent;">
-    <div style="max-width: 570px; margin: 0 auto; padding: 0 15px; box-sizing: border-box;">
+    <div style="width: 100%; margin: 0 auto; padding: 0; box-sizing: border-box;">
         <div style="display: flex; justify-content: center; align-items: center; gap: 15px; flex-wrap: wrap;">
             <a href="mailto:<?php echo esc_attr($email); ?>" target="_blank" rel="noopener noreferrer" style="display: flex; align-items: center; justify-content: center; width: 50px; height: 50px; background: white; border-radius: 6px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); text-decoration: none; transition: transform 0.2s;">
                 <?php echo lrh_get_social_icon('email'); ?>
@@ -168,7 +168,7 @@ ob_start();
 <!-- Call Me Now Button -->
 <?php if ($phone_url): ?>
 <div class="frs-biolink-button" style="padding: 8px 0; background: transparent;">
-    <div style="max-width: 570px; margin: 0 auto; padding: 0 15px; box-sizing: border-box;">
+    <div style="width: 100%; margin: 0 auto; padding: 0; box-sizing: border-box;">
         <a href="<?php echo esc_url($phone_url); ?>" style="display: flex; align-items: center; justify-content: center; gap: 12px; background: linear-gradient(145deg, #f8f9fa, #e9ecef); color: #212529; text-decoration: none; padding: 18px 32px; border-radius: 12px; box-shadow: 0 8px 16px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04); font-size: 17.6px; font-weight: 500; transition: all 0.3s ease; border: 1px solid rgba(255,255,255,0.8);" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 12px 24px rgba(0,0,0,0.12), 0 4px 8px rgba(0,0,0,0.06)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 16px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04)'">
             <?php echo lrh_get_action_icon('phone'); ?>
             <span><?php _e('Call Me Now', 'lending-resource-hub'); ?></span>
@@ -179,7 +179,7 @@ ob_start();
 
 <!-- Schedule Appointment Button -->
 <div class="frs-biolink-button" style="padding: 8px 0; background: transparent;">
-    <div style="max-width: 570px; margin: 0 auto; padding: 0 15px; box-sizing: border-box;">
+    <div style="width: 100%; margin: 0 auto; padding: 0; box-sizing: border-box;">
         <a href="#schedule-appointment" style="display: flex; align-items: center; justify-content: center; gap: 12px; background: linear-gradient(145deg, #f8f9fa, #e9ecef); color: #212529; text-decoration: none; padding: 18px 32px; border-radius: 12px; box-shadow: 0 8px 16px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04); font-size: 17.6px; font-weight: 500; transition: all 0.3s ease; border: 1px solid rgba(255,255,255,0.8);" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 12px 24px rgba(0,0,0,0.12), 0 4px 8px rgba(0,0,0,0.06)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 16px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04)'">
             <?php echo lrh_get_action_icon('calendar'); ?>
             <span><?php _e('Schedule Appointment', 'lending-resource-hub'); ?></span>
@@ -203,7 +203,7 @@ ob_start();
 <!-- Get Pre-Approved Button -->
 <?php if ($arrive_link): ?>
 <div class="frs-biolink-button" style="padding: 8px 0; background: transparent;">
-    <div style="max-width: 570px; margin: 0 auto; padding: 0 15px; box-sizing: border-box;">
+    <div style="width: 100%; margin: 0 auto; padding: 0; box-sizing: border-box;">
         <a href="<?php echo esc_url($arrive_link); ?>" target="_blank" style="display: flex; align-items: center; justify-content: center; gap: 12px; background: linear-gradient(145deg, #1e40af, #1e3a8a); color: #ffffff; text-decoration: none; padding: 18px 32px; border-radius: 12px; box-shadow: 0 8px 16px rgba(0,0,0,0.15), 0 2px 4px rgba(0,0,0,0.08); font-size: 17.6px; font-weight: 500; transition: all 0.3s ease; border: 1px solid rgba(255,255,255,0.1);" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 12px 24px rgba(0,0,0,0.2), 0 4px 8px rgba(0,0,0,0.12)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 16px rgba(0,0,0,0.15), 0 2px 4px rgba(0,0,0,0.08)'">
             <?php echo lrh_get_action_icon('check-circle'); ?>
             <span><?php _e('Get Pre-Approved', 'lending-resource-hub'); ?></span>
@@ -214,7 +214,7 @@ ob_start();
 
 <!-- Free Rate Quote Button -->
 <div class="frs-biolink-button" style="padding: 8px 0; background: transparent;">
-    <div style="max-width: 570px; margin: 0 auto; padding: 0 15px; box-sizing: border-box;">
+    <div style="width: 100%; margin: 0 auto; padding: 0; box-sizing: border-box;">
         <a href="#rate-quote" style="display: flex; align-items: center; justify-content: center; gap: 12px; background: linear-gradient(145deg, #f8f9fa, #e9ecef); color: #212529; text-decoration: none; padding: 18px 32px; border-radius: 12px; box-shadow: 0 8px 16px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04); font-size: 17.6px; font-weight: 500; transition: all 0.3s ease; border: 1px solid rgba(255,255,255,0.8);" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 12px 24px rgba(0,0,0,0.12), 0 4px 8px rgba(0,0,0,0.06)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 16px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04)'">
             <?php echo lrh_get_action_icon('calculator'); ?>
             <span><?php _e('Free Rate Quote', 'lending-resource-hub'); ?></span>
