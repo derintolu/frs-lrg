@@ -272,11 +272,17 @@ export function BiolinkMarketing({ userId, currentUser }: BiolinkMarketingProps)
                         style={{ width: '126px', height: '37px' }}
                       />
                       {/* Content */}
-                      <div className="w-full h-full">
+                      <div className="w-full h-full relative" style={{ aspectRatio: '9/16' }}>
                         <iframe
                           key={previewKey}
                           src={`${biolinkUrl}?preview=1&t=${Date.now()}`}
-                          className="w-full h-full border-0"
+                          className="border-0 absolute inset-0"
+                          style={{
+                            width: '125%',
+                            height: '125%',
+                            transform: 'scale(0.8)',
+                            transformOrigin: 'top center'
+                          }}
                           title="Biolink Preview"
                         />
                       </div>

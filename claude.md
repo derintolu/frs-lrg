@@ -96,6 +96,78 @@ npm run format:fix       # Fix code formatting
 - Config passed via `window.lrhPortalConfig` object
 - Assets enqueued conditionally when shortcode is present
 
+### Gutenberg Blocks Architecture
+
+**Framework:** WordPress Block API v3 + Custom Controllers
+
+**Build System:**
+- Uses `@wordpress/scripts` for block compilation
+- Source: `src/blocks/*/` directories
+- Output: `assets/blocks/*/` directories
+- Separate build from main Vite builds
+
+**Block Categories:**
+- `lrh-biolink` - Biolink page components (15 blocks total)
+
+**Key Blocks:**
+- `lrh/biolink-page` - Complete dynamic biolink page (main block)
+- `lrh/biolink-header` - Header with video background
+- `lrh/biolink-button` - CTA buttons
+- `lrh/biolink-form` - Fluent Forms integration
+- `lrh/biolink-social` - Social media links
+- `lrh/loan-officer` - Loan officer profile cards
+- `lrh/mortgage-calculator` - Mortgage calculations
+- `lrh/openhouse-carousel` - Open house listings
+
+**Critical Pattern - Dynamic Block Rendering:**
+
+Blocks use server-side rendering with data pulled from `FRSUsers\Models\Profile` (Eloquent):
+
+```php
+// Block registration with PHP render callback
+register_block_type(
+    LRH_DIR . 'blocks/biolink-page/block.json',
+    array(
+        'render_callback' => array($this, 'render_biolink_page_block'),
+    )
+);
+
+// Dynamic rendering pulls from Profile model
+public function render_biolink_page_block($attributes) {
+    $user_id = $this->get_biolink_user_id($attributes, $post);
+    $profile = Profile::where('user_id', $user_id)->first();
+
+    // Render using profile data
+    return $this->render_all_sections($user_data);
+}
+```
+
+**User ID Resolution Priority:**
+1. Block attribute `user_id`
+2. Post meta `frs_biolink_user` or `_frs_loan_officer_id`
+3. Post author
+
+**Metafield Integration:**
+- `frs_biolink_user` - Links page to user
+- `_frs_loan_officer_id` - Alternative user reference
+- `_frs_page_views` - View tracking
+- `_frs_page_conversions` - Conversion tracking
+
+**Fluent Forms Integration in Blocks:**
+- Forms embedded in hidden divs, shown on button click
+- Form IDs: 7 (scheduling), 6 (rate quote)
+- Uses conversational form type: `[fluentform type="conversational" id="7"]`
+- Thank you overlay triggered via custom JS event `lrh_lead_captured`
+
+**Auto-generation:**
+```php
+// Generate biolink page for user
+$page = Blocks::generate_biolink_page($user_id);
+// Creates page with lrh/biolink-page block
+// Sets all metafields automatically
+// Links to Profile model for data
+```
+
 ---
 
 ## Critical Architecture Patterns
@@ -464,6 +536,65 @@ npm run build
 
 4. Test in browser
 
+### Adding a Gutenberg Block
+
+1. Create block directory in `blocks/your-block/`:
+```
+blocks/your-block/
+├── block.json      # Block metadata
+├── edit.js         # Editor interface (optional)
+├── render.php      # Server-side render (for dynamic blocks)
+└── style.css       # Block styles (optional)
+```
+
+2. Define block in `block.json`:
+```json
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "lrh/your-block",
+    "title": "Your Block",
+    "category": "lrh-biolink",
+    "attributes": {
+        "userId": {
+            "type": "number",
+            "default": 0
+        }
+    }
+}
+```
+
+3. Register block in `includes/Controllers/Biolinks/Blocks.php`:
+```php
+public function register_blocks() {
+    register_block_type(
+        LRH_DIR . 'blocks/your-block/block.json',
+        array(
+            'render_callback' => array($this, 'render_your_block'),
+        )
+    );
+}
+
+public function render_your_block($attributes) {
+    // Pull data from Profile model
+    $profile = Profile::where('user_id', $attributes['userId'])->first();
+
+    // Return rendered HTML
+    ob_start();
+    include LRH_DIR . 'blocks/your-block/render.php';
+    return ob_get_clean();
+}
+```
+
+4. Build blocks:
+```bash
+npm run block:build
+```
+
+5. Test in block editor
+
+**Note:** For dynamic blocks that pull from database, always use render callbacks with Eloquent models rather than static content.
+
 ---
 
 ## File Structure Reference
@@ -473,8 +604,14 @@ frs-lrg/
 ├── assets/
 │   ├── admin/              # Admin React app source
 │   ├── frontend/           # Frontend React app source
-│   ├── blocks/             # Gutenberg blocks
+│   ├── blocks/             # Compiled Gutenberg blocks output
 │   └── components/         # Shared React components
+├── blocks/                 # Gutenberg blocks source (15 biolink blocks)
+│   ├── biolink-page/       # Main dynamic biolink block
+│   ├── biolink-header/     # Header with video background
+│   ├── biolink-button/     # Action buttons
+│   ├── biolink-form/       # Form integration
+│   └── [other blocks]/     # Additional biolink components
 ├── config/                 # Plugin configuration
 ├── database/
 │   ├── Migrations/         # Database schema migrations
@@ -534,6 +671,15 @@ frs-lrg/
 3. **Migrations:** Always check `hasTable()` before creating
 4. **Indexes:** Add indexes for foreign keys and frequently queried columns
 5. **Timestamps:** Use `timestamps()` for created_at/updated_at
+
+### Gutenberg Block Conventions
+
+1. **Block Names:** Use `lrh/` prefix (e.g., `lrh/biolink-page`)
+2. **API Version:** Use Block API v3 (`"apiVersion": 3`)
+3. **Dynamic Rendering:** Always use PHP render callbacks for blocks that pull from database
+4. **Profile Model:** Biolink blocks pull data from `FRSUsers\Models\Profile` (external dependency)
+5. **Inline Styles:** For biolink blocks, use inline styles to ensure consistent rendering across themes
+6. **Form Integration:** Use FluentForms shortcodes with `type="conversational"` for forms in blocks
 
 ---
 
@@ -638,11 +784,23 @@ This plugin is based on the WordPress Plugin Boilerplate but has been customized
 - `typescript` ^5.x - Type safety
 - `lucide-react` - Icon library
 
-**WordPress Plugins (Recommended):**
+**WordPress Plugins (Required):**
+- **FRS Users Plugin** - Provides `FRSUsers\Models\Profile` model (CRITICAL DEPENDENCY)
 - FluentBooking - Calendar/booking system
-- FluentForms - Form builder
+- FluentForms - Form builder with conversational forms
 - FluentCRM - Email marketing
-- Advanced Custom Fields (ACF) - Person custom post type
+
+**WordPress Plugins (Optional):**
+- Advanced Custom Fields (ACF) - Person custom post type (legacy support)
+
+**External Model Dependencies:**
+The biolink blocks system requires the `FRSUsers\Models\Profile` Eloquent model from the `frs-users` plugin. This model provides:
+- `user_id` - WordPress user ID
+- `first_name`, `last_name` - User name
+- `email`, `phone_number`, `mobile_number` - Contact info
+- `job_title` - Professional title
+- `headshot_id` - WordPress attachment ID for profile photo
+- `arrive` - Arrive pre-approval link
 
 ---
 

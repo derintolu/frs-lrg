@@ -107,14 +107,17 @@ export function LeadTracking({ userId }: LeadTrackingProps) {
     );
   };
 
+  // Ensure leads is always an array to prevent filter errors
+  const leadsArray = Array.isArray(leads) ? leads : [];
+
   const statusCounts = {
-    all: leads.length,
-    hot: leads.filter(l => l.status === 'hot').length,
-    warm: leads.filter(l => l.status === 'warm').length,
-    cold: leads.filter(l => l.status === 'cold').length,
-    contacted: leads.filter(l => l.status === 'contacted').length,
-    qualified: leads.filter(l => l.status === 'qualified').length,
-    closed: leads.filter(l => l.status === 'closed').length,
+    all: leadsArray.length,
+    hot: leadsArray.filter(l => l.status === 'hot').length,
+    warm: leadsArray.filter(l => l.status === 'warm').length,
+    cold: leadsArray.filter(l => l.status === 'cold').length,
+    contacted: leadsArray.filter(l => l.status === 'contacted').length,
+    qualified: leadsArray.filter(l => l.status === 'qualified').length,
+    closed: leadsArray.filter(l => l.status === 'closed').length,
   };
 
   // Export functionality

@@ -51,8 +51,16 @@ class Blocks {
 	 * @return void
 	 */
 	public function register_blocks() {
-		// Register single dynamic biolink page block - uses render.php from blocks directory
-		register_block_type( LRH_DIR . 'blocks/biolink-page/block.json' );
+		// Register single dynamic biolink page block - uses render.php file
+		register_block_type(
+			LRH_DIR . 'blocks/biolink-page/block.json',
+			array(
+				'render_callback' => function( $attributes, $content, $block ) {
+					// Include render.php and capture its return value
+					return include LRH_DIR . 'blocks/biolink-page/render.php';
+				},
+			)
+		);
 	}
 
 	/**
@@ -99,10 +107,18 @@ class Blocks {
 		}
 
 		// Build user data array from Profile model
+		$nmls_number = $profile->nmls_number ?? '';
+		$title       = $profile->job_title ?: __( 'Licensed Loan Officer', 'lending-resource-hub' );
+
+		// Add NMLS number to title if available
+		if ( ! empty( $nmls_number ) ) {
+			$title .= ' | NMLS# ' . $nmls_number;
+		}
+
 		$user_data = array(
 			'name'    => trim( $profile->first_name . ' ' . $profile->last_name ),
 			'email'   => $profile->email,
-			'title'   => $profile->job_title ?: __( 'Loan Officer', 'lending-resource-hub' ),
+			'title'   => $title,
 			'company' => '21st Century Lending',
 			'phone'   => $profile->phone_number ?: $profile->mobile_number,
 			'avatar'  => $this->get_profile_headshot_url( $profile ),
@@ -261,6 +277,15 @@ class Blocks {
 					echo do_shortcode( '[fluentform type="conversational" id="6"]' );
 				}
 				?>
+			</div>
+		</div>
+
+		<!-- Thank You Overlay -->
+		<div id="frs-thank-you-overlay" class="frs-thank-you-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; align-items: center; justify-content: center;">
+			<div style="background: white; padding: 40px; border-radius: 10px; text-align: center; max-width: 400px; margin: 20px;">
+				<h2 style="margin: 0 0 15px 0; color: #1e3a8a;"><?php _e( 'Thank You!', 'lending-resource-hub' ); ?></h2>
+				<p style="margin: 0 0 20px 0; color: #666;"><?php _e( 'Your submission has been received. I will get back to you within 24 hours.', 'lending-resource-hub' ); ?></p>
+				<button onclick="hideThankYou()" style="background: #1e3a8a; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;"><?php _e( 'Close', 'lending-resource-hub' ); ?></button>
 			</div>
 		</div>
 
