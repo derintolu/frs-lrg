@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 interface ToggleButtonProps {
   options: [string, string];
   value: string;
