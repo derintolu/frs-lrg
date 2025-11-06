@@ -59,6 +59,40 @@ When changes aren't showing, **NEVER** assume it's caching. There is **NO** cach
 3. Check for JavaScript errors in browser console
 4. Verify correct file was edited
 
+### 4. PRE-WORK VERIFICATION CHECKLIST
+
+**MANDATORY - Before starting ANY task, verify you are in the correct plugin:**
+
+```bash
+# 1. Verify working directory
+pwd
+
+# 2. Check current branch
+git branch --show-current
+
+# 3. Verify clean working tree
+git status
+```
+
+**Expected Output for frs-lrg (ACTIVE DEVELOPMENT):**
+```
+/Users/derintolu/Local Sites/hub21/app/public/wp-content/plugins/frs-lrg
+```
+
+**Plugin Context:**
+- **frs-lrg** = ACTIVE development plugin ✅ (ALL new work happens here)
+- **frs-wp-users** = ACTIVE user profile plugin ✅ (User CRUD, webhooks, sync)
+- **frs-partnership-portal** = DEPRECATED ⚠️ (reference only, being sunset)
+
+**If you find yourself in frs-partnership-portal:**
+1. STOP immediately
+2. Navigate to frs-lrg: `cd /Users/derintolu/Local\ Sites/hub21/app/public/wp-content/plugins/frs-lrg`
+3. Verify location with `pwd`
+4. Continue work in correct plugin
+
+**Why This Matters:**
+Working in the wrong plugin wastes hours of development time. frs-partnership-portal is only kept for reference during migration to frs-lrg. Any work done there must be discarded and redone in frs-lrg.
+
 ---
 
 ## Quick Command Reference

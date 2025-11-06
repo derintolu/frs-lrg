@@ -3,7 +3,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 import { MortgageInput } from '../ui/mortgage-input';
 import { MortgageSelect } from '../ui/mortgage-select';
-import { Calculator, Home } from 'lucide-react';
+import { ToggleButton } from '../ui/toggle-button';
+import { Calculator, Home, User, Mail, Phone } from 'lucide-react';
+import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import {
   calculateConventional,
   calculateVA,
@@ -22,6 +24,66 @@ import {
 } from '../../utils/mortgageCalculations';
 import { PageHeader } from './PageHeader';
 
+// US States constant for property location
+const US_STATES = [
+  'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware',
+  'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky',
+  'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi',
+  'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico',
+  'New York', 'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania',
+  'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont',
+  'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming', 'District of Columbia'
+];
+
+// Credit Score ranges for rate calculation
+const CREDIT_SCORES = [
+  { value: '620-639', label: '620-639' },
+  { value: '640-659', label: '640-659' },
+  { value: '660-679', label: '660-679' },
+  { value: '680-699', label: '680-699' },
+  { value: '700-719', label: '700-719' },
+  { value: '720-739', label: '720-739' },
+  { value: '740-759', label: '740-759' },
+  { value: '760+', label: '760+' }
+];
+
+// Loan Officer Profile Component
+function LoanOfficerProfile() {
+  const userName = (window as any).frsPortalConfig?.userName || 'Loan Officer';
+  const userEmail = (window as any).frsPortalConfig?.userEmail || '';
+  const userAvatar = (window as any).frsPortalConfig?.userAvatar || '';
+
+  return (
+    <Card className="mb-6">
+      <CardContent className="flex items-center gap-4 p-6">
+        <div className="relative">
+          {userAvatar ? (
+            <img
+              src={userAvatar}
+              alt={userName}
+              className="w-16 h-16 rounded-full object-cover"
+            />
+          ) : (
+            <div className="w-16 h-16 rounded-full bg-gradient-to-r from-[var(--brand-primary-blue)] to-[var(--brand-rich-teal)] flex items-center justify-center">
+              <User className="w-8 h-8 text-white" />
+            </div>
+          )}
+        </div>
+        <div className="flex-1">
+          <h3 className="text-lg font-semibold">{userName}</h3>
+          {userEmail && (
+            <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
+              <Mail className="w-3 h-3" />
+              <span>{userEmail}</span>
+            </div>
+          )}
+          <p className="text-xs text-muted-foreground mt-1">NMLS# 123456</p>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
 export function MortgageCalculator() {
   const [activeTab, setActiveTab] = useState('conventional');
 
@@ -36,6 +98,9 @@ export function MortgageCalculator() {
       <p className="text-muted-foreground mt-2 mb-6">
         Calculate payments for different mortgage types
       </p>
+
+      {/* Loan Officer Profile */}
+      <LoanOfficerProfile />
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-5 mb-6">
@@ -555,6 +620,35 @@ function AffordabilityCalculator() {
 
 // Results Card Component
 function ResultsCard({ results }: { results: CalculationResults }) {
+  // Prepare data for pie chart
+  const chartData = [
+    {
+      name: 'Principal & Interest',
+      value: results.principalAndInterest,
+      color: '#ffffff'
+    },
+    {
+      name: 'Property Tax',
+      value: results.monthlyTax || 0,
+      color: '#93c5fd'
+    },
+    {
+      name: 'Insurance',
+      value: results.monthlyInsurance || 0,
+      color: '#60a5fa'
+    },
+    {
+      name: 'HOA',
+      value: results.monthlyHOA || 0,
+      color: '#3b82f6'
+    },
+    {
+      name: 'PMI/MIP',
+      value: results.monthlyPMI || 0,
+      color: '#2563eb'
+    }
+  ].filter(item => item.value > 0);
+
   return (
     <Card className="h-fit" style={{
       background: 'linear-gradient(135deg, var(--brand-primary-blue) 0%, var(--brand-rich-teal) 100%)'
@@ -569,6 +663,31 @@ function ResultsCard({ results }: { results: CalculationResults }) {
             {formatCurrencyWithCents(results.monthlyPayment)}
           </p>
         </div>
+
+        {/* Donut Chart */}
+        {chartData.length > 0 && (
+          <div className="flex justify-center pb-4 border-b border-white/20">
+            <div className="w-48 h-48">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={chartData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={60}
+                    outerRadius={90}
+                    paddingAngle={2}
+                    dataKey="value"
+                  >
+                    {chartData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        )}
 
         <div className="space-y-3">
           <div className="flex justify-between text-sm">
