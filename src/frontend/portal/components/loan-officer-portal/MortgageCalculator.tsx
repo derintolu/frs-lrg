@@ -147,7 +147,31 @@ function ConventionalCalculator() {
     hoa: '' as any
   });
 
+  // Additional UI state for Goalee features
+  const [downPaymentMode, setDownPaymentMode] = useState<'$' | '%'>('$');
+  const [propertyState, setPropertyState] = useState('California');
+  const [creditScore, setCreditScore] = useState('740-759');
+
   const results = calculateConventional(inputs);
+
+  // Handle down payment toggle
+  const handleDownPaymentChange = (value: number) => {
+    if (downPaymentMode === '%') {
+      // Convert percentage to dollar amount
+      const dollarAmount = (inputs.homePrice * value) / 100;
+      setInputs({...inputs, downPayment: dollarAmount});
+    } else {
+      setInputs({...inputs, downPayment: value});
+    }
+  };
+
+  // Get display value for down payment input
+  const getDownPaymentDisplayValue = () => {
+    if (downPaymentMode === '%') {
+      return inputs.homePrice > 0 ? (inputs.downPayment / inputs.homePrice) * 100 : 0;
+    }
+    return inputs.downPayment;
+  };
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -165,21 +189,46 @@ function ConventionalCalculator() {
             type="currency"
             value={inputs.homePrice}
             onChange={(val) => setInputs({...inputs, homePrice: val})}
-            defaultValue={100000}
+            defaultValue={300000}
           />
 
           <div>
+            <div className="flex items-center justify-between mb-2">
+              <label className="text-sm font-medium">Down Payment</label>
+              <ToggleButton
+                options={['$', '%']}
+                value={downPaymentMode}
+                onChange={(val) => setDownPaymentMode(val as '$' | '%')}
+              />
+            </div>
             <MortgageInput
-              label="Down Payment"
-              type="currency"
-              value={inputs.downPayment}
-              onChange={(val) => setInputs({...inputs, downPayment: val})}
-              defaultValue={20000}
+              label=""
+              type={downPaymentMode === '$' ? 'currency' : 'percent'}
+              value={getDownPaymentDisplayValue()}
+              onChange={handleDownPaymentChange}
+              defaultValue={downPaymentMode === '$' ? 60000 : 20}
             />
-            <p className="text-xs text-muted-foreground -mt-2 ml-1">
-              {formatPercent((inputs.downPayment / inputs.homePrice) * 100)} of home price
+            <p className="text-xs text-muted-foreground mt-1 ml-1">
+              {downPaymentMode === '$'
+                ? `${formatPercent((inputs.downPayment / inputs.homePrice) * 100)} of home price`
+                : `${formatCurrency(inputs.downPayment)} down payment`
+              }
             </p>
           </div>
+
+          <MortgageSelect
+            label="Property State"
+            value={propertyState}
+            onChange={(val) => setPropertyState(US_STATES[val] || US_STATES[0])}
+            options={US_STATES.map((state, idx) => ({ value: String(idx), label: state }))}
+          />
+
+          <MortgageSelect
+            label="Credit Score"
+            value={String(CREDIT_SCORES.findIndex(s => s.value === creditScore))}
+            onChange={(val) => setCreditScore(CREDIT_SCORES[val]?.value || CREDIT_SCORES[5].value)}
+            options={CREDIT_SCORES.map((score, idx) => ({ value: String(idx), label: score.label }))}
+          />
 
           <MortgageInput
             label="Interest Rate"
@@ -247,7 +296,29 @@ function VACalculator() {
     insurance: '' as any
   });
 
+  // Additional UI state for Goalee features
+  const [downPaymentMode, setDownPaymentMode] = useState<'$' | '%'>('$');
+  const [propertyState, setPropertyState] = useState('California');
+  const [creditScore, setCreditScore] = useState('740-759');
+
   const results = calculateVA(inputs);
+
+  // Handle down payment toggle
+  const handleDownPaymentChange = (value: number) => {
+    if (downPaymentMode === '%') {
+      const dollarAmount = (inputs.homePrice * value) / 100;
+      setInputs({...inputs, downPayment: dollarAmount});
+    } else {
+      setInputs({...inputs, downPayment: value});
+    }
+  };
+
+  const getDownPaymentDisplayValue = () => {
+    if (downPaymentMode === '%') {
+      return inputs.homePrice > 0 ? (inputs.downPayment / inputs.homePrice) * 100 : 0;
+    }
+    return inputs.downPayment;
+  };
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -267,12 +338,44 @@ function VACalculator() {
             defaultValue={300000}
           />
 
-          <MortgageInput
-            label="Down Payment (Optional)"
-            type="currency"
-            value={inputs.downPayment}
-            onChange={(val) => setInputs({...inputs, downPayment: val})}
-            defaultValue={0}
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <label className="text-sm font-medium">Down Payment (Optional)</label>
+              <ToggleButton
+                options={['$', '%']}
+                value={downPaymentMode}
+                onChange={(val) => setDownPaymentMode(val as '$' | '%')}
+              />
+            </div>
+            <MortgageInput
+              label=""
+              type={downPaymentMode === '$' ? 'currency' : 'percent'}
+              value={getDownPaymentDisplayValue()}
+              onChange={handleDownPaymentChange}
+              defaultValue={downPaymentMode === '$' ? 0 : 0}
+            />
+            {inputs.downPayment > 0 && (
+              <p className="text-xs text-muted-foreground mt-1 ml-1">
+                {downPaymentMode === '$'
+                  ? `${formatPercent((inputs.downPayment / inputs.homePrice) * 100)} of home price`
+                  : `${formatCurrency(inputs.downPayment)} down payment`
+                }
+              </p>
+            )}
+          </div>
+
+          <MortgageSelect
+            label="Property State"
+            value={propertyState}
+            onChange={(val) => setPropertyState(US_STATES[val] || US_STATES[0])}
+            options={US_STATES.map((state, idx) => ({ value: String(idx), label: state }))}
+          />
+
+          <MortgageSelect
+            label="Credit Score"
+            value={String(CREDIT_SCORES.findIndex(s => s.value === creditScore))}
+            onChange={(val) => setCreditScore(CREDIT_SCORES[val]?.value || CREDIT_SCORES[5].value)}
+            options={CREDIT_SCORES.map((score, idx) => ({ value: String(idx), label: score.label }))}
           />
 
           <MortgageInput
@@ -342,7 +445,29 @@ function FHACalculator() {
     insurance: '' as any
   });
 
+  // Additional UI state for Goalee features
+  const [downPaymentMode, setDownPaymentMode] = useState<'$' | '%'>('$');
+  const [propertyState, setPropertyState] = useState('California');
+  const [creditScore, setCreditScore] = useState('740-759');
+
   const results = calculateFHA(inputs);
+
+  // Handle down payment toggle
+  const handleDownPaymentChange = (value: number) => {
+    if (downPaymentMode === '%') {
+      const dollarAmount = (inputs.homePrice * value) / 100;
+      setInputs({...inputs, downPayment: dollarAmount});
+    } else {
+      setInputs({...inputs, downPayment: value});
+    }
+  };
+
+  const getDownPaymentDisplayValue = () => {
+    if (downPaymentMode === '%') {
+      return inputs.homePrice > 0 ? (inputs.downPayment / inputs.homePrice) * 100 : 0;
+    }
+    return inputs.downPayment;
+  };
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -363,17 +488,42 @@ function FHACalculator() {
           />
 
           <div>
+            <div className="flex items-center justify-between mb-2">
+              <label className="text-sm font-medium">Down Payment (Min 3.5%)</label>
+              <ToggleButton
+                options={['$', '%']}
+                value={downPaymentMode}
+                onChange={(val) => setDownPaymentMode(val as '$' | '%')}
+              />
+            </div>
             <MortgageInput
-              label="Down Payment (Min 3.5%)"
-              type="currency"
-              value={inputs.downPayment}
-              onChange={(val) => setInputs({...inputs, downPayment: val})}
-              defaultValue={10500}
+              label=""
+              type={downPaymentMode === '$' ? 'currency' : 'percent'}
+              value={getDownPaymentDisplayValue()}
+              onChange={handleDownPaymentChange}
+              defaultValue={downPaymentMode === '$' ? 10500 : 3.5}
             />
-            <p className="text-xs text-muted-foreground -mt-2 ml-1">
-              {formatPercent((inputs.downPayment / inputs.homePrice) * 100)} of home price
+            <p className="text-xs text-muted-foreground mt-1 ml-1">
+              {downPaymentMode === '$'
+                ? `${formatPercent((inputs.downPayment / inputs.homePrice) * 100)} of home price`
+                : `${formatCurrency(inputs.downPayment)} down payment`
+              }
             </p>
           </div>
+
+          <MortgageSelect
+            label="Property State"
+            value={propertyState}
+            onChange={(val) => setPropertyState(US_STATES[val] || US_STATES[0])}
+            options={US_STATES.map((state, idx) => ({ value: String(idx), label: state }))}
+          />
+
+          <MortgageSelect
+            label="Credit Score"
+            value={String(CREDIT_SCORES.findIndex(s => s.value === creditScore))}
+            onChange={(val) => setCreditScore(CREDIT_SCORES[val]?.value || CREDIT_SCORES[5].value)}
+            options={CREDIT_SCORES.map((score, idx) => ({ value: String(idx), label: score.label }))}
+          />
 
           <MortgageInput
             label="Interest Rate"
@@ -447,6 +597,10 @@ function RefinanceCalculator() {
     closingCosts: '' as any
   });
 
+  // Additional UI state for Goalee features
+  const [propertyState, setPropertyState] = useState('California');
+  const [creditScore, setCreditScore] = useState('740-759');
+
   const results = calculateRefinance(inputs);
 
   return (
@@ -459,6 +613,20 @@ function RefinanceCalculator() {
           </CardTitle>
         </CardHeader>
         <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+          <MortgageSelect
+            label="Property State"
+            value={propertyState}
+            onChange={(val) => setPropertyState(US_STATES[val] || US_STATES[0])}
+            options={US_STATES.map((state, idx) => ({ value: String(idx), label: state }))}
+          />
+
+          <MortgageSelect
+            label="Credit Score"
+            value={String(CREDIT_SCORES.findIndex(s => s.value === creditScore))}
+            onChange={(val) => setCreditScore(CREDIT_SCORES[val]?.value || CREDIT_SCORES[5].value)}
+            options={CREDIT_SCORES.map((score, idx) => ({ value: String(idx), label: score.label }))}
+          />
 
           <MortgageInput
             label="Current Balance"
@@ -537,6 +705,10 @@ function AffordabilityCalculator() {
     insurance: '' as any
   });
 
+  // Additional UI state for Goalee features
+  const [propertyState, setPropertyState] = useState('California');
+  const [creditScore, setCreditScore] = useState('740-759');
+
   const results = calculateAffordability(inputs);
 
   return (
@@ -549,6 +721,20 @@ function AffordabilityCalculator() {
           </CardTitle>
         </CardHeader>
         <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <MortgageSelect
+            label="Property State"
+            value={propertyState}
+            onChange={(val) => setPropertyState(US_STATES[val] || US_STATES[0])}
+            options={US_STATES.map((state, idx) => ({ value: String(idx), label: state }))}
+          />
+
+          <MortgageSelect
+            label="Credit Score"
+            value={String(CREDIT_SCORES.findIndex(s => s.value === creditScore))}
+            onChange={(val) => setCreditScore(CREDIT_SCORES[val]?.value || CREDIT_SCORES[5].value)}
+            options={CREDIT_SCORES.map((score, idx) => ({ value: String(idx), label: score.label }))}
+          />
+
           <MortgageInput
             label="Monthly Income"
             type="currency"
