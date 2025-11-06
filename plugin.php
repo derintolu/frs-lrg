@@ -3,11 +3,14 @@ use LendingResourceHub\Core\Api;
 use LendingResourceHub\Core\Shortcode;
 use LendingResourceHub\Core\PostTypes;
 use LendingResourceHub\Core\Redirects;
+use LendingResourceHub\Core\MortgageLandingGenerator;
 use LendingResourceHub\Admin\Menu;
 use LendingResourceHub\Core\Template;
 use LendingResourceHub\Assets\Frontend;
+use LendingResourceHub\Helpers\ProfileHelpers;
 // use LendingResourceHub\Assets\Admin; // Not needed - admin uses PHP templates, not React
 use LendingResourceHub\Integrations\FluentBooking;
+use LendingResourceHub\Integrations\FluentForms;
 use LendingResourceHub\Controllers\Biolinks\Blocks;
 use LendingResourceHub\Traits\Base;
 
@@ -64,8 +67,16 @@ final class LendingResourceHub {
 		Redirects::get_instance()->init();
 		Blocks::get_instance()->init();
 
+		// Initialize mortgage landing page generation
+		MortgageLandingGenerator::get_instance()->init();
+
 		// Initialize integrations
 		FluentBooking::get_instance()->init();
+
+		// Initialize FluentForms if plugin is active
+		if ( FluentForms::is_active() ) {
+			FluentForms::get_instance()->init();
+		}
 
 		add_action( 'init', array( $this, 'i18n' ) );
 	}

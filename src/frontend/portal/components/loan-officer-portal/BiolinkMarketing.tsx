@@ -252,7 +252,7 @@ export function BiolinkMarketing({ userId, currentUser }: BiolinkMarketingProps)
                 <span className="font-semibold text-sm whitespace-nowrap" style={{ color: 'var(--brand-dark-navy)' }}>Biolink Preview</span>
                 <Globe className="h-4 w-4" style={{ color: 'var(--brand-steel-blue)' }} />
               </div>
-              <div className="flex items-center justify-center flex-1">
+              <div className="flex items-center justify-center flex-1 h-full">
                 {/* Gradient Border Container */}
                 <div
                   className="rounded-[60px] p-[2px] relative"
@@ -272,16 +272,18 @@ export function BiolinkMarketing({ userId, currentUser }: BiolinkMarketingProps)
                         style={{ width: '126px', height: '37px' }}
                       />
                       {/* Content */}
-                      <div className="w-full h-full relative" style={{ aspectRatio: '9/16' }}>
+                      <div className="w-full h-full">
                         <iframe
                           key={previewKey}
                           src={`${biolinkUrl}?preview=1&t=${Date.now()}`}
-                          className="border-0 absolute inset-0"
+                          className="border-0"
                           style={{
-                            width: '125%',
-                            height: '125%',
-                            transform: 'scale(0.8)',
-                            transformOrigin: 'top center'
+                            width: '400px',
+                            height: '1250px',
+                            transform: 'scale(0.74)',
+                            transformOrigin: 'top left',
+                            border: 'none',
+                            maxWidth: 'none'
                           }}
                           title="Biolink Preview"
                         />

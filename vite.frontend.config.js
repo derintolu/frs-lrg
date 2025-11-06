@@ -15,4 +15,10 @@ export default {
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  server: {
+    cors: true,
+    origin: 'http://localhost:5173',
+    host: 'localhost',
+    port: 5173,
+  },
 };
