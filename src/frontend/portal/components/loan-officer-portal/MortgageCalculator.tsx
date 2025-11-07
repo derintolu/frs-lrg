@@ -49,9 +49,11 @@ const CREDIT_SCORES = [
 
 // Loan Officer Profile Component
 function LoanOfficerProfile() {
-  const userName = (window as any).frsPortalConfig?.userName || 'Loan Officer';
+  const userName = (window as any).frsPortalConfig?.userName || '';
   const userEmail = (window as any).frsPortalConfig?.userEmail || '';
   const userAvatar = (window as any).frsPortalConfig?.userAvatar || '';
+  const userNMLS = (window as any).frsPortalConfig?.userNMLS || (window as any).frsPortalConfig?.nmls || '';
+  const userID = (window as any).frsPortalConfig?.userId || '';
 
   return (
     <Card className="mb-6">
@@ -77,7 +79,12 @@ function LoanOfficerProfile() {
               <span>{userEmail}</span>
             </div>
           )}
-          <p className="text-xs text-muted-foreground mt-1">NMLS# 123456</p>
+          {userNMLS && (
+            <p className="text-xs text-muted-foreground mt-1">NMLS# {userNMLS}</p>
+          )}
+          {userID && !userName && (
+            <p className="text-xs text-muted-foreground mt-1">#{userID}</p>
+          )}
         </div>
       </CardContent>
     </Card>
@@ -103,32 +110,42 @@ export function MortgageCalculator() {
       <LoanOfficerProfile />
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-5 mb-6">
-          <TabsTrigger value="conventional">Conventional</TabsTrigger>
-          <TabsTrigger value="va">VA Loan</TabsTrigger>
-          <TabsTrigger value="fha">FHA Loan</TabsTrigger>
-          <TabsTrigger value="refinance">Refinance</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-7 mb-6">
+          <TabsTrigger value="conventional">Payment</TabsTrigger>
           <TabsTrigger value="affordability">Affordability</TabsTrigger>
+          <TabsTrigger value="buydown">Buydown</TabsTrigger>
+          <TabsTrigger value="dscr">DSCR</TabsTrigger>
+          <TabsTrigger value="refinance">Refinance</TabsTrigger>
+          <TabsTrigger value="netproceeds">Net Proceeds</TabsTrigger>
+          <TabsTrigger value="rentvsbuy">Rent vs Buy</TabsTrigger>
         </TabsList>
 
         <TabsContent value="conventional">
           <ConventionalCalculator />
         </TabsContent>
 
-        <TabsContent value="va">
-          <VACalculator />
+        <TabsContent value="affordability">
+          <AffordabilityCalculator />
         </TabsContent>
 
-        <TabsContent value="fha">
-          <FHACalculator />
+        <TabsContent value="buydown">
+          <BuydownCalculator />
+        </TabsContent>
+
+        <TabsContent value="dscr">
+          <DSCRCalculator />
         </TabsContent>
 
         <TabsContent value="refinance">
           <RefinanceCalculator />
         </TabsContent>
 
-        <TabsContent value="affordability">
-          <AffordabilityCalculator />
+        <TabsContent value="netproceeds">
+          <NetProceedsCalculator />
+        </TabsContent>
+
+        <TabsContent value="rentvsbuy">
+          <RentVsBuyCalculator />
         </TabsContent>
       </Tabs>
     </div>
