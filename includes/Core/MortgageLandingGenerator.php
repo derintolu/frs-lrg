@@ -96,10 +96,10 @@ class MortgageLandingGenerator {
 	}
 
 	/**
-	 * Generate landing page for a loan officer.
+	 * Generate both landing pages for a loan officer.
 	 *
 	 * @param int $user_id Loan officer user ID.
-	 * @return int|false Page ID or false on failure.
+	 * @return array|false Array with page IDs or false on failure.
 	 */
 	public function generate_pages_for_user( $user_id ) {
 		$user = get_user_by( 'id', $user_id );
@@ -108,10 +108,21 @@ class MortgageLandingGenerator {
 			return false;
 		}
 
-		// Generate only one page - combined template
-		$page_id = $this->create_page( $user_id, 'combined' );
+		$pages = array();
 
-		return $page_id;
+		// Generate Loan Application page
+		$loan_app_id = $this->create_page( $user_id, 'loan-app' );
+		if ( $loan_app_id ) {
+			$pages['loan-app'] = $loan_app_id;
+		}
+
+		// Generate Rate Quote page
+		$rate_quote_id = $this->create_page( $user_id, 'rate-quote' );
+		if ( $rate_quote_id ) {
+			$pages['rate-quote'] = $rate_quote_id;
+		}
+
+		return ! empty( $pages ) ? $pages : false;
 	}
 
 	/**
@@ -141,15 +152,13 @@ class MortgageLandingGenerator {
 		// Page titles
 		$titles = array(
 			'loan-app'   => sprintf( '%s - Apply for Your Home Loan', $first_name ),
-			'rate-quote' => sprintf( '%s - Get Your Rate', $first_name ),
-			'combined'   => sprintf( '%s - Get Your Rate', $first_name ),
+			'rate-quote' => sprintf( '%s - Get Your Mortgage Rate Quote', $first_name ),
 		);
 
-		// Page slugs - same for all users, differentiated by %author% rewrite
+		// Page slugs
 		$slugs = array(
-			'loan-app'   => 'get-your-rate',
-			'rate-quote' => 'get-your-rate',
-			'combined'   => 'get-your-rate',
+			'loan-app'   => sanitize_title( $first_name . '-loan-application' ),
+			'rate-quote' => sanitize_title( $first_name . '-rate-quote' ),
 		);
 
 		// Generate block markup
@@ -244,7 +253,6 @@ class MortgageLandingGenerator {
 	 */
 	private function generate_block_markup( $template, $first_name, $user_id ) {
 		$is_rate_quote = 'rate-quote' === $template;
-		$is_combined = 'combined' === $template;
 
 		// Get Loan Officer data from Profile
 		$lo_data = $this->get_user_data( $user_id );
@@ -325,10 +333,46 @@ class MortgageLandingGenerator {
 			);
 		}
 
-		// Calculator section - uses the mortgage calculator widget shortcode
-		$calculator_section = '<!-- wp:shortcode -->
-[frs_mortgage_calculator loan_officer_id="' . $user_id . '"]
-<!-- /wp:shortcode -->';
+		// Calculator section (only for rate-quote)
+		$calculator_section = '';
+		if ( $is_rate_quote ) {
+			$calculator_section = '<!-- wp:html -->
+<section class="py-16 px-6 bg-gray-50">
+    <div class="max-w-4xl mx-auto">
+        <div class="text-center mb-8">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Calculate Your Monthly Payment</h2>
+            <p class="text-gray-600">Get an instant estimate of your mortgage payment</p>
+        </div>
+        <div class="bg-white rounded-xl shadow-lg p-8">
+            <div class="space-y-6">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Home Price</label>
+                    <input type="range" min="100000" max="1000000" step="10000" class="w-full" data-wp-on--input="actions.updateHomePrice" />
+                    <div class="text-2xl font-bold text-blue-600 mt-2" data-wp-text="state.formattedHomePrice"></div>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Down Payment</label>
+                    <input type="range" min="0" max="500000" step="5000" class="w-full" data-wp-on--input="actions.updateDownPayment" />
+                    <div class="text-2xl font-bold text-blue-600 mt-2" data-wp-text="state.formattedDownPayment"></div>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Interest Rate</label>
+                    <input type="range" min="3" max="10" step="0.125" class="w-full" data-wp-on--input="actions.updateInterestRate" />
+                    <div class="text-2xl font-bold text-blue-600 mt-2" data-wp-text="state.formattedInterestRate"></div>
+                </div>
+                <div class="border-t-2 pt-6 mt-6">
+                    <div class="text-center">
+                        <p class="text-gray-600 mb-2">Estimated Monthly Payment</p>
+                        <div class="text-5xl font-bold text-green-600" data-wp-text="state.monthlyPayment"></div>
+                        <p class="text-sm text-gray-500 mt-2">Principal & Interest only (30-year fixed)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- /wp:html -->';
+		}
 
 		// Full page template - rest of the markup would be very long, keeping it compact for this migration
 		// The actual template is in the source file lines 323-569
@@ -369,9 +413,6 @@ class MortgageLandingGenerator {
         </div>
     </div>
 </section>
-
-<!-- Mortgage Calculator Section -->
-' . $calculator_section . '
 
 <!-- Multi-Step Form -->
 <section class="py-16 px-6 bg-white" id="application-form">

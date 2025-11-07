@@ -31,8 +31,6 @@ class PostTypes {
 	public function init() {
 		add_action( 'init', array( $this, 'register_post_types' ) );
 		add_action( 'init', array( $this, 'register_taxonomies' ) );
-		add_filter( 'post_type_link', array( $this, 'mortgage_landing_page_permalink' ), 10, 2 );
-		add_filter( 'wp_unique_post_slug', array( $this, 'allow_duplicate_mortgage_slugs' ), 10, 6 );
 	}
 
 	/**
@@ -132,7 +130,7 @@ class PostTypes {
 				'show_in_rest'  => true,
 				'supports'      => array( 'title', 'editor', 'custom-fields' ),
 				'has_archive'   => false,
-				'rewrite'       => array( 'slug' => '%author%', 'with_front' => false ),
+				'rewrite'       => array( 'slug' => 'apply' ),
 				'menu_icon'     => 'dashicons-money-alt',
 				'template'      => array(),
 				'template_lock' => 'all',
@@ -189,46 +187,5 @@ class PostTypes {
 	 */
 	public function register_taxonomies() {
 		// Add taxonomies if needed
-	}
-
-	/**
-	 * Customize mortgage landing page permalinks to use author first name.
-	 *
-	 * @param string $post_link The post's permalink.
-	 * @param WP_Post $post The post object.
-	 * @return string Modified permalink.
-	 */
-	public function mortgage_landing_page_permalink( string $post_link, $post ): string {
-		if ( 'frs_mortgage_lp' === $post->post_type && strpos( $post_link, '%author%' ) !== false ) {
-			$author = get_userdata( $post->post_author );
-			if ( $author ) {
-				// Get first name from user meta or use login
-				$first_name = get_user_meta( $post->post_author, 'first_name', true );
-				if ( empty( $first_name ) ) {
-					$first_name = $author->user_login;
-				}
-				$first_name = sanitize_title( strtolower( $first_name ) );
-				$post_link  = str_replace( '%author%', $first_name, $post_link );
-			}
-		}
-		return $post_link;
-	}
-
-	/**
-	 * Allow duplicate slugs for mortgage landing pages since they have different author prefixes.
-	 *
-	 * @param string $slug The post slug.
-	 * @param int $post_ID Post ID.
-	 * @param string $post_status Post status.
-	 * @param string $post_type Post type.
-	 * @param int $post_parent Post parent ID.
-	 * @param string $original_slug Original slug.
-	 * @return string The slug.
-	 */
-	public function allow_duplicate_mortgage_slugs( string $slug, int $post_ID, string $post_status, string $post_type, int $post_parent, string $original_slug ): string {
-		if ( 'frs_mortgage_lp' === $post_type ) {
-			return $original_slug;
-		}
-		return $slug;
 	}
 }

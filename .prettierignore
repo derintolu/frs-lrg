@@ -1,4 +1,4 @@
-3/js/dist/**
+/js/dist/**
 /vendor/**
 /composer.lock
 /package-lock.json
