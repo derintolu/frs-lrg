@@ -7,6 +7,7 @@ use LendingResourceHub\Core\MortgageLandingGenerator;
 use LendingResourceHub\Admin\Menu;
 use LendingResourceHub\Core\Template;
 use LendingResourceHub\Assets\Frontend;
+use LendingResourceHub\Frontend\MortgageCalculatorWidget;
 use LendingResourceHub\Helpers\ProfileHelpers;
 // use LendingResourceHub\Assets\Admin; // Not needed - admin uses PHP templates, not React
 use LendingResourceHub\Integrations\FluentBooking;
