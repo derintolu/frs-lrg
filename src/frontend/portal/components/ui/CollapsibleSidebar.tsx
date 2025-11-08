@@ -55,19 +55,36 @@ export function CollapsibleSidebar({
   const [isMobile, setIsMobile] = useState(false);
   const [isTablet, setIsTablet] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [isResizing, setIsResizing] = useState(false);
 
-  // Detect mobile/tablet viewport
+  // Detect mobile/tablet viewport and handle resize animation
   useEffect(() => {
+    let resizeTimer: NodeJS.Timeout;
+
     const checkViewport = () => {
       const width = window.innerWidth;
       setIsMobile(width < 768);
       setIsTablet(width >= 768 && width < 1024);
+
+      // Set resizing state
+      setIsResizing(true);
+
+      // Clear existing timer
+      clearTimeout(resizeTimer);
+
+      // Reset resizing state after resize ends
+      resizeTimer = setTimeout(() => {
+        setIsResizing(false);
+      }, 150);
     };
 
     checkViewport();
     window.addEventListener('resize', checkViewport);
 
-    return () => window.removeEventListener('resize', checkViewport);
+    return () => {
+      window.removeEventListener('resize', checkViewport);
+      clearTimeout(resizeTimer);
+    };
   }, []);
 
   // Handle hash-based mobile panel opening
@@ -233,16 +250,16 @@ export function CollapsibleSidebar({
           id="frs-mobile-sidebar"
           className={cn(
             'fixed left-0 right-0 z-50 transition-all duration-500 ease-out',
-            'shadow-2xl rounded-t-2xl overflow-hidden',
+            'shadow-2xl overflow-hidden bg-white',
             isMobileOpen ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0',
             className
           )}
           style={{
             bottom: 0,
-            backgroundColor,
+            backgroundColor: '#ffffff',
             color: textColor,
             maxHeight: `calc(100vh - ${topOffset})`,
-            top: topOffset,
+            top: isResizing ? `calc(${topOffset} + 2px)` : topOffset,
           }}
         >
           {/* Close X Button - Top Right */}

@@ -30,16 +30,15 @@ export function FloatingSelect({
   return (
     <div className="relative mb-4">
       <div
-        className="flex items-center gap-2 rounded-md px-3 py-3 transition-all duration-200 relative bg-white border-0"
+        className="flex items-center gap-2 rounded-md px-3 py-3 transition-all duration-200 relative bg-white"
         style={{
-          border: shouldFloat
-            ? '2px solid transparent'
-            : '1px solid #d1d5db',
+          border: '2px solid transparent',
+          borderColor: shouldFloat ? 'transparent' : '#d1d5db',
           backgroundImage: shouldFloat
             ? 'linear-gradient(white, white), linear-gradient(135deg, #2563eb 0%, #2dd4da 100%)'
             : 'none',
-          backgroundOrigin: shouldFloat ? 'padding-box, border-box' : 'padding-box',
-          backgroundClip: shouldFloat ? 'padding-box, border-box' : 'padding-box'
+          backgroundOrigin: 'padding-box, border-box',
+          backgroundClip: 'padding-box, border-box'
         }}
       >
         {icon && (

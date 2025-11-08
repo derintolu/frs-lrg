@@ -279,7 +279,7 @@ export function DashboardLayout({ activeView, onViewChange, children, currentUse
       />
 
       {/* Main Content */}
-      <main style={{ padding: '24px', paddingTop: '32px' }}>
+      <main className="max-md:p-0 max-md:pt-4 md:p-6 md:pt-8">
         {children}
       </main>
     </div>

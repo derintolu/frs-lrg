@@ -14,6 +14,7 @@ import {
 import { LoadingSpinner } from '../ui/loading';
 import { DataService } from '../../utils/dataService';
 import { AppLauncher } from './AppLauncher';
+import { MarketMattersWidget } from './MarketMattersWidget';
 
 interface WelcomeBentoProps {
   userId: string;
@@ -202,13 +203,13 @@ export function WelcomeBento({ userId, onNavigate }: WelcomeBentoProps) {
   }
 
   return (
-    <div className="grid grid-rows-[auto_1fr] gap-3 max-w-full h-full overflow-hidden">
-      {/* Top Row: Welcome + Announcements */}
+    <div className="space-y-3 max-w-full h-full overflow-hidden max-md:p-[10px] md:p-0">
+      {/* Row 1: Welcome/Clock (1 col) | Market Matters (2 cols) */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
-        {/* Welcome Header + Notifications - 1/3 width */}
+        {/* Welcome Header + Clock/Calendar - 1 column */}
         <div className="lg:col-span-1 space-y-3">
           {/* Welcome Header - Black Gradient */}
-          <div className="relative overflow-hidden rounded p-4 md:p-6 w-full shadow-xl" style={{
+          <div className="relative overflow-hidden max-md:rounded-none md:rounded p-4 md:p-6 w-full shadow-xl" style={{
             background: 'linear-gradient(135deg, #000000 0%, #1a1a1a 100%)',
           }}>
             <div className="relative z-10 flex flex-col justify-center py-4 md:py-6">
@@ -312,7 +313,15 @@ export function WelcomeBento({ userId, onNavigate }: WelcomeBentoProps) {
           </div>
         </div>
 
-        {/* Announcements - Blue-Teal Gradient - 2/3 width */}
+        {/* Market Matters Widget - 2 columns */}
+        <div className="lg:col-span-2 h-full">
+          <MarketMattersWidget />
+        </div>
+      </div>
+
+      {/* Row 2: Announcements (2 cols) | Toolbox (1 col) */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+        {/* Announcements - 2 columns */}
         <div className="lg:col-span-2 h-full">
           <Card className="w-full h-full shadow-xl border-0 overflow-hidden rounded" style={{
             background: 'linear-gradient(135deg, #2563eb 0%, #2dd4da 100%)',
@@ -368,14 +377,147 @@ export function WelcomeBento({ userId, onNavigate }: WelcomeBentoProps) {
             </CardContent>
           </Card>
         </div>
+
+        {/* Toolbox (App Launcher) - 1 column */}
+        <div className="lg:col-span-1 h-full">
+          <AppLauncher onNavigate={onNavigate} />
+        </div>
       </div>
 
-      {/* Bottom Row: Blog Articles + App Launcher */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 min-h-0">
-        {/* Blog Articles - Left - 2/3 width */}
+      {/* Old sections - Remove */}
+      <div className="hidden">
+        {/* Blog Post 1 - 1 column */}
+        {blogPosts.length > 0 && (
+          <div className="lg:col-span-1 h-full">
+            <Card className="w-full shadow-xl border-0 overflow-hidden relative rounded h-full min-h-0">
+              {blogPosts[0].featured_image && (
+                <>
+                  <div className="absolute inset-0">
+                    <img
+                      src={blogPosts[0].featured_image}
+                      alt={blogPosts[0].title}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-black/30" />
+                </>
+              )}
+              <CardContent className="relative z-10 p-4 md:p-5 text-white flex flex-col justify-end h-full">
+                <h3
+                  className="text-lg md:text-xl lg:text-2xl font-bold mb-1.5 md:mb-2 line-clamp-2"
+                  style={{
+                    color: '#ffffff',
+                    textShadow: '0 2px 8px rgba(0, 0, 0, 0.8), 0 4px 16px rgba(37, 99, 235, 0.4), 0 0 20px rgba(45, 212, 218, 0.3)',
+                    filter: 'drop-shadow(0 0 8px rgba(37, 99, 235, 0.5))'
+                  }}
+                >
+                  {blogPosts[0].title}
+                </h3>
+                <p className="text-white text-xs md:text-sm font-normal mb-2 md:mb-3 line-clamp-1 md:line-clamp-2">{blogPosts[0].excerpt}</p>
+                <div className="flex items-center justify-between flex-wrap gap-2">
+                  <div className="flex items-center gap-2 text-xs">
+                    <img
+                      src={blogPosts[0].author_avatar || `https://ui-avatars.com/api/?name=Author&background=2DD4DA&color=fff&size=96`}
+                      alt={blogPosts[0].author_name || 'Author'}
+                      className="w-6 h-6 md:w-7 md:h-7 rounded-full border-2 border-white/30"
+                    />
+                    <span className="text-white font-medium text-xs">{blogPosts[0].author_name || 'Author'}</span>
+                    <span className="text-white/50 max-md:hidden">•</span>
+                    <span className="text-white/90 max-md:hidden">{blogPosts[0].category_name || 'Blog'}</span>
+                    <span className="text-white/50 max-md:hidden">•</span>
+                    <span className="text-white/80 max-md:hidden">{blogPosts[0].date}</span>
+                  </div>
+                  <a
+                    href={blogPosts[0].link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 text-xs text-white hover:text-white/80 transition-colors bg-white/15 hover:bg-white/25 px-2.5 py-1 rounded-lg backdrop-blur-sm font-medium"
+                  >
+                    Read more <ExternalLink className="h-3 w-3" />
+                  </a>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {/* Blog Post 2 - 1 column */}
+        {blogPosts.length > 1 && (
+          <div className="lg:col-span-1 h-full">
+            <Card className="w-full shadow-xl border-0 overflow-hidden relative rounded h-full min-h-0">
+              {/* Featured image as background */}
+              {blogPosts[1].featured_image && (
+                <>
+                  <div className="absolute inset-0">
+                    <img
+                      src={blogPosts[1].featured_image}
+                      alt={blogPosts[1].title}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  {/* Dark gradient overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-black/30" />
+                </>
+              )}
+
+              {/* Content overlaid on background */}
+              <CardContent className="relative z-10 p-4 md:p-5 text-white flex flex-col justify-end h-full">
+                <h3
+                  className="text-lg md:text-xl lg:text-2xl font-bold mb-1.5 md:mb-2 line-clamp-2"
+                  style={{
+                    color: '#ffffff',
+                    textShadow: '0 2px 8px rgba(0, 0, 0, 0.8), 0 4px 16px rgba(37, 99, 235, 0.4), 0 0 20px rgba(45, 212, 218, 0.3)',
+                    filter: 'drop-shadow(0 0 8px rgba(37, 99, 235, 0.5))'
+                  }}
+                >
+                  {blogPosts[1].title}
+                </h3>
+                <p className="text-white text-xs md:text-sm font-normal mb-2 md:mb-3 line-clamp-1 md:line-clamp-2">{blogPosts[1].excerpt}</p>
+
+                {/* Author, category and date info */}
+                <div className="flex items-center justify-between flex-wrap gap-2">
+                  <div className="flex items-center gap-2 text-xs">
+                    {/* Author avatar and name - always show */}
+                    <img
+                      src={blogPosts[1].author_avatar || `https://ui-avatars.com/api/?name=Author&background=2DD4DA&color=fff&size=96`}
+                      alt={blogPosts[1].author_name || 'Author'}
+                      className="w-6 h-6 md:w-7 md:h-7 rounded-full border-2 border-white/30"
+                    />
+                    <span className="text-white font-medium text-xs">{blogPosts[1].author_name || 'Author'}</span>
+                    <span className="text-white/50 max-md:hidden">•</span>
+
+                    {/* Category */}
+                    <span className="text-white/90 max-md:hidden">{blogPosts[1].category_name || 'Blog'}</span>
+                    <span className="text-white/50 max-md:hidden">•</span>
+
+                    {/* Date */}
+                    <span className="text-white/80 max-md:hidden">{blogPosts[1].date}</span>
+                  </div>
+                  <a
+                    href={blogPosts[1].link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 text-xs text-white hover:text-white/80 transition-colors bg-white/15 hover:bg-white/25 px-2.5 py-1 rounded-lg backdrop-blur-sm font-medium"
+                  >
+                    Read more <ExternalLink className="h-3 w-3" />
+                  </a>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {/* Empty placeholder if needed */}
+        <div className="lg:col-span-1 h-full">
+          {/* Could add another widget here in the future */}
+        </div>
+      </div>
+
+      {/* Old blog posts section - Remove */}
+      <div className="hidden">
         {blogPosts.length > 0 && (
           <div className="lg:col-span-2 h-full grid grid-cols-1 md:grid-cols-2 gap-3 min-h-0">
-            {blogPosts.map((blogPost) => (
+            {blogPosts.slice(2).map((blogPost) => (
               <Card key={blogPost.id} className="w-full shadow-xl border-0 overflow-hidden relative rounded h-full min-h-0">
                 {/* Featured image as background */}
                 {blogPost.featured_image && (
@@ -440,10 +582,6 @@ export function WelcomeBento({ userId, onNavigate }: WelcomeBentoProps) {
           </div>
         )}
 
-        {/* App Launcher - Right (horizontal buttons) - 1/3 width */}
-        <div className="lg:col-span-1 h-full">
-          <AppLauncher onNavigate={onNavigate} />
-        </div>
       </div>
 
       {/* Announcement Modal */}

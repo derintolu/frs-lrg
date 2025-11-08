@@ -59,8 +59,8 @@ export function PartnershipsOverview({ userId, currentUser }: PartnershipsOvervi
         ]);
 
         setStats(statsData);
-        setPartners(partnersData);
-        setPartnerships(partnershipsData);
+        setPartners(Array.isArray(partnersData) ? partnersData : []);
+        setPartnerships(Array.isArray(partnershipsData) ? partnershipsData : []);
 
       } catch (err) {
         setError('Failed to load dashboard data');
@@ -129,6 +129,7 @@ export function PartnershipsOverview({ userId, currentUser }: PartnershipsOvervi
   };
 
   const getPartnershipStatus = (partnerId: string): 'active' | 'pending' | 'inactive' => {
+    if (!Array.isArray(partnerships)) return 'inactive';
     const partnership = partnerships.find(p => p.realtorId === partnerId);
     return partnership?.status || 'inactive';
   };

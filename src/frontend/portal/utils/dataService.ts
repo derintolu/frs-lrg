@@ -144,13 +144,13 @@ declare global {
 
 class DataService {
   private static getBaseUrl(): string {
-    return (window as any).frsPortalConfig?.apiUrl || '/wp-json/lrh/v1/';
+    return (window as any).frsPortalConfig?.apiUrl || '/wp-json/frs/v1/';
   }
 
   // Get WordPress localized data
   private static getWpData() {
     return window.frsPortalConfig || {
-      apiUrl: '/wp-json/lrh/v1/',
+      apiUrl: '/wp-json/frs/v1/',
       restNonce: '',
       userId: 0,
       userName: '',
@@ -416,7 +416,10 @@ class DataService {
   static async getPartnersForLO(userId: string): Promise<User[]> {
     try {
       const response = await this.request(`/partners/lo/${userId}`);
-      return response || [];
+      if (response && response.success && Array.isArray(response.data)) {
+        return response.data;
+      }
+      return Array.isArray(response) ? response : [];
     } catch (error) {
       console.warn('Failed to fetch partners, showing empty state');
       return [];
@@ -426,7 +429,10 @@ class DataService {
   static async getPartnershipsForLO(userId: string): Promise<Partnership[]> {
     try {
       const response = await this.request(`/partnerships/lo/${userId}`);
-      return response || [];
+      if (response && response.success && Array.isArray(response.data)) {
+        return response.data;
+      }
+      return Array.isArray(response) ? response : [];
     } catch (error) {
       console.warn('Failed to fetch partnerships, showing empty state');
       return [];
@@ -468,10 +474,42 @@ class DataService {
   static async getLeadsForLO(userId: string): Promise<Lead[]> {
     try {
       const response = await this.request(`/leads/lo/${userId}`);
-      return response || [];
+      if (response && response.success && Array.isArray(response.data)) {
+        // Map API response (snake_case) to Lead interface (camelCase)
+        return response.data.map((lead: any) => ({
+          id: lead.id?.toString() || '',
+          firstName: lead.first_name || '',
+          lastName: lead.last_name || '',
+          email: lead.email || '',
+          phone: lead.phone || '',
+          status: lead.status || 'new',
+          source: lead.lead_source || 'Unknown',
+          loanAmount: lead.loan_amount ? parseFloat(lead.loan_amount) : 0,
+          propertyValue: lead.property_value ? parseFloat(lead.property_value) : 0,
+          propertyAddress: lead.property_address || '',
+          message: lead.message || '',
+          notes: lead.notes || '',
+          createdAt: lead.created_date || new Date().toISOString(),
+          lastContact: lead.updated_date || null
+        }));
+      }
+      return [];
     } catch (error) {
       console.warn('Failed to fetch leads, showing empty state');
       return [];
+    }
+  }
+
+  static async createLead(leadData: any): Promise<any> {
+    try {
+      const response = await this.request('/leads', {
+        method: 'POST',
+        body: JSON.stringify(leadData)
+      });
+      return response;
+    } catch (error) {
+      console.error('Failed to create lead:', error);
+      throw error;
     }
   }
 

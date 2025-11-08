@@ -9,13 +9,13 @@ interface ToggleButtonProps {
 
 export function ToggleButton({ options, value, onChange, className = '' }: ToggleButtonProps) {
   return (
-    <div className={`inline-flex rounded-lg border border-gray-200 bg-white p-1 ${className}`}>
+    <div className={`inline-flex rounded-lg border border-gray-200 bg-white ${className}`}>
       {options.map((option) => (
         <button
           key={option}
           type="button"
           onClick={() => onChange(option)}
-          className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${
+          className={`px-3 py-1 text-sm font-semibold rounded-md transition-colors ${
             value === option
               ? 'bg-gradient-to-r from-[var(--brand-primary-blue)] to-[var(--brand-rich-teal)] text-white'
               : 'text-gray-700 hover:bg-gray-50'

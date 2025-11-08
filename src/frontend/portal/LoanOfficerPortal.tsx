@@ -15,6 +15,36 @@ export default function LoanOfficerPortal(config: LoanOfficerPortalConfig) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Remove WordPress/theme margins and width constraints on mobile for edge-to-edge layout
+  useEffect(() => {
+    const applyMobileStyles = () => {
+      const root = document.getElementById('lrh-portal-root') || document.getElementById('frs-partnership-portal-root');
+      if (!root) return;
+
+      if (window.innerWidth <= 767) {
+        root.style.setProperty('margin-left', '0', 'important');
+        root.style.setProperty('margin-right', '0', 'important');
+        root.style.setProperty('width', '100%', 'important');
+        root.style.setProperty('max-width', '100%', 'important');
+      } else {
+        root.style.removeProperty('margin-left');
+        root.style.removeProperty('margin-right');
+        root.style.removeProperty('width');
+        root.style.removeProperty('max-width');
+      }
+    };
+
+    // Apply immediately
+    applyMobileStyles();
+
+    // Apply on window resize
+    window.addEventListener('resize', applyMobileStyles);
+
+    return () => {
+      window.removeEventListener('resize', applyMobileStyles);
+    };
+  }, []);
+
   useEffect(() => {
     const loadUser = async () => {
       try {

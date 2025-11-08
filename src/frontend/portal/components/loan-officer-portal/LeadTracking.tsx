@@ -9,6 +9,15 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '.
 import { Switch } from '../ui/switch';
 import { Label } from '../ui/label';
 import { Separator } from '../ui/separator';
+import { Textarea } from '../ui/textarea';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '../ui/dialog';
 import {
   Search,
   Filter,
@@ -26,7 +35,8 @@ import {
   CheckCircle,
   Users,
   Zap,
-  XCircle
+  XCircle,
+  Sparkles
 } from 'lucide-react';
 // import { useLeads } from '../../hooks/useLeads'; // To be implemented
 import { DataService } from '../../utils/dataService';
@@ -48,6 +58,12 @@ export function LeadTracking({ userId }: LeadTrackingProps) {
   // Real leads data from API
   const [leads, setLeads] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Add Lead Dialog
+  const [addLeadOpen, setAddLeadOpen] = useState(false);
+  const [leadText, setLeadText] = useState('');
+  const [parsedLead, setParsedLead] = useState<any>(null);
+  const [saving, setSaving] = useState(false);
 
   // Load leads data on component mount
   useEffect(() => {
@@ -76,6 +92,104 @@ export function LeadTracking({ userId }: LeadTrackingProps) {
       setLeads(leadsData || []);
     } catch (err) {
       console.error('Failed to refresh leads:', err);
+    }
+  };
+
+  // Smart text parsing function
+  const parseLeadText = (text: string) => {
+    const parsed: any = {
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+      loanAmount: '',
+      propertyAddress: '',
+      notes: text
+    };
+
+    // Email regex
+    const emailMatch = text.match(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/);
+    if (emailMatch) {
+      parsed.email = emailMatch[0];
+    }
+
+    // Phone regex (various formats)
+    const phoneMatch = text.match(/(\+?1[-.]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}/);
+    if (phoneMatch) {
+      parsed.phone = phoneMatch[0];
+    }
+
+    // Dollar amounts (for loan amount)
+    const dollarMatch = text.match(/\$[\d,]+(?:\.\d{2})?/);
+    if (dollarMatch) {
+      parsed.loanAmount = dollarMatch[0].replace(/[$,]/g, '');
+    }
+
+    // Name extraction (first line or before email/phone)
+    const lines = text.split('\n').filter(l => l.trim());
+    if (lines.length > 0) {
+      const firstLine = lines[0].trim();
+      // Check if first line looks like a name (2-3 words, no special chars except spaces)
+      if (/^[A-Za-z\s]{2,50}$/.test(firstLine) && firstLine.split(' ').length <= 3) {
+        const nameParts = firstLine.split(' ');
+        if (nameParts.length >= 2) {
+          parsed.firstName = nameParts[0];
+          parsed.lastName = nameParts.slice(1).join(' ');
+        } else if (nameParts.length === 1) {
+          parsed.firstName = nameParts[0];
+        }
+      }
+    }
+
+    // Address extraction (look for street addresses)
+    const addressMatch = text.match(/\d+\s+[A-Za-z\s]+(?:Street|St|Avenue|Ave|Road|Rd|Drive|Dr|Lane|Ln|Boulevard|Blvd|Court|Ct|Way)[,\s]+[A-Za-z\s]+(?:,\s*[A-Z]{2}\s*\d{5})?/i);
+    if (addressMatch) {
+      parsed.propertyAddress = addressMatch[0];
+    }
+
+    return parsed;
+  };
+
+  // Parse text whenever it changes
+  useEffect(() => {
+    if (leadText.trim()) {
+      setParsedLead(parseLeadText(leadText));
+    } else {
+      setParsedLead(null);
+    }
+  }, [leadText]);
+
+  // Save lead handler
+  const handleSaveLead = async () => {
+    if (!parsedLead || !userId) return;
+
+    try {
+      setSaving(true);
+      await DataService.createLead({
+        loan_officer_id: parseInt(userId),
+        first_name: parsedLead.firstName,
+        last_name: parsedLead.lastName,
+        email: parsedLead.email,
+        phone: parsedLead.phone,
+        loan_amount: parsedLead.loanAmount ? parseFloat(parsedLead.loanAmount) : null,
+        property_address: parsedLead.propertyAddress,
+        notes: parsedLead.notes,
+        lead_source: 'manual_entry',
+        status: 'new'
+      });
+
+      // Refresh leads list
+      await refetch();
+
+      // Close dialog and reset
+      setAddLeadOpen(false);
+      setLeadText('');
+      setParsedLead(null);
+    } catch (error) {
+      console.error('Failed to save lead:', error);
+      alert('Failed to save lead. Please try again.');
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -149,6 +263,7 @@ export function LeadTracking({ userId }: LeadTrackingProps) {
             Export
           </Button>
           <Button
+            onClick={() => setAddLeadOpen(true)}
             style={{ backgroundColor: 'var(--brand-electric-blue)' }}
             className="text-white border-0 hover:opacity-90 transition-opacity"
           >
@@ -219,7 +334,7 @@ export function LeadTracking({ userId }: LeadTrackingProps) {
       {/* Leads Table */}
       <Card>
         <CardHeader>
-          <CardTitle>Leads ({leads.length})</CardTitle>
+          <CardTitle>Leads ({leadsArray.length})</CardTitle>
           <CardDescription>Detailed view of all your leads and their status</CardDescription>
         </CardHeader>
         <CardContent>
@@ -230,7 +345,7 @@ export function LeadTracking({ userId }: LeadTrackingProps) {
                 <p className="text-sm text-muted-foreground">Loading leads...</p>
               </div>
             </div>
-          ) : leads.length === 0 ? (
+          ) : leadsArray.length === 0 ? (
             <div className="flex items-center justify-center py-12">
               <div className="text-center space-y-2">
                 <User className="size-12 text-muted-foreground mx-auto" />
@@ -251,7 +366,7 @@ export function LeadTracking({ userId }: LeadTrackingProps) {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {leads.map((lead) => (
+                {leadsArray.map((lead) => (
                   <TableRow key={lead.id}>
                     <TableCell>
                       <div>
@@ -473,6 +588,115 @@ export function LeadTracking({ userId }: LeadTrackingProps) {
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* Add Lead Dialog */}
+      <Dialog open={addLeadOpen} onOpenChange={setAddLeadOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Sparkles className="size-5 text-[var(--brand-electric-blue)]" />
+              Add New Lead
+            </DialogTitle>
+            <DialogDescription>
+              Paste any text containing lead information. Our AI will automatically extract names, email, phone, and other details.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="lead-text">Lead Information</Label>
+              <Textarea
+                id="lead-text"
+                placeholder="Paste lead info here... Example:&#10;&#10;John Smith&#10;john.smith@email.com&#10;555-123-4567&#10;Looking for $350,000 loan&#10;123 Main St, Dallas TX"
+                value={leadText}
+                onChange={(e) => setLeadText(e.target.value)}
+                className="min-h-[150px] font-mono text-sm"
+              />
+            </div>
+
+            {parsedLead && (
+              <div className="rounded-lg border-2 border-dashed border-[var(--brand-electric-blue)]/30 bg-[var(--brand-electric-blue)]/5 p-4">
+                <div className="flex items-center gap-2 mb-3">
+                  <Sparkles className="size-4 text-[var(--brand-electric-blue)]" />
+                  <span className="font-semibold text-sm" style={{ color: 'var(--brand-electric-blue)' }}>
+                    Extracted Information
+                  </span>
+                </div>
+                <div className="grid grid-cols-2 gap-3 text-sm">
+                  {parsedLead.firstName && (
+                    <div>
+                      <span className="text-muted-foreground">First Name:</span>
+                      <span className="ml-2 font-medium">{parsedLead.firstName}</span>
+                    </div>
+                  )}
+                  {parsedLead.lastName && (
+                    <div>
+                      <span className="text-muted-foreground">Last Name:</span>
+                      <span className="ml-2 font-medium">{parsedLead.lastName}</span>
+                    </div>
+                  )}
+                  {parsedLead.email && (
+                    <div className="col-span-2">
+                      <span className="text-muted-foreground">Email:</span>
+                      <span className="ml-2 font-medium">{parsedLead.email}</span>
+                    </div>
+                  )}
+                  {parsedLead.phone && (
+                    <div>
+                      <span className="text-muted-foreground">Phone:</span>
+                      <span className="ml-2 font-medium">{parsedLead.phone}</span>
+                    </div>
+                  )}
+                  {parsedLead.loanAmount && (
+                    <div>
+                      <span className="text-muted-foreground">Loan Amount:</span>
+                      <span className="ml-2 font-medium">${parseFloat(parsedLead.loanAmount).toLocaleString()}</span>
+                    </div>
+                  )}
+                  {parsedLead.propertyAddress && (
+                    <div className="col-span-2">
+                      <span className="text-muted-foreground">Address:</span>
+                      <span className="ml-2 font-medium">{parsedLead.propertyAddress}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setAddLeadOpen(false);
+                setLeadText('');
+                setParsedLead(null);
+              }}
+              disabled={saving}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleSaveLead}
+              disabled={!parsedLead || saving}
+              style={{ backgroundColor: 'var(--brand-electric-blue)' }}
+              className="text-white border-0 hover:opacity-90 transition-opacity"
+            >
+              {saving ? (
+                <>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                  Saving...
+                </>
+              ) : (
+                <>
+                  <Plus className="size-4 mr-2" />
+                  Add Lead
+                </>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

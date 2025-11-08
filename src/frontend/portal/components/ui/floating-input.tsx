@@ -5,10 +5,11 @@ export interface FloatingInputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
   label: string
   icon?: React.ReactNode
+  rightElement?: React.ReactNode
 }
 
 const FloatingInput = React.forwardRef<HTMLInputElement, FloatingInputProps>(
-  ({ className, type, label, icon, value, ...props }, ref) => {
+  ({ className, type, label, icon, value, rightElement, ...props }, ref) => {
     const [isFocused, setIsFocused] = React.useState(false);
     const hasValue = value !== undefined && value !== null && value !== '';
     const shouldFloat = isFocused || hasValue;
@@ -18,9 +19,8 @@ const FloatingInput = React.forwardRef<HTMLInputElement, FloatingInputProps>(
         <div
           className="flex items-center gap-2 rounded-md px-3 py-3 transition-all duration-200 relative bg-white"
           style={{
-            border: shouldFloat
-              ? '2px solid transparent'
-              : '1px solid #d1d5db',
+            border: '2px solid transparent',
+            borderColor: shouldFloat ? 'transparent' : '#d1d5db',
             backgroundImage: shouldFloat
               ? 'linear-gradient(white, white), linear-gradient(135deg, #2563eb 0%, #2dd4da 100%)'
               : 'none',
@@ -51,7 +51,10 @@ const FloatingInput = React.forwardRef<HTMLInputElement, FloatingInputProps>(
             style={{
               border: 'none',
               boxShadow: 'none !important',
-              outline: 'none !important'
+              outline: 'none !important',
+              height: '24px',
+              lineHeight: '24px',
+              paddingRight: rightElement ? '100px' : '0'
             }}
             ref={ref}
             placeholder=" "
@@ -63,6 +66,11 @@ const FloatingInput = React.forwardRef<HTMLInputElement, FloatingInputProps>(
             onBlur={() => setIsFocused(false)}
             {...props}
           />
+          {rightElement && (
+            <div className="absolute right-2 top-[14px] bottom-[14px] flex items-center z-20">
+              {rightElement}
+            </div>
+          )}
           <label
             className="absolute text-sm pointer-events-none transition-all duration-200 origin-left"
             style={{

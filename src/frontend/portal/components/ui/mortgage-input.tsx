@@ -10,6 +10,7 @@ export interface MortgageInputProps {
   step?: string
   min?: number
   defaultValue?: number
+  rightElement?: React.ReactNode
 }
 
 export function MortgageInput({
@@ -19,7 +20,8 @@ export function MortgageInput({
   onChange,
   step,
   min,
-  defaultValue = 0
+  defaultValue = 0,
+  rightElement
 }: MortgageInputProps) {
   const handleFocus = () => {
     if (value === '' || value === 0) {
@@ -47,6 +49,7 @@ export function MortgageInput({
       onFocus={handleFocus}
       step={step}
       min={min}
+      rightElement={rightElement}
     />
   );
 }

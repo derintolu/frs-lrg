@@ -118,8 +118,8 @@ export function BiolinkMarketing({ userId, currentUser }: BiolinkMarketingProps)
     }
   ];
 
-  // QR Code URL (using free API) - higher resolution for clarity
-  const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${encodeURIComponent(biolinkUrl)}`;
+  // QR Code URL (using free API) - high resolution 600x600 for better quality
+  const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=600x600&data=${encodeURIComponent(biolinkUrl)}`;
 
   // Helper to get time ago
   const getTimeAgo = (date: string) => {
@@ -136,81 +136,97 @@ export function BiolinkMarketing({ userId, currentUser }: BiolinkMarketingProps)
   };
 
   return (
-    <div className="p-4">
+    <div className="max-md:p-0 md:p-4">
       {/* Single Grid: Left Column (cards) + Right Column (phone) */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 md:grid-cols-3 max-md:gap-0 md:gap-3">
 
         {/* Left Column - All Cards */}
-        <div className="col-span-1 space-y-3 flex flex-col h-full">
+        <div className="col-span-1 max-md:space-y-0 md:space-y-3 flex flex-col h-full">
 
-          {/* Share URL Card */}
-          <Card className="shadow-md" style={{ background: 'white', border: '1px solid var(--brand-powder-blue)' }}>
-            <CardContent className="p-3">
-              <div className="flex items-center gap-2 mb-2">
-                <Globe className="h-3.5 w-3.5" style={{ color: 'var(--brand-steel-blue)' }} />
-                <span className="text-xs font-semibold" style={{ color: 'var(--brand-dark-navy)' }}>Share Your Biolink</span>
-              </div>
-              <a
-                href={biolinkUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-xs hover:underline truncate block mb-2"
-                style={{ color: 'var(--brand-electric-blue)' }}
-              >
-                {biolinkUrl}
-              </a>
-              <div className="flex gap-2">
+          {/* Share Biolink Card - Combined */}
+          <Card className="shadow-md max-md:rounded-none" style={{ background: 'linear-gradient(135deg, #1a1a2e 0%, #0f0f1e 100%)' }}>
+            <CardContent className="p-4">
+              {/* QR Code Section */}
+              <div className="flex flex-col items-center gap-3 mb-4">
+                <div className="flex items-center gap-2">
+                  <QrCode className="h-4 w-4 text-white" />
+                  <span className="text-sm font-semibold text-white">QR Code</span>
+                </div>
+                <div
+                  className="p-[3px] rounded-lg"
+                  style={{
+                    background: 'linear-gradient(135deg, #2563eb 0%, #2dd4da 100%)'
+                  }}
+                >
+                  <div className="p-[10px] rounded-md" style={{ background: 'linear-gradient(135deg, #1a1a2e 0%, #0f0f1e 100%)' }}>
+                    <div className="bg-white p-2 rounded">
+                      <img
+                        src={qrCodeUrl}
+                        alt="QR Code"
+                        className="w-48 h-48"
+                      />
+                    </div>
+                  </div>
+                </div>
                 <Button
                   size="sm"
                   variant="outline"
-                  className="text-xs h-7 flex-1 font-semibold"
+                  className="text-xs h-7 px-3 w-full font-semibold bg-white/10 border-white/20 text-white hover:bg-white/20"
                   onClick={() => {
-                    navigator.clipboard.writeText(biolinkUrl);
+                    const link = document.createElement('a');
+                    link.href = qrCodeUrl;
+                    link.download = 'biolink-qr-code.png';
+                    link.click();
                   }}
                 >
-                  Copy Link
-                </Button>
-                <Button
-                  size="sm"
-                  className="text-xs h-7 flex-1 font-semibold"
-                  style={{ background: 'var(--gradient-hero)', color: 'white' }}
-                  onClick={() => window.open(biolinkUrl, '_blank')}
-                >
-                  <ExternalLink className="h-3 w-3 mr-1" />
-                  View Live
+                  <Download className="h-3 w-3 mr-1" />
+                  Download QR
                 </Button>
               </div>
-            </CardContent>
-          </Card>
 
-          {/* QR Code Card */}
-          <Card className="overflow-hidden shadow-md" style={{ background: 'var(--brand-pale-blue)', border: '1px solid var(--brand-powder-blue)' }}>
-            <CardContent className="p-4 flex flex-col items-center gap-3">
-              <div className="flex items-center gap-2">
-                <QrCode className="h-4 w-4" style={{ color: 'var(--brand-steel-blue)' }} />
-                <span className="text-sm font-semibold" style={{ color: 'var(--brand-dark-navy)' }}>QR Code</span>
+              {/* Share URL Section */}
+              <div className="pt-4 border-t border-white/10">
+                <div className="flex items-center gap-2 mb-2">
+                  <Globe className="h-3.5 w-3.5 text-white" />
+                  <span className="text-xs font-semibold text-white">Share Your Biolink</span>
+                </div>
+                <a
+                  href={biolinkUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs hover:underline truncate block mb-3"
+                  style={{ color: '#2dd4da' }}
+                >
+                  {biolinkUrl}
+                </a>
+                <div className="flex gap-2">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="text-xs h-7 flex-1 font-semibold bg-white/10 border-white/20 text-white hover:bg-white/20"
+                    onClick={() => {
+                      navigator.clipboard.writeText(biolinkUrl);
+                    }}
+                  >
+                    Copy Link
+                  </Button>
+                  <Button
+                    size="sm"
+                    className="text-xs h-7 flex-1 font-semibold text-white border-0"
+                    style={{ background: 'linear-gradient(135deg, #2563eb 0%, #2dd4da 100%)' }}
+                    onClick={() => window.open(biolinkUrl, '_blank')}
+                  >
+                    <ExternalLink className="h-3 w-3 mr-1" />
+                    View Live
+                  </Button>
+                </div>
               </div>
-              <img src={qrCodeUrl} alt="QR Code" className="w-48 h-48 rounded-lg shadow-md" />
-              <Button
-                size="sm"
-                variant="outline"
-                className="text-xs h-7 px-3 w-full font-semibold"
-                onClick={() => {
-                  const link = document.createElement('a');
-                  link.href = qrCodeUrl;
-                  link.download = 'biolink-qr-code.png';
-                  link.click();
-                }}
-              >
-                <Download className="h-3 w-3 mr-1" />
-                Download QR
-              </Button>
             </CardContent>
           </Card>
 
           {/* View Leads Button - Mobile Only */}
           <Button
-            className="md:hidden w-full h-12 font-semibold"
+            className="md:hidden w-full h-12 font-semibold rounded-none"
             style={{ background: 'var(--gradient-hero)', color: 'white' }}
             onClick={() => window.location.hash = '#leads'}
           >

@@ -2,6 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Remove WordPress/theme margins on portal root for mobile */
+@media (max-width: 767px) {
+  #lrh-portal-root,
+  #frs-partnership-portal-root {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+}
+
 /* Custom CSS variables for branding */
 :root {
   /* Primary Brand Colors */
@@ -276,6 +285,14 @@ body.frs-portal-page main {
   list-style: none !important;
   padding-left: 0 !important;
   margin: 0 !important;
+}
+
+/* Mobile sidebar white background */
+[data-sidebar="sidebar"][data-mobile="true"],
+[data-slot="sheet-content"][data-sidebar="sidebar"],
+#frs-mobile-sidebar {
+  background: white !important;
+  background-color: white !important;
 }
 
 /* Fix sidebar overflow - ensure NavUser is always visible at bottom */
