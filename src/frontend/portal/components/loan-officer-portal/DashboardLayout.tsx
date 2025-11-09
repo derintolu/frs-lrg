@@ -246,7 +246,7 @@ export function DashboardLayout({ currentUser }: DashboardLayoutProps) {
   );
 
   const handleItemClick = (item: MenuItem) => {
-    navigate(`/${item.id}`);
+    navigate(item.id);
   };
 
   return (
