@@ -152,6 +152,16 @@
   .bg-gradient-brand-blue { background: var(--gradient-brand-blue); }
   .bg-gradient-brand-teal { background: var(--gradient-brand-teal); }
   .bg-gradient-brand-navy { background: var(--gradient-brand-navy); }
+
+  /* Shimmer animation */
+  @keyframes shimmer {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
 }
 
 /* ==================== REMOVE ALL HOVER LINES FROM FORM FIELDS ==================== */

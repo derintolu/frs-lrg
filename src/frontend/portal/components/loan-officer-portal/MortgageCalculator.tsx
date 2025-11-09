@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent } from '../ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-import { Calculator, User, Mail } from 'lucide-react';
+import { Calculator, User, Mail, Phone } from 'lucide-react';
 import { PageHeader } from './PageHeader';
 import {
   ConventionalCalculator,
@@ -17,13 +17,14 @@ import {
 // Loan Officer Profile Component
 function LoanOfficerProfile() {
   const [nmls, setNmls] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const userName = (window as any).frsPortalConfig?.userName || '';
   const userEmail = (window as any).frsPortalConfig?.userEmail || '';
   const userAvatar = (window as any).frsPortalConfig?.userAvatar || '';
   const userId = (window as any).frsPortalConfig?.userId || '';
 
   useEffect(() => {
-    // Fetch NMLS from frs-users profile
+    // Fetch NMLS and phone from frs-users profile
     if (userId) {
       fetch(`/wp-json/frs-users/v1/profiles/by-user/${userId}`, {
         credentials: 'same-origin',
@@ -33,11 +34,20 @@ function LoanOfficerProfile() {
       })
         .then(res => res.json())
         .then(data => {
-          if (data && (data.nmls || data.nmls_number)) {
-            setNmls(data.nmls || data.nmls_number);
+          if (data) {
+            // Set NMLS
+            if (data.nmls || data.nmls_number) {
+              setNmls(data.nmls || data.nmls_number);
+            }
+            // Set phone (prefer mobile, fallback to phone_number)
+            if (data.mobile_number) {
+              setPhoneNumber(data.mobile_number);
+            } else if (data.phone_number) {
+              setPhoneNumber(data.phone_number);
+            }
           }
         })
-        .catch(err => console.error('Failed to fetch NMLS:', err));
+        .catch(err => console.error('Failed to fetch profile:', err));
     }
   }, [userId]);
 
@@ -74,15 +84,23 @@ function LoanOfficerProfile() {
           >
             {userName}
           </h3>
-          {nmls && (
-            <p className="text-sm text-muted-foreground mt-1">NMLS# {nmls}</p>
-          )}
-          {userEmail && (
-            <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
-              <Mail className="w-3 h-3" />
-              <span>{userEmail}</span>
-            </div>
-          )}
+          <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2">
+            {nmls && (
+              <p className="text-sm text-muted-foreground">NMLS# {nmls}</p>
+            )}
+            {phoneNumber && (
+              <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                <Phone className="w-3 h-3" />
+                <span>{phoneNumber}</span>
+              </div>
+            )}
+            {userEmail && (
+              <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                <Mail className="w-3 h-3" />
+                <span>{userEmail}</span>
+              </div>
+            )}
+          </div>
         </div>
       </CardContent>
     </Card>
@@ -127,7 +145,7 @@ export function MortgageCalculator() {
         </div>
 
         {/* Desktop: Tabs */}
-        <TabsList className="hidden md:grid w-full grid-cols-7 mb-6">
+        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 mb-6 gap-1">
           <TabsTrigger value="conventional">Payment</TabsTrigger>
           <TabsTrigger value="affordability">Affordability</TabsTrigger>
           <TabsTrigger value="buydown">Buydown</TabsTrigger>
