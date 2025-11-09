@@ -91,7 +91,7 @@ function LoanOfficerProfile() {
             {userName}
           </h3>
           {jobTitle && (
-            <p className="text-base text-muted-foreground mt-1">{jobTitle}</p>
+            <p className="text-base font-semibold text-muted-foreground mt-1">{jobTitle}</p>
           )}
           <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2">
             {nmls && (
