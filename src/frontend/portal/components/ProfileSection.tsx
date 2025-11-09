@@ -594,13 +594,30 @@ export function ProfileSection({ userRole, userId, activeTab: externalActiveTab,
           {/* Figma Profile Card - Wider, Left-Aligned */}
           <Card className="shadow-lg rounded-sm border border-gray-200 max-w-3xl">
             <div
-              className="p-8 relative"
+              className="p-8 relative overflow-hidden"
               style={{
-                background: 'linear-gradient(180deg, #2563eb 0%, #2dd4da 50%, #F4F4F5 50%, #F4F4F5 100%)',
+                background: '#F4F4F5',
               }}
             >
+              {/* Gradient Video Background - Blurred */}
+              <div className="absolute top-0 left-0 right-0 w-full overflow-hidden" style={{ height: '130px' }}>
+                <video
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="w-full h-full object-cover"
+                  style={{
+                    filter: 'blur(30px)',
+                    transform: 'scale(1.2)'
+                  }}
+                >
+                  <source src={(window as any).frsPortalConfig?.gradientUrl} type="video/mp4" />
+                </video>
+              </div>
+
               {/* Avatar with Gradient Border - Flip Card */}
-              <div className="mb-6 relative" style={{ perspective: '1000px', width: '156px' }}>
+              <div className="mb-6 relative z-10" style={{ perspective: '1000px', width: '156px' }}>
                 <div
                   className="relative transition-transform duration-700"
                   style={{
@@ -690,7 +707,7 @@ export function ProfileSection({ userRole, userId, activeTab: externalActiveTab,
 
               {/* Name */}
               {isEditing ? (
-                <div className="grid grid-cols-2 gap-2 mb-4">
+                <div className="grid grid-cols-2 gap-2 mb-4 relative z-10">
                   <FloatingInput
                     id="firstName-profile"
                     label="First Name"
@@ -707,14 +724,14 @@ export function ProfileSection({ userRole, userId, activeTab: externalActiveTab,
                   />
                 </div>
               ) : (
-                <h3 className="text-[34px] font-bold text-[#1A1A1A] mb-2" style={{ fontFamily: 'Roboto, sans-serif' }}>
+                <h3 className="text-[34px] font-bold text-[#1A1A1A] mb-2 relative z-10" style={{ fontFamily: 'Roboto, sans-serif' }}>
                   {profileData.firstName} {profileData.lastName}
                 </h3>
               )}
 
               {/* Job Title and Company */}
               {!isEditing && (
-                <div className="mb-2">
+                <div className="mb-2 relative z-10">
                   <p className="text-base text-[#1D4FC4]" style={{ fontFamily: 'Roboto, sans-serif' }}>
                     {profileData.title || (userRole === 'loan-officer' ? 'Loan Officer' : 'Realtor Partner')}
                     {profileData.company && <span>, </span>}
@@ -725,7 +742,7 @@ export function ProfileSection({ userRole, userId, activeTab: externalActiveTab,
 
               {/* Location */}
               {!isEditing && profileData.location && (
-                <div className="flex items-center gap-2 mb-4">
+                <div className="flex items-center gap-2 mb-4 relative z-10">
                   <MapPin className="h-4 w-4 text-[#1D4FC4]" />
                   <span className="text-base text-[#1D4FC4]" style={{ fontFamily: 'Roboto, sans-serif' }}>
                     {profileData.location}
@@ -735,7 +752,7 @@ export function ProfileSection({ userRole, userId, activeTab: externalActiveTab,
 
               {/* Social Media Icons Row */}
               {!isEditing && (profileData.linkedin || profileData.facebook || profileData.instagram || profileData.twitter || profileData.youtube || profileData.website) && (
-                <div className="flex items-center gap-3 mb-4">
+                <div className="flex items-center gap-3 mb-4 relative z-10">
                   {profileData.linkedin && (
                     <a href={profileData.linkedin} target="_blank" rel="noopener noreferrer">
                       <Linkedin className="h-6 w-6 text-[#1A1A1A] hover:text-[#2563eb] transition-colors" />
@@ -771,7 +788,7 @@ export function ProfileSection({ userRole, userId, activeTab: externalActiveTab,
 
               {/* Bio Preview or Placeholder */}
               {!isEditing && (
-                <div className="mb-4">
+                <div className="mb-4 relative z-10">
                   <p
                     className={`text-base ${profileData.bio ? 'text-[#1E1E1E]' : 'text-[#1E1E1E] opacity-50'}`}
                     style={{

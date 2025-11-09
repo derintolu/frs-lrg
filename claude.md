@@ -12,6 +12,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 🚨 CRITICAL RULES 🚨
 
+### 0. NEVER MAKE CHANGES WITHOUT EXPLICIT INSTRUCTION
+
+**MANDATORY - Do NOT make any changes unless the user explicitly tells you to:**
+
+- Do NOT revert files with git checkout/restore unless specifically asked
+- Do NOT rebuild or restructure code unless specifically asked
+- Do NOT guess what the user wants - ASK FIRST
+- If unsure what to do, ASK instead of doing anything
+- Wait for explicit confirmation before making ANY changes
+
 ### 1. RESEARCH-FIRST APPROACH
 
 **MANDATORY - Before making ANY changes:**
