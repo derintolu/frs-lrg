@@ -26,6 +26,12 @@ interface RouteConfig {
 export const createRouter = (config: RouteConfig) => {
   const { currentUser, userId, userRole } = config;
 
+  // Ensure the current URL has a trailing slash before the hash
+  if (window.location.pathname && !window.location.pathname.endsWith('/')) {
+    const newUrl = window.location.pathname + '/' + window.location.hash;
+    window.history.replaceState(null, '', newUrl);
+  }
+
   return createHashRouter([
     {
       path: '/',
