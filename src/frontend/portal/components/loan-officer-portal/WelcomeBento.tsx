@@ -203,14 +203,18 @@ export function WelcomeBento({ userId, onNavigate }: WelcomeBentoProps) {
   }
 
   return (
-    <div className="space-y-3 max-w-full h-full overflow-hidden max-md:p-[10px] md:p-0">
-      {/* Row 1: Welcome/Clock (1 col) | Market Matters (2 cols) */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
-        {/* Welcome Header + Clock/Calendar - 1 column */}
-        <div className="lg:col-span-1 h-full space-y-3 flex flex-col">
-          {/* Welcome Header - Black Gradient */}
+    <div className="max-w-full h-full overflow-hidden max-md:p-[10px] md:p-0">
+      {/* Main Grid: Left content (70%) | Right sidebar (30%) spanning 2 rows */}
+      <div className="grid grid-cols-1 lg:grid-cols-10 gap-3 auto-rows-min">
+        {/* Left Column - 70% (7/10 cols) */}
+        <div className="lg:col-span-7 space-y-3">
+          {/* Row 1: Welcome/Clock | Market Matters */}
+          <div className="grid grid-cols-1 lg:grid-cols-7 gap-3">
+            {/* Welcome Header + Clock/Calendar - 3 columns (30%) */}
+            <div className="lg:col-span-3 h-full space-y-3 flex flex-col">
+          {/* Welcome Header - Brand Navy Gradient */}
           <div className="relative overflow-hidden max-md:rounded-none md:rounded p-4 md:p-6 w-full shadow-xl flex-1 flex items-center" style={{
-            background: 'linear-gradient(135deg, #000000 0%, #1a1a1a 100%)',
+            background: 'var(--gradient-brand-navy)',
           }}>
             <div className="relative z-10 flex flex-col justify-center w-full">
               <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-2">
@@ -228,13 +232,17 @@ export function WelcomeBento({ userId, onNavigate }: WelcomeBentoProps) {
           <div className="grid grid-cols-2 gap-3">
             {/* Clock with AM/PM */}
             <div
-              className="shadow-xl rounded-sm overflow-hidden"
+              className="shadow-xl rounded-sm overflow-hidden p-1"
               style={{
-                background: 'linear-gradient(135deg, var(--brand-primary-blue) 0%, var(--brand-rich-teal) 100%)',
-                paddingTop: '10%'
+                background: 'var(--gradient-hero)',
               }}
             >
-              <div className="flex flex-col items-center justify-center p-4">
+              <div
+                className="rounded-sm flex flex-col items-center justify-center px-4 py-6"
+                style={{
+                  background: 'var(--brand-dark-navy)',
+                }}
+              >
                 <div
                   style={{
                     color: '#ffffff',
@@ -313,22 +321,22 @@ export function WelcomeBento({ userId, onNavigate }: WelcomeBentoProps) {
           </div>
         </div>
 
-        {/* Market Matters Widget - 2 columns */}
-        <div className="lg:col-span-2 h-full">
-          <Card className="relative w-full h-full shadow-xl border-0 overflow-hidden rounded" style={{
-            background: 'linear-gradient(135deg, #000000 0%, #1a1a1a 100%)',
-          }}>
-            <div className="absolute right-1/4 top-0 w-48 h-48 md:w-64 md:h-64 bg-white/15 rounded-full blur-3xl"></div>
-            <div className="absolute left-1/3 -bottom-10 w-40 h-40 md:w-56 md:h-56 bg-white/10 rounded-full blur-3xl"></div>
-            <MarketMattersWidget />
-          </Card>
-        </div>
-      </div>
+            {/* Market Matters Widget - 4 columns (40%) */}
+            <div className="lg:col-span-4 h-full">
+              <Card className="w-full h-full shadow-xl border-0 overflow-hidden rounded" style={{
+                background: 'var(--gradient-hero)',
+              }}>
+                <MarketMattersWidget />
+              </Card>
+            </div>
+          </div>
 
-      {/* Row 2: Announcements (60%) | Toolbox (40%) */}
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-3">
-        {/* Announcements - 60% (3/5) */}
-        <div className="lg:col-span-3 h-full">
+          {/* Row 2: Toolbox */}
+          <AppLauncher onNavigate={onNavigate} />
+        </div>
+
+        {/* Right Sidebar - 30% (3/10 cols) - Spans both rows */}
+        <div className="lg:col-span-3 lg:row-span-2 h-full">
           <Card className="relative w-full h-full shadow-xl border-0 overflow-hidden rounded" style={{
             background: 'linear-gradient(135deg, #000000 0%, #1a1a1a 100%)',
           }}>
@@ -338,59 +346,97 @@ export function WelcomeBento({ userId, onNavigate }: WelcomeBentoProps) {
               <CardTitle className="flex items-center gap-2 text-base md:text-lg">
                 <Bell className="h-4 w-4 md:h-5 md:w-5 text-[#2dd4da]" />
                 <span className="bg-gradient-to-r from-[#2563eb] to-[#2dd4da] bg-clip-text text-transparent">
-                Announcements
+                Updates & News
                 </span>
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-4 md:p-6 pt-3">
-              {announcements.length > 0 ? (
-                <div className="space-y-3">
-                  {announcements.map((announcement) => (
-                    <div
-                      key={announcement.id}
-                      className="p-3 md:p-4 rounded cursor-pointer transition-all hover:shadow-lg backdrop-blur-md bg-white/10 border border-white/20"
-                      onClick={() => {
-                        setSelectedAnnouncement(announcement);
-                        setIsAnnouncementModalOpen(true);
-                      }}
-                    >
-                      <div className="flex items-start justify-between mb-1">
-                        <h4 className="font-semibold text-xs md:text-sm flex-1 bg-gradient-to-r from-[#2563eb] to-[#2dd4da] bg-clip-text text-transparent">
-                          {announcement.title}
+            <CardContent className="p-4 md:p-6 pt-3 overflow-y-auto max-h-[calc(100vh-200px)]">
+              <div className="space-y-4">
+                {/* Announcements Section */}
+                {announcements.length > 0 && (
+                  <div className="space-y-3">
+                    <h3 className="text-xs font-semibold text-white/60 uppercase tracking-wider">Announcements</h3>
+                    {announcements.map((announcement) => (
+                      <div
+                        key={announcement.id}
+                        className="p-3 md:p-4 rounded cursor-pointer transition-all hover:shadow-lg backdrop-blur-md bg-white/10 border border-white/20"
+                        onClick={() => {
+                          setSelectedAnnouncement(announcement);
+                          setIsAnnouncementModalOpen(true);
+                        }}
+                      >
+                        <div className="flex items-start justify-between mb-1">
+                          <h4 className="font-semibold text-xs md:text-sm flex-1 bg-gradient-to-r from-[#2563eb] to-[#2dd4da] bg-clip-text text-transparent">
+                            {announcement.title}
+                          </h4>
+                          {announcement.badge && (
+                            <Badge className="text-white border-0 ml-2 bg-white/20 text-xs px-1.5 py-0">
+                              {announcement.badge}
+                            </Badge>
+                          )}
+                        </div>
+                        <p className="text-white/90 text-xs md:text-sm line-clamp-1 mb-1">
+                          {announcement.excerpt}
+                        </p>
+                        <div className="flex items-center justify-between">
+                          <span className="text-white/70 text-xs font-medium">
+                            {new Date(announcement.date).toLocaleDateString()}
+                          </span>
+                          {announcement.priority === 'high' && (
+                            <div className="w-2 h-2 bg-red-400 rounded-full animate-pulse"></div>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Blog Posts Section */}
+                {blogPosts.length > 0 && (
+                  <div className="space-y-3">
+                    <h3 className="text-xs font-semibold text-white/60 uppercase tracking-wider">Latest Updates</h3>
+                    {blogPosts.map((post) => (
+                      <a
+                        key={post.id}
+                        href={post.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block p-3 md:p-4 rounded transition-all hover:shadow-lg backdrop-blur-md bg-white/10 border border-white/20 hover:bg-white/15 no-underline"
+                      >
+                        <h4 className="font-semibold text-xs md:text-sm bg-gradient-to-r from-[#2563eb] to-[#2dd4da] bg-clip-text text-transparent line-clamp-2 mb-2">
+                          {post.title}
                         </h4>
-                        {announcement.badge && (
-                          <Badge className="text-white border-0 ml-2 bg-white/20 text-xs px-1.5 py-0">
-                            {announcement.badge}
-                          </Badge>
-                        )}
-                      </div>
-                      <p className="text-white/90 text-xs md:text-sm line-clamp-1 mb-1">
-                        {announcement.excerpt}
-                      </p>
-                      <div className="flex items-center justify-between">
-                        <span className="text-white/70 text-xs font-medium">
-                          {new Date(announcement.date).toLocaleDateString()}
-                        </span>
-                        {announcement.priority === 'high' && (
-                          <div className="w-2 h-2 bg-red-400 rounded-full animate-pulse"></div>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-12">
-                  <Bell className="h-16 w-16 mx-auto mb-4 text-white/30" />
-                  <p className="text-white/70">No announcements</p>
-                </div>
-              )}
+                        <p className="text-white/90 text-xs line-clamp-2 mb-2">
+                          {post.excerpt}
+                        </p>
+                        <div className="flex items-center gap-2">
+                          <img
+                            src={post.author_avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(post.author_name || 'Author')}&background=2DD4DA&color=fff&size=96`}
+                            alt={post.author_name}
+                            className="w-5 h-5 rounded-full border border-white/20"
+                          />
+                          <div className="flex-1 flex items-center gap-2 text-xs text-white/70">
+                            <span className="font-medium text-white/90">{post.author_name}</span>
+                            <span>•</span>
+                            <span>{post.date}</span>
+                          </div>
+                          <ExternalLink className="h-3 w-3 text-white/70" />
+                        </div>
+                      </a>
+                    ))}
+                  </div>
+                )}
+
+                {/* Empty State */}
+                {announcements.length === 0 && blogPosts.length === 0 && (
+                  <div className="text-center py-12">
+                    <Bell className="h-16 w-16 mx-auto mb-4 text-white/30" />
+                    <p className="text-white/70">No updates available</p>
+                  </div>
+                )}
+              </div>
             </CardContent>
           </Card>
-        </div>
-
-        {/* Toolbox (App Launcher) - 40% (2/5) */}
-        <div className="lg:col-span-2 h-full">
-          <AppLauncher onNavigate={onNavigate} />
         </div>
       </div>
 

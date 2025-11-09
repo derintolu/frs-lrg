@@ -1,8 +1,12 @@
 # CLAUDE.md
 
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
 **Plugin Name:** Lending Resource Hub (LRH)
 **Architecture:** WordPress Plugin Boilerplate + Eloquent ORM + React + TypeScript + Vite
 **Environment:** Local by Flywheel (hub21.local)
+**Live URL:** https://hub21.local
+**Portal URL:** https://hub21.local/dashboard (requires login)
 
 ---
 
@@ -48,6 +52,18 @@ server: {
   port: 5173,  // 5173 for frontend, 5174 for admin
 }
 ```
+
+### 2.5. PORTAL URL AND LOGIN
+
+**CRITICAL - Portal URL:**
+- Portal is located at: `https://hub21.local/dashboard`
+- **NOT** at `/portal/lo` or `/lo/`
+- **REQUIRES LOGIN** - You must be logged in as a user with `loan_officer` or `realtor_partner` role
+
+**When using Chrome DevTools MCP:**
+1. Navigate to: `https://hub21.local/dashboard`
+2. If not logged in, you'll need to login first
+3. Then you can inspect portal components
 
 ### 3. NEVER BLAME CACHING
 
@@ -98,20 +114,66 @@ Working in the wrong plugin wastes hours of development time. frs-partnership-po
 ## Quick Command Reference
 
 ```bash
-# Development (USE THIS)
+# Development (USE THIS - NOT npm run build)
 npm run dev              # Both frontend + admin with HMR
 npm run dev:frontend     # Frontend only (port 5173)
 npm run dev:admin        # Admin only (port 5174)
 
-# Production build (ONLY WHEN DONE)
+# Production build (ONLY WHEN DONE WITH DEVELOPMENT)
 npm run build            # Build all: frontend + admin + blocks
 npm run block:build      # Gutenberg blocks only
 
-# WordPress commands
+# WordPress CLI commands
 wp plugin activate frs-lrg
-wp db query "SHOW TABLES LIKE 'wp_partnerships'"
+wp plugin deactivate frs-lrg
 wp rewrite flush
+
+# Database queries
+wp db query "SHOW TABLES LIKE 'wp_partnerships'"
+wp db query "SELECT * FROM wp_partnerships LIMIT 5"
+
+# PHP debugging (quick testing without writing files)
+wp eval "echo 'Debug: ' . get_current_user_id();"
+wp eval-file path/to/debug-script.php
+
+# Post type operations
+wp post-type list
+wp post list --post_type=partnership --format=table
+
+# User operations
+wp user list --role=loan_officer
+wp user meta get <user_id> <meta_key>
+
+# Composer operations (after model changes)
+composer dump-autoload
 ```
+
+---
+
+## Development Environment
+
+### Local by Flywheel Setup
+- **Site Name:** hub21
+- **Domain:** hub21.local
+- **WordPress Version:** 6.4+
+- **PHP Version:** 8.1+
+- **Database Prefix:** wp_
+
+### Key URLs
+- **Site:** https://hub21.local
+- **Admin:** https://hub21.local/wp-admin
+- **Portal:** https://hub21.local/dashboard (requires login)
+- **REST API:** https://hub21.local/wp-json/lrh/v1/
+
+### Dev Server Ports
+- **Frontend Vite:** http://localhost:5173
+- **Admin Vite:** http://localhost:5174
+- **Storybook:** http://localhost:6006
+
+### Required User Roles
+- `loan_officer` - Full access to loan officer portal features
+- `realtor_partner` - Full access to realtor partner portal features
+- `administrator` - Full WordPress admin access
 
 ---
 
@@ -201,7 +263,7 @@ frs-lrg/
 ├── assets/
 │   ├── admin/dist/      # Built admin assets
 │   └── frontend/dist/   # Built frontend assets
-├── blocks/              # Gutenberg blocks (15 blocks)
+├── blocks/              # Gutenberg blocks (16 blocks)
 ├── database/Migrations/ # Schema migrations
 ├── includes/
 │   ├── Controllers/     # API endpoint controllers

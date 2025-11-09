@@ -1,0 +1,23 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "lrh/biolink-spacer",
+	"version": "1.0.0",
+	"title": "Biolink Spacer",
+	"category": "frs-blocks",
+	"description": "Add vertical spacing to biolink pages",
+	"keywords": ["biolink", "spacer", "spacing"],
+	"textdomain": "lending-resource-hub",
+	"editorScript": "file:./index.js",
+	"attributes": {
+		"height": {
+			"type": "number",
+			"default": 20
+		}
+	},
+	"supports": {
+		"html": false,
+		"customClassName": false
+	},
+	"example": {}
+}

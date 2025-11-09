@@ -1,0 +1,39 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "lrh/openhouse-carousel",
+  "version": "1.0.0",
+  "title": "Open House Carousel",
+  "category": "frs-openhouse",
+  "icon": "images-alt2",
+  "description": "Photo carousel for open house landing pages",
+  "supports": {
+    "html": false,
+    "align": [
+      "full"
+    ],
+    "customClassName": false
+  },
+  "attributes": {
+    "images": {
+      "type": "array",
+      "default": []
+    },
+    "autoPlay": {
+      "type": "boolean",
+      "default": true
+    },
+    "interval": {
+      "type": "number",
+      "default": 5000
+    },
+    "address": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "textdomain": "lending-resource-hub",
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./editor.css",
+  "style": "file:./style.css"
+}

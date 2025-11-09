@@ -1,0 +1,31 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "lrh/prequal-heading",
+    "version": "1.0.0",
+    "title": "Prequal Main Heading",
+    "category": "frs-blocks",
+    "description": "Edit the main heading for the pre-qualification page",
+    "supports": {
+        "html": false,
+        "multiple": false,
+        "reusable": false
+    },
+    "attributes": {
+        "line1": {
+            "type": "string",
+            "source": "meta",
+            "meta": "_frs_prequal_heading_line1",
+            "default": "One Team. One Goal."
+        },
+        "line2": {
+            "type": "string",
+            "source": "meta",
+            "meta": "_frs_prequal_heading_line2",
+            "default": "From Approval to Close."
+        }
+    },
+    "textdomain": "lending-resource-hub",
+    "editorScript": "file:./index.js",
+    "render": "file:./render.php"
+}

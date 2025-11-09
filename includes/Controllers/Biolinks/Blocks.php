@@ -51,13 +51,23 @@ class Blocks {
 	 * @return void
 	 */
 	public function register_blocks() {
-		// Register single dynamic biolink page block - uses render.php file
+		$blocks_dir = LRH_DIR . 'assets/blocks/';
+
+		// Register biolink component blocks
+		register_block_type( $blocks_dir . 'biolink-header' );
+		register_block_type( $blocks_dir . 'biolink-button' );
+		register_block_type( $blocks_dir . 'biolink-social' );
+		register_block_type( $blocks_dir . 'biolink-form' );
+		register_block_type( $blocks_dir . 'biolink-hidden-form' );
+		register_block_type( $blocks_dir . 'biolink-spacer' );
+		register_block_type( $blocks_dir . 'biolink-thankyou' );
+
+		// Register biolink page wrapper block with dynamic rendering
 		register_block_type(
-			LRH_DIR . 'blocks/biolink-page/block.json',
+			$blocks_dir . 'biolink-page',
 			array(
 				'render_callback' => function( $attributes, $content, $block ) {
-					// Include render.php and capture its return value
-					return include LRH_DIR . 'blocks/biolink-page/render.php';
+					return include LRH_DIR . 'src/blocks/biolink-page/render.php';
 				},
 			)
 		);
