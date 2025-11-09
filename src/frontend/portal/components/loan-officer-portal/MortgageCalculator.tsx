@@ -90,25 +90,25 @@ function LoanOfficerProfile() {
           >
             {userName}
           </h3>
-          {jobTitle && (
-            <p className="text-base font-semibold text-muted-foreground mt-1">{jobTitle}</p>
-          )}
-          <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2">
-            {nmls && (
-              <div className="flex items-center gap-1 text-sm">
-                <span
-                  className="font-semibold"
-                  style={{
-                    backgroundImage: 'linear-gradient(135deg, #2563eb 0%, #2dd4da 100%)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    backgroundClip: 'text'
-                  }}
-                >
-                  NMLS# {nmls}
-                </span>
-              </div>
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1">
+            {jobTitle && (
+              <p className="text-base font-semibold text-muted-foreground">{jobTitle}</p>
             )}
+            {nmls && (
+              <span
+                className="text-sm font-semibold"
+                style={{
+                  backgroundImage: 'linear-gradient(135deg, #2563eb 0%, #2dd4da 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text'
+                }}
+              >
+                NMLS# {nmls}
+              </span>
+            )}
+          </div>
+          <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2">
             {phoneNumber && (
               <div className="flex items-center gap-1 text-sm text-muted-foreground">
                 <Phone className="w-3 h-3" />
