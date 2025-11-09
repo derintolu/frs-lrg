@@ -90,13 +90,13 @@ function LoanOfficerProfile() {
           >
             {userName}
           </h3>
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1">
+          <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 mt-1">
             {jobTitle && (
-              <p className="text-base font-semibold text-muted-foreground">{jobTitle}</p>
+              <span className="text-base font-semibold text-muted-foreground">{jobTitle}</span>
             )}
             {nmls && (
               <span
-                className="text-sm font-semibold"
+                className="text-base font-semibold"
                 style={{
                   backgroundImage: 'linear-gradient(135deg, #2563eb 0%, #2dd4da 100%)',
                   WebkitBackgroundClip: 'text',
