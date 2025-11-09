@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
@@ -18,7 +19,6 @@ import { MarketMattersWidget } from './MarketMattersWidget';
 
 interface WelcomeBentoProps {
   userId: string;
-  onNavigate?: (view: string) => void;
 }
 
 interface BlogPost {
@@ -38,7 +38,8 @@ interface DashboardStats {
   partnerships: number;
 }
 
-export function WelcomeBento({ userId, onNavigate }: WelcomeBentoProps) {
+export function WelcomeBento({ userId }: WelcomeBentoProps) {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [profileData, setProfileData] = useState({
@@ -332,7 +333,7 @@ export function WelcomeBento({ userId, onNavigate }: WelcomeBentoProps) {
           </div>
 
           {/* Row 2: Toolbox */}
-          <AppLauncher onNavigate={onNavigate} />
+          <AppLauncher onNavigate={(view) => navigate(`/${view}`)} />
         </div>
 
         {/* Right Sidebar - 30% (3/10 cols) - Spans both rows */}

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { Card } from '../ui/card';
 import { Separator } from '../ui/separator';
 import {
@@ -15,13 +16,12 @@ import { CollapsibleSidebar, MenuItem } from '../ui/CollapsibleSidebar';
 import { ProfileCompletionNotification } from './ProfileCompletionNotification';
 
 interface DashboardLayoutProps {
-  activeView: string;
-  onViewChange: (view: string) => void;
-  children: React.ReactNode;
   currentUser: UserType;
 }
 
-export function DashboardLayout({ activeView, onViewChange, children, currentUser }: DashboardLayoutProps) {
+export function DashboardLayout({ currentUser }: DashboardLayoutProps) {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [headerHeight, setHeaderHeight] = useState<string>('0px');
   // Start collapsed on mobile (< 768px), open on desktop
   const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
@@ -84,19 +84,19 @@ export function DashboardLayout({ activeView, onViewChange, children, currentUse
 
   // Convert navigation items to CollapsibleSidebar MenuItem format
   const menuItems: MenuItem[] = [
-    { id: 'welcome', label: 'Welcome', icon: Home },
+    { id: '/', label: 'Welcome', icon: Home },
     {
       id: 'marketing',
       label: 'Marketing',
       icon: Megaphone,
       children: [
-        { id: 'marketing-orders', label: 'Social & Print' },
-        { id: 'marketing-biolink', label: 'Biolink' },
-        { id: 'marketing-calendar', label: 'Calendar' },
-        { id: 'marketing-landing-pages', label: 'Landing Pages' },
-        { id: 'marketing-email-campaigns', label: 'Email Campaigns' },
-        { id: 'marketing-local-seo', label: 'Local SEO' },
-        { id: 'marketing-brand-guide', label: 'Brand Guide' },
+        { id: 'marketing/orders', label: 'Social & Print' },
+        { id: 'marketing/biolink', label: 'Biolink' },
+        { id: 'marketing/calendar', label: 'Calendar' },
+        { id: 'marketing/landing-pages', label: 'Landing Pages' },
+        { id: 'marketing/email-campaigns', label: 'Email Campaigns' },
+        { id: 'marketing/local-seo', label: 'Local SEO' },
+        { id: 'marketing/brand-guide', label: 'Brand Guide' },
       ]
     },
     { id: 'leads', label: 'Lead Tracking', icon: TrendingUp },
@@ -105,9 +105,9 @@ export function DashboardLayout({ activeView, onViewChange, children, currentUse
       label: 'Partnerships',
       icon: UserPlus,
       children: [
-        { id: 'partnerships-overview', label: 'Overview' },
-        { id: 'partnerships-invites', label: 'Invites' },
-        { id: 'cobranded-marketing', label: 'Co-branded Marketing' },
+        { id: 'partnerships/overview', label: 'Overview' },
+        { id: 'partnerships/invites', label: 'Invites' },
+        { id: 'partnerships/cobranded-marketing', label: 'Co-branded Marketing' },
       ]
     },
     {
@@ -115,8 +115,8 @@ export function DashboardLayout({ activeView, onViewChange, children, currentUse
       label: 'Tools',
       icon: Wrench,
       children: [
-        { id: 'tools-mortgage-calculator', label: 'Mortgage Calculator' },
-        { id: 'tools-property-valuation', label: 'Property Valuation' },
+        { id: 'tools/mortgage-calculator', label: 'Mortgage Calculator' },
+        { id: 'tools/property-valuation', label: 'Property Valuation' },
       ]
     },
   ];
@@ -171,13 +171,13 @@ export function DashboardLayout({ activeView, onViewChange, children, currentUse
       <div className="flex gap-2 z-10 relative">
         <button
           className="px-3 py-1 text-xs bg-white/10 hover:bg-white/20 text-white rounded border border-white/30 transition-all backdrop-blur-md shadow-lg"
-          onClick={() => onViewChange('profile')}
+          onClick={() => navigate('/profile')}
         >
           View Profile
         </button>
         <button
           className="px-3 py-1 text-xs bg-white/10 hover:bg-white/20 text-white rounded border border-white/30 transition-all backdrop-blur-md shadow-lg"
-          onClick={() => onViewChange('profile-edit')}
+          onClick={() => navigate('/profile/edit')}
         >
           Edit Profile
         </button>
@@ -240,13 +240,13 @@ export function DashboardLayout({ activeView, onViewChange, children, currentUse
     <div className="px-3 pb-3">
       <ProfileCompletionNotification
         userData={profileMetadata}
-        onNavigate={onViewChange}
+        onNavigate={(path) => navigate(`/${path}`)}
       />
     </div>
   );
 
   const handleItemClick = (item: MenuItem) => {
-    onViewChange(item.id);
+    navigate(`/${item.id}`);
   };
 
   return (
@@ -262,7 +262,7 @@ export function DashboardLayout({ activeView, onViewChange, children, currentUse
     >
       <CollapsibleSidebar
         menuItems={menuItems}
-        activeItemId={activeView}
+        activeItemId={location.pathname}
         onItemClick={handleItemClick}
         header={sidebarHeader}
         footer={sidebarFooter}
@@ -280,7 +280,7 @@ export function DashboardLayout({ activeView, onViewChange, children, currentUse
 
       {/* Main Content */}
       <main className="max-md:p-0 max-md:pt-4 md:p-6 md:pt-8">
-        {children}
+        <Outlet />
       </main>
     </div>
   );
