@@ -266,7 +266,7 @@ export function DashboardLayout({ currentUser }: DashboardLayoutProps) {
         onItemClick={handleItemClick}
         header={sidebarHeader}
         footer={sidebarFooter}
-        width="16rem"
+        width="280px"
         collapsedWidth="4rem"
         backgroundColor="hsl(var(--sidebar-background))"
         textColor="hsl(var(--sidebar-foreground))"
