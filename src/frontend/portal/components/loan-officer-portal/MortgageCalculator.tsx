@@ -18,23 +18,25 @@ import {
 function LoanOfficerProfile() {
   const [nmls, setNmls] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [jobTitle, setJobTitle] = useState('');
   const userName = (window as any).frsPortalConfig?.userName || '';
   const userEmail = (window as any).frsPortalConfig?.userEmail || '';
   const userAvatar = (window as any).frsPortalConfig?.userAvatar || '';
   const userId = (window as any).frsPortalConfig?.userId || '';
 
   useEffect(() => {
-    // Fetch NMLS and phone from frs-users profile
+    // Fetch NMLS, phone, and job title from frs-users profile
     if (userId) {
-      fetch(`/wp-json/frs-users/v1/profiles/by-user/${userId}`, {
+      fetch(`/wp-json/frs-users/v1/profiles/user/${userId}`, {
         credentials: 'same-origin',
         headers: {
           'X-WP-Nonce': (window as any).frsPortalConfig?.restNonce || ''
         }
       })
         .then(res => res.json())
-        .then(data => {
-          if (data) {
+        .then(response => {
+          if (response.success && response.data) {
+            const data = response.data;
             // Set NMLS
             if (data.nmls || data.nmls_number) {
               setNmls(data.nmls || data.nmls_number);
@@ -44,6 +46,10 @@ function LoanOfficerProfile() {
               setPhoneNumber(data.mobile_number);
             } else if (data.phone_number) {
               setPhoneNumber(data.phone_number);
+            }
+            // Set job title
+            if (data.job_title) {
+              setJobTitle(data.job_title);
             }
           }
         })
@@ -84,9 +90,15 @@ function LoanOfficerProfile() {
           >
             {userName}
           </h3>
+          {jobTitle && (
+            <p className="text-base text-muted-foreground mt-1">{jobTitle}</p>
+          )}
           <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2">
             {nmls && (
-              <p className="text-sm text-muted-foreground">NMLS# {nmls}</p>
+              <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                <span className="font-medium">NMLS#</span>
+                <span>{nmls}</span>
+              </div>
             )}
             {phoneNumber && (
               <div className="flex items-center gap-1 text-sm text-muted-foreground">
