@@ -1,4 +1,4 @@
-import { createHashRouter } from 'react-router-dom';
+import { createBrowserRouter } from 'react-router-dom';
 import { DashboardLayout } from './components/loan-officer-portal/DashboardLayout';
 import { WelcomeBento } from './components/loan-officer-portal/WelcomeBento';
 import { MyProfile } from './components/loan-officer-portal/MyProfile';
@@ -26,7 +26,7 @@ interface RouteConfig {
 export const createRouter = (config: RouteConfig) => {
   const { currentUser, userId, userRole } = config;
 
-  return createHashRouter([
+  return createBrowserRouter([
     {
       path: '/',
       element: <DashboardLayout currentUser={currentUser} />,
@@ -124,5 +124,7 @@ export const createRouter = (config: RouteConfig) => {
         },
       ],
     },
-  ]);
+  ], {
+    basename: '/dashboard'
+  });
 };
