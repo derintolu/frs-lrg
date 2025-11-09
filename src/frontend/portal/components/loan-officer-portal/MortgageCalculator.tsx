@@ -95,9 +95,18 @@ function LoanOfficerProfile() {
           )}
           <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2">
             {nmls && (
-              <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                <span className="font-medium">NMLS#</span>
-                <span>{nmls}</span>
+              <div className="flex items-center gap-1 text-sm">
+                <span
+                  className="font-semibold"
+                  style={{
+                    backgroundImage: 'linear-gradient(135deg, #2563eb 0%, #2dd4da 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text'
+                  }}
+                >
+                  NMLS# {nmls}
+                </span>
               </div>
             )}
             {phoneNumber && (
