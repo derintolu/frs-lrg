@@ -4,6 +4,7 @@ use LendingResourceHub\Core\Shortcode;
 use LendingResourceHub\Core\PostTypes;
 use LendingResourceHub\Core\Redirects;
 use LendingResourceHub\Core\MortgageLandingGenerator;
+use LendingResourceHub\Core\UserPageRewrites;
 use LendingResourceHub\Admin\Menu;
 use LendingResourceHub\Core\Template;
 use LendingResourceHub\Assets\Frontend;
@@ -64,6 +65,7 @@ final class LendingResourceHub {
 		Template::get_instance()->init();
 		Shortcode::get_instance()->init();
 		PostTypes::get_instance()->init();
+		UserPageRewrites::get_instance()->init();
 		Redirects::get_instance()->init();
 		Blocks::get_instance()->init();
 

@@ -15,6 +15,7 @@ import { BrandShowcase } from './components/loan-officer-portal/BrandShowcase';
 import { MortgageCalculator } from './components/loan-officer-portal/MortgageCalculator';
 import { PropertyValuation } from './components/loan-officer-portal/PropertyValuation';
 import { FluentBookingCalendar } from './components/loan-officer-portal/FluentBookingCalendar';
+import { Settings } from './components/loan-officer-portal/Settings';
 import type { User } from './utils/dataService';
 
 interface RouteConfig {
@@ -26,8 +27,13 @@ interface RouteConfig {
 export const createRouter = (config: RouteConfig) => {
   const { currentUser, userId, userRole } = config;
 
+  // Check if we're in WordPress Customizer - skip URL manipulation if so
+  const wpData = (window as any).frsPortalConfig;
+  const isCustomizer = wpData?.isCustomizer || false;
+
   // Ensure the current URL has a trailing slash before the hash
-  if (window.location.pathname && !window.location.pathname.endsWith('/')) {
+  // Skip this in the WordPress Customizer to prevent breaking the customizer
+  if (!isCustomizer && window.location.pathname && !window.location.pathname.endsWith('/')) {
     const newUrl = window.location.pathname + '/' + window.location.hash;
     window.history.replaceState(null, '', newUrl);
   }
@@ -48,6 +54,10 @@ export const createRouter = (config: RouteConfig) => {
         {
           path: 'profile/edit',
           element: <MyProfile userId={userId} autoEdit={true} />,
+        },
+        {
+          path: 'profile/settings',
+          element: <Settings userId={userId} />,
         },
         {
           path: 'leads',

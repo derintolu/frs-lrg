@@ -11,6 +11,7 @@ export interface MenuItem {
   badge?: string;
   badgeVariant?: 'default' | 'secondary' | 'destructive' | 'outline';
   description?: string;
+  customWidget?: React.ReactNode;
 }
 
 export interface CollapsibleSidebarProps {
@@ -124,11 +125,16 @@ export function CollapsibleSidebar({
     };
   }, [isCollapsed, width, collapsedWidth, position, isMobile]);
 
-  // Auto-expand parent menu if child is active
+  // Auto-expand parent menu if child is active, or if item itself is active and has customWidget
   useEffect(() => {
     if (activeItemId) {
       menuItems.forEach((item) => {
+        // Auto-expand if child is active
         if (item.children?.some((child) => child.id === activeItemId)) {
+          setExpandedMenus((prev) => [...new Set([...prev, item.id])]);
+        }
+        // Auto-expand if this item is active and has customWidget
+        if (item.id === activeItemId && item.customWidget) {
           setExpandedMenus((prev) => [...new Set([...prev, item.id])]);
         }
       });
@@ -136,13 +142,20 @@ export function CollapsibleSidebar({
   }, [activeItemId, menuItems]);
 
   const handleItemClick = (item: MenuItem) => {
-    // Toggle submenu if it has children
-    if (item.children && item.children.length > 0) {
+    // Toggle submenu if it has children or customWidget
+    if ((item.children && item.children.length > 0) || item.customWidget) {
       setExpandedMenus((prev) =>
         prev.includes(item.id)
           ? prev.filter((id) => id !== item.id)
           : [...prev, item.id]
       );
+
+      // Still navigate if customWidget but no children
+      if (item.customWidget && (!item.children || item.children.length === 0)) {
+        if (onItemClick) {
+          onItemClick(item);
+        }
+      }
       return; // Don't navigate for parent items with children
     }
 
@@ -160,12 +173,13 @@ export function CollapsibleSidebar({
     const isActive = activeItemId === item.id;
     const isExpanded = expandedMenus.includes(item.id);
     const hasChildren = item.children && item.children.length > 0;
+    const hasCustomWidget = !!item.customWidget;
 
     // On mobile or when forceExpanded, always show full text; on desktop, respect isCollapsed
     const shouldShowCollapsed = !forceExpanded && !isMobile && isCollapsed;
 
-    // Use 'a' tag for items with URLs, button for parent items with children
-    const Element = (item.url && !hasChildren) ? 'a' : 'button';
+    // Use 'a' tag for items with URLs (and no children/widget), button for parent items with children or customWidget
+    const Element = (item.url && !hasChildren && !hasCustomWidget) ? 'a' : 'button';
     const elementProps = Element === 'a' ? { href: item.url } : { onClick: () => handleItemClick(item) };
 
     return (
@@ -194,7 +208,7 @@ export function CollapsibleSidebar({
           {!shouldShowCollapsed && (
             <>
               <span className="flex-1 text-left">{item.label}</span>
-              {hasChildren && (
+              {(hasChildren || hasCustomWidget) && (
                 <ChevronRight
                   className={cn(
                     'size-4 transition-transform',
@@ -223,6 +237,13 @@ export function CollapsibleSidebar({
         {hasChildren && isExpanded && !shouldShowCollapsed && (
           <div className="mt-1 space-y-1">
             {item.children!.map((child) => renderMenuItem(child, true, forceExpanded))}
+          </div>
+        )}
+
+        {/* Render custom widget after children (or after item if no children) */}
+        {item.customWidget && isExpanded && !shouldShowCollapsed && (
+          <div className={cn("mt-2", hasChildren && "ml-0")}>
+            {item.customWidget}
           </div>
         )}
       </div>

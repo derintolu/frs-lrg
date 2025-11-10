@@ -57,7 +57,7 @@ class PostTypes {
 				'supports'     => array( 'title', 'editor', 'custom-fields', 'thumbnail' ),
 				'has_archive'  => false,
 				'rewrite'      => array(
-					'slug'       => '/',
+					'slug'       => 'l',
 					'with_front' => false,
 				),
 				'menu_icon'    => 'dashicons-id',

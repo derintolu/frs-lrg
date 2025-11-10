@@ -587,7 +587,6 @@ class DataService {
             if (profileData.license_number !== undefined) updateData.license_number = profileData.license_number;
             if (profileData.dre_license !== undefined) updateData.dre_license = profileData.dre_license;
             if (profileData.company !== undefined) updateData.office = profileData.company;
-            if (profileData.website !== undefined) updateData.arrive = profileData.website;
             if (profileData.linkedin !== undefined) updateData.linkedin_url = profileData.linkedin;
             if (profileData.facebook !== undefined) updateData.facebook_url = profileData.facebook;
             if (profileData.instagram !== undefined) updateData.instagram_url = profileData.instagram;
@@ -600,6 +599,7 @@ class DataService {
             if (profileData.awards !== undefined) updateData.awards = profileData.awards;
             if (profileData.nambCertifications !== undefined) updateData.namb_certifications = profileData.nambCertifications;
             if (profileData.narDesignations !== undefined) updateData.nar_designations = profileData.narDesignations;
+            if (profileData.serviceAreas !== undefined) updateData.service_areas = profileData.serviceAreas;
             if (profileData.brand !== undefined) updateData.brand = profileData.brand;
             if (profileData.arrive !== undefined) updateData.arrive = profileData.arrive;
             if (profileData.canvaFolderLink !== undefined) updateData.canva_folder_link = profileData.canvaFolderLink;

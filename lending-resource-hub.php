@@ -19,6 +19,11 @@ defined( 'ABSPATH' ) || exit;
 require_once plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
 require_once plugin_dir_path( __FILE__ ) . 'plugin.php';
 
+// Debug script for customizer issues (only runs with ?debug_customizer=1)
+if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+	require_once plugin_dir_path( __FILE__ ) . 'debug-customizer.php';
+}
+
 /**
  * Initializes the LendingResourceHub plugin when plugins are loaded.
  *

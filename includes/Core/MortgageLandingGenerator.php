@@ -36,7 +36,7 @@ class MortgageLandingGenerator {
 	 */
 	public function init() {
 		add_action( 'init', array( $this, 'register_script_module' ) );
-		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ), 20 );
 		add_filter( 'template_include', array( $this, 'load_mortgage_template' ) );
 	}
 

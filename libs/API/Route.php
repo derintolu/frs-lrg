@@ -17,8 +17,10 @@ use LendingResourceHub\Libs\API\ApiRouteException;
  */
 class Route {
 
-	private const METHOD_GET  = 'GET';
-	private const METHOD_POST = 'POST';
+	private const METHOD_GET    = 'GET';
+	private const METHOD_POST   = 'POST';
+	private const METHOD_PUT    = 'PUT';
+	private const METHOD_DELETE = 'DELETE';
 
 	/**
 	 * All registerd routes.
@@ -62,6 +64,14 @@ class Route {
 		if ( 'post' === $name && in_array( $count, array( 2, 3 ), true ) ) {
 			$self->post_normal( ...$arguments );
 		}
+
+		if ( 'put' === $name && in_array( $count, array( 2, 3 ), true ) ) {
+			$self->put_normal( ...$arguments );
+		}
+
+		if ( 'delete' === $name && in_array( $count, array( 2, 3 ), true ) ) {
+			$self->delete_normal( ...$arguments );
+		}
 	}
 
 	/**
@@ -84,6 +94,14 @@ class Route {
 
 		if ( 'post' === $name && in_array( $count, array( 3, 4 ), true ) ) {
 			$self->post_with_namespace( ...$arguments );
+		}
+
+		if ( 'put' === $name && in_array( $count, array( 3, 4 ), true ) ) {
+			$self->put_with_namespace( ...$arguments );
+		}
+
+		if ( 'delete' === $name && in_array( $count, array( 3, 4 ), true ) ) {
+			$self->delete_with_namespace( ...$arguments );
 		}
 
 		if ( 'prefix' === $name && 1 === $count ) {
@@ -213,6 +231,74 @@ class Route {
 	 */
 	private function post_with_namespace( $prefix, $endpoint, $callback, $auth = false ) {
 		self::$routes[ $prefix ][] = $this->prepare_route_data( self::METHOD_POST, $prefix, $endpoint, $callback, $auth );
+	}
+
+	/**
+	 * Put route register.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $endpoint api endpint.
+	 * @param mixed  $callback callback function.
+	 * @param mixed  $auth auth check logic.
+	 *
+	 * @return void
+	 */
+	public function put_normal( $endpoint, $callback, $auth = false ) {
+		$prefix = $this->current['prefix'];
+		$route  = $this->prepare_route_data( self::METHOD_PUT, $prefix, $endpoint, $callback, $auth );
+
+		self::$routes[ $prefix ][] = $route;
+	}
+
+	/**
+	 * Put route with namespace.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $prefix prefix.
+	 * @param string $endpoint api endpint.
+	 * @param mixed  $callback callback function.
+	 * @param mixed  $auth auth check logic.
+	 *
+	 * @return void
+	 */
+	private function put_with_namespace( $prefix, $endpoint, $callback, $auth = false ) {
+		self::$routes[ $prefix ][] = $this->prepare_route_data( self::METHOD_PUT, $prefix, $endpoint, $callback, $auth );
+	}
+
+	/**
+	 * Delete route register.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $endpoint api endpint.
+	 * @param mixed  $callback callback function.
+	 * @param mixed  $auth auth check logic.
+	 *
+	 * @return void
+	 */
+	public function delete_normal( $endpoint, $callback, $auth = false ) {
+		$prefix = $this->current['prefix'];
+		$route  = $this->prepare_route_data( self::METHOD_DELETE, $prefix, $endpoint, $callback, $auth );
+
+		self::$routes[ $prefix ][] = $route;
+	}
+
+	/**
+	 * Delete route with namespace.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $prefix prefix.
+	 * @param string $endpoint api endpint.
+	 * @param mixed  $callback callback function.
+	 * @param mixed  $auth auth check logic.
+	 *
+	 * @return void
+	 */
+	private function delete_with_namespace( $prefix, $endpoint, $callback, $auth = false ) {
+		self::$routes[ $prefix ][] = $this->prepare_route_data( self::METHOD_DELETE, $prefix, $endpoint, $callback, $auth );
 	}
 
 	/**

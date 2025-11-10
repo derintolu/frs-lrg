@@ -1,196 +1,169 @@
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import { useState } from 'react';
+import { ChevronDown, ChevronUp, X } from 'lucide-react';
 import { Button } from '../ui/button';
-import { Badge } from '../ui/badge';
-import { Progress } from '../ui/progress';
-import {
-  User,
-  Briefcase,
-  Mail,
-  FileText,
-  Link as LinkIcon,
-  CheckCircle,
-  AlertCircle,
-  ArrowRight,
-} from 'lucide-react';
 import {
   calculateProfileCompletion,
-  getCompletionColor,
-  getCompletionMessage,
   type CompletionResult,
+  PROFILE_SECTIONS,
 } from '../../utils/profileCompletion';
 
 interface ProfileCompletionCardProps {
   userData: Record<string, any>;
-  onNavigate?: (view: string) => void;
-  compact?: boolean;
+  onDismiss?: () => void;
 }
 
-const SECTION_ICONS = {
-  User,
-  Briefcase,
-  Mail,
-  FileText,
-  Link: LinkIcon,
-};
-
-export function ProfileCompletionCard({
-  userData,
-  onNavigate,
-  compact = false,
-}: ProfileCompletionCardProps) {
+/**
+ * Profile completion card with half-circle gauge and accordion checklist
+ */
+export function ProfileCompletionCard({ userData, onDismiss }: ProfileCompletionCardProps) {
+  const [isExpanded, setIsExpanded] = useState(false);
   const completion: CompletionResult = calculateProfileCompletion(userData);
-  const { percentage, completedFields, totalFields, incompleteSections } = completion;
+  const { percentage, incompleteSections } = completion;
 
-  const isComplete = percentage === 100;
-  const colorClass = getCompletionColor(percentage);
+  // Calculate the stroke dash offset for the half circle
+  // Half circle circumference = π * radius
+  const radius = 80;
+  const circumference = Math.PI * radius;
+  const offset = circumference - (percentage / 100) * circumference;
 
-  if (compact) {
-    return (
-      <Card
-        className="shadow-xl border-0 rounded cursor-pointer hover:shadow-2xl transition-shadow"
-        onClick={() => onNavigate?.('profile')}
-        style={{
-          background:
-            percentage >= 80
-              ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)'
-              : percentage >= 50
-              ? 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)'
-              : 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
-        }}
-      >
-        <CardContent className="p-4 md:p-5 text-white">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="text-lg font-semibold flex items-center gap-2">
-              {isComplete ? (
-                <CheckCircle className="h-5 w-5" />
-              ) : (
-                <AlertCircle className="h-5 w-5" />
-              )}
-              Profile Completion
-            </h3>
-            <span className="text-2xl font-bold">{percentage}%</span>
-          </div>
-
-          <Progress value={percentage} className="h-2 mb-3 bg-white/20" />
-
-          <p className="text-sm text-white/90 mb-3">
-            {getCompletionMessage(percentage)}
-          </p>
-
-          {!isComplete && (
-            <div className="flex items-center justify-between">
-              <span className="text-xs text-white/80">
-                {completedFields} of {totalFields} completed
-              </span>
-              <ArrowRight className="h-4 w-4" />
-            </div>
-          )}
-        </CardContent>
-      </Card>
+  // Determine which sections are complete
+  const sectionStatus = PROFILE_SECTIONS.map((section) => {
+    const isIncomplete = incompleteSections.some(
+      (incomplete) => incomplete.section.id === section.id
     );
-  }
+    return {
+      ...section,
+      isComplete: !isIncomplete,
+    };
+  });
 
   return (
-    <Card className="shadow-xl border-0 rounded">
-      <CardHeader className="pb-3">
-        <CardTitle className="flex items-center justify-between">
-          <span className="flex items-center gap-2">
-            {isComplete ? (
-              <CheckCircle className={`h-5 w-5 ${colorClass}`} />
-            ) : (
-              <AlertCircle className={`h-5 w-5 ${colorClass}`} />
-            )}
-            Profile Completion
-          </span>
-          <Badge
-            variant={isComplete ? 'default' : 'secondary'}
-            className={isComplete ? 'bg-green-600' : ''}
-          >
-            {percentage}%
-          </Badge>
-        </CardTitle>
-      </CardHeader>
+    <div className="w-full p-4">
+      <div>
+        {/* Half Circle Gauge */}
+        <div className="relative mb-6 flex justify-center">
+          <svg width="200" height="120" viewBox="0 0 200 120" className="overflow-visible">
+            {/* Background arc */}
+            <path
+              d="M 20 100 A 80 80 0 0 1 180 100"
+              fill="none"
+              stroke="#E5E7EB"
+              strokeWidth="12"
+              strokeLinecap="round"
+            />
+            {/* Progress arc with brand gradient */}
+            <path
+              d="M 20 100 A 80 80 0 0 1 180 100"
+              fill="none"
+              stroke="url(#brandGradient)"
+              strokeWidth="12"
+              strokeLinecap="round"
+              strokeDasharray={circumference}
+              strokeDashoffset={offset}
+              style={{
+                transition: 'stroke-dashoffset 1s ease-out',
+              }}
+            />
+            {/* Brand gradient definition */}
+            <defs>
+              <linearGradient id="brandGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#2563eb" />
+                <stop offset="100%" stopColor="#2dd4da" />
+              </linearGradient>
+            </defs>
+          </svg>
 
-      <CardContent className="space-y-4">
-        {/* Progress Bar */}
-        <div>
-          <div className="flex justify-between text-sm mb-2">
-            <span className="text-gray-600">
-              {completedFields} of {totalFields} fields completed
-            </span>
-            <span className={`font-semibold ${colorClass}`}>
+          {/* Percentage in center */}
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/4 text-center">
+            <div
+              className="text-4xl font-bold"
+              style={{
+                background: 'linear-gradient(135deg, #2563eb 0%, #2dd4da 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+              }}
+            >
               {percentage}%
-            </span>
+            </div>
+            <div className="text-sm text-gray-500">Complete</div>
           </div>
-          <Progress value={percentage} className="h-2" />
-          <p className="text-sm text-gray-600 mt-2">
-            {getCompletionMessage(percentage)}
-          </p>
         </div>
 
-        {/* Incomplete Sections */}
-        {incompleteSections.length > 0 ? (
-          <div className="space-y-3">
-            <h4 className="font-semibold text-sm text-gray-700">
-              Complete these sections:
-            </h4>
-            {incompleteSections.map(({ section, missingFields }) => {
-              const IconComponent =
-                SECTION_ICONS[section.icon as keyof typeof SECTION_ICONS] || User;
+        {/* Accordion Drawer */}
+        <div className="w-full">
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="w-full flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 transition-colors"
+          >
+            <span className="text-sm font-medium text-gray-700">
+              {isExpanded ? 'Hide Details' : 'Show Details'}
+            </span>
+            {isExpanded ? (
+              <ChevronUp className="h-4 w-4 text-gray-500" />
+            ) : (
+              <ChevronDown className="h-4 w-4 text-gray-500" />
+            )}
+          </button>
 
-              return (
-                <div
-                  key={section.id}
-                  className="p-3 bg-red-50 border border-red-100 rounded-lg"
-                >
-                  <div className="flex items-start gap-3">
-                    <div className="p-2 bg-red-100 rounded-lg">
-                      <IconComponent className="h-4 w-4 text-red-600" />
-                    </div>
-                    <div className="flex-1">
-                      <h5 className="font-semibold text-sm text-gray-900 mb-1">
-                        {section.label}
-                      </h5>
-                      <ul className="space-y-1">
-                        {missingFields.map((field) => (
-                          <li
-                            key={field.key}
-                            className="text-xs text-gray-600 flex items-center gap-1"
-                          >
-                            <span className="w-1 h-1 bg-red-400 rounded-full" />
-                            {field.label}
-                          </li>
-                        ))}
-                      </ul>
+          {/* Expandable Checklist */}
+          <div
+            className={`overflow-hidden transition-all duration-300 ${
+              isExpanded ? 'max-h-96 opacity-100 mt-2' : 'max-h-0 opacity-0'
+            }`}
+          >
+            <div className="space-y-3 px-3 pb-3">
+              {sectionStatus.map((section) => (
+                <div key={section.id} className="flex items-center gap-3">
+                  {/* Gradient dot indicator */}
+                  <div className="relative">
+                    <div
+                      className={`w-5 h-5 rounded-full border-2 transition-all ${
+                        section.isComplete
+                          ? 'border-transparent'
+                          : 'bg-white border-gray-300'
+                      }`}
+                      style={
+                        section.isComplete
+                          ? {
+                              background: 'linear-gradient(135deg, #2563eb 0%, #2dd4da 100%)',
+                            }
+                          : {}
+                      }
+                    >
+                      {section.isComplete && (
+                        <svg
+                          className="w-full h-full p-0.5"
+                          viewBox="0 0 20 20"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M6 10L9 13L14 7"
+                            stroke="white"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      )}
                     </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
-        ) : (
-          <div className="p-4 bg-green-50 border border-green-200 rounded-lg text-center">
-            <CheckCircle className="h-8 w-8 text-green-600 mx-auto mb-2" />
-            <p className="text-sm font-semibold text-green-800">
-              Profile Complete!
-            </p>
-            <p className="text-xs text-green-600 mt-1">
-              All required information has been provided.
-            </p>
-          </div>
-        )}
 
-        {/* Action Button */}
-        {!isComplete && onNavigate && (
-          <Button
-            onClick={() => onNavigate('profile')}
-            className="w-full bg-[var(--brand-electric-blue)] hover:bg-[var(--brand-electric-blue)]/90"
-          >
-            Complete Your Profile
-            <ArrowRight className="ml-2 h-4 w-4" />
-          </Button>
-        )}
-      </CardContent>
-    </Card>
+                  {/* Section label */}
+                  <span
+                    className={`text-sm font-medium ${
+                      section.isComplete ? 'text-gray-900' : 'text-gray-500'
+                    }`}
+                  >
+                    {section.label}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

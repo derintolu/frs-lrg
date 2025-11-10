@@ -38,7 +38,6 @@ import { ImageWithFallback } from './figma/ImageWithFallback';
 import { LoadingSpinner } from './ui/loading';
 import { DataService } from '../utils/dataService';
 import { ProfileTour, TourTrigger } from './ProfileTour';
-import { ProfileCompletionSection } from './loan-officer-portal/ProfileCompletionSection';
 
 // Read-only field display component
 const ReadOnlyField = ({ icon: Icon, value, label }: { icon: any, value: string, label?: string }) => (
@@ -73,6 +72,11 @@ export function ProfileSection({ userRole, userId, activeTab: externalActiveTab,
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showQRCode, setShowQRCode] = useState(false);
+  const [serviceAreaInput, setServiceAreaInput] = useState({
+    city: '',
+    state: '',
+    zip: ''
+  });
 
   // Update editing state when autoEdit prop changes
   useEffect(() => {
@@ -108,6 +112,7 @@ export function ProfileSection({ userRole, userId, activeTab: externalActiveTab,
     awards: [] as string[],
     nambCertifications: [] as string[],
     narDesignations: [] as string[],
+    serviceAreas: [] as string[],
     brand: '',
     arrive: '',
     canvaFolderLink: '',
@@ -336,11 +341,6 @@ export function ProfileSection({ userRole, userId, activeTab: externalActiveTab,
 
   return (
     <div className="space-y-4" style={{ marginTop: '-30px' }}>
-      {/* Profile Completion Section - Shows on all tabs */}
-      <div style={{ marginBottom: '10px' }}>
-        <ProfileCompletionSection userData={completionData} />
-      </div>
-
       {/* Tab Content - Show based on currentTab */}
       {currentTab === 'welcome' && (
         <div className="space-y-4 mt-4">
@@ -543,335 +543,645 @@ export function ProfileSection({ userRole, userId, activeTab: externalActiveTab,
       {/* Personal Information Tab */}
       {currentTab === 'personal' && (
         <div className="space-y-4" style={{ paddingTop: '30px' }}>
-          {/* Floating Edit/Save/Cancel Button - Bottom Right */}
-          <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3">
-            {isEditing ? (
-              <>
-                {/* Cancel Button */}
-                <Button
-                  variant="outline"
-                  onClick={() => setIsEditing(false)}
-                  disabled={isSaving}
-                  size="lg"
-                  className="shadow-lg hover:shadow-xl transition-shadow bg-white"
-                >
-                  <X className="h-4 w-4 mr-2" />
-                  Cancel
-                </Button>
-                {/* Save Button */}
-                <Button
-                  onClick={handleSave}
-                  className="bg-[var(--brand-electric-blue)] hover:bg-[var(--brand-electric-blue)]/90 text-white shadow-lg hover:shadow-xl transition-shadow"
-                  disabled={isSaving}
-                  size="lg"
-                >
-                  {isSaving ? (
-                    <>
-                      <LoadingSpinner size="sm" className="mr-2" />
-                      Saving...
-                    </>
-                  ) : (
-                    <>
-                      <Save className="h-4 w-4 mr-2" />
-                      Save Changes
-                    </>
-                  )}
-                </Button>
-              </>
-            ) : (
-              /* Edit Button */
-              <Button
-                onClick={() => setIsEditing(true)}
-                className="bg-[var(--brand-electric-blue)] hover:bg-[var(--brand-electric-blue)]/90 text-white shadow-lg hover:shadow-xl transition-all hover:scale-105"
-                size="lg"
+
+          {/* Two Column Layout: Profile Card + Links & Social */}
+          <div className="grid grid-cols-1 md:grid-cols-[1fr,1fr] gap-4">
+            {/* Profile Card */}
+            <Card className="shadow-lg rounded-sm border border-gray-200 h-full">
+              <div
+                className="p-8 relative overflow-hidden"
+                style={{
+                  background: '#F4F4F5',
+                }}
               >
-                <Edit className="h-4 w-4 mr-2" />
-                Edit Profile
-              </Button>
-            )}
-          </div>
+                {/* Gradient Video Background - Blurred */}
+                <div className="absolute top-0 left-0 right-0 w-full overflow-hidden" style={{ height: '149px' }}>
+                  <video
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    className="w-full h-full object-cover"
+                    style={{
+                      filter: 'blur(30px)',
+                      transform: 'scale(1.2)'
+                    }}
+                  >
+                    <source src={(window as any).frsPortalConfig?.gradientUrl} type="video/mp4" />
+                  </video>
+                </div>
 
-          {/* Figma Profile Card - Wider, Left-Aligned */}
-          <Card className="shadow-lg rounded-sm border border-gray-200 max-w-3xl">
-            <div
-              className="p-8 relative overflow-hidden"
-              style={{
-                background: '#F4F4F5',
-              }}
-            >
-              {/* Gradient Video Background - Blurred */}
-              <div className="absolute top-0 left-0 right-0 w-full overflow-hidden" style={{ height: '130px' }}>
-                <video
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  className="w-full h-full object-cover"
-                  style={{
-                    filter: 'blur(30px)',
-                    transform: 'scale(1.2)'
-                  }}
-                >
-                  <source src={(window as any).frsPortalConfig?.gradientUrl} type="video/mp4" />
-                </video>
-              </div>
-
-              {/* Avatar with Gradient Border - Flip Card */}
-              <div className="mb-6 relative z-10" style={{ perspective: '1000px', width: '156px' }}>
-                <div
-                  className="relative transition-transform duration-700"
-                  style={{
-                    width: '156px',
-                    height: '156px',
-                    transformStyle: 'preserve-3d',
-                    transform: showQRCode ? 'rotateY(180deg)' : 'rotateY(0deg)'
-                  }}
-                >
-                  {/* Front Side - Avatar */}
+                {/* Avatar with Gradient Border - Flip Card */}
+                <div className="mb-4 relative z-10" style={{ perspective: '1000px', width: '156px' }}>
                   <div
-                    className="absolute inset-0 rounded-full p-1"
+                    className="relative transition-transform duration-700"
                     style={{
-                      background: 'linear-gradient(135deg, #2563eb 0%, #2dd4da 100%)',
-                      backfaceVisibility: 'hidden'
+                      width: '156px',
+                      height: '156px',
+                      transformStyle: 'preserve-3d',
+                      transform: showQRCode ? 'rotateY(180deg)' : 'rotateY(0deg)'
                     }}
                   >
-                    <div className="w-full h-full rounded-full overflow-hidden bg-white">
-                      {profileData.profileImage ? (
-                        <img src={profileData.profileImage} alt="Profile" className="w-full h-full object-cover" />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center bg-gray-100">
-                          <span className="text-3xl text-gray-600 font-semibold">
-                            {(profileData.firstName?.[0] || '?')}{(profileData.lastName?.[0] || '')}
-                          </span>
-                        </div>
-                      )}
+                    {/* Front Side - Avatar */}
+                    <div
+                      className="absolute inset-0 rounded-full p-1"
+                      style={{
+                        background: 'linear-gradient(135deg, #2563eb 0%, #2dd4da 100%)',
+                        backfaceVisibility: 'hidden'
+                      }}
+                    >
+                      <div className="w-full h-full rounded-full overflow-hidden bg-white">
+                        {profileData.profileImage ? (
+                          <img src={profileData.profileImage} alt="Profile" className="w-full h-full object-cover" />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center bg-gray-100">
+                            <span className="text-3xl text-gray-600 font-semibold">
+                              {(profileData.firstName?.[0] || '?')}{(profileData.lastName?.[0] || '')}
+                            </span>
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  </div>
 
-                  {/* Back Side - QR Code */}
-                  <div
-                    className="absolute inset-0 rounded-full p-1 flex items-center justify-center bg-white"
-                    style={{
-                      backfaceVisibility: 'hidden',
-                      transform: 'rotateY(180deg)'
-                    }}
-                  >
-                    <div className="w-full h-full flex items-center justify-center p-8">
-                      <img
-                        src={`https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(`BEGIN:VCARD\nVERSION:3.0\nFN:${profileData.firstName} ${profileData.lastName}\nTEL:${profileData.phone}\nEMAIL:${profileData.email}\nTITLE:${profileData.title}\nORG:${profileData.company}\nEND:VCARD`)}`}
-                        alt="QR Code"
-                        className="w-full h-full object-contain"
-                      />
-                    </div>
-                  </div>
-
-                  {/* QR Code button - overlaps avatar at 2 o'clock */}
-                  <Button
-                    size="sm"
-                    className="absolute rounded-full w-10 h-10 p-0 bg-black text-white hover:bg-gray-900 shadow-lg z-20"
-                    style={{ top: '10px', right: '-5px' }}
-                    onClick={() => setShowQRCode(!showQRCode)}
-                    type="button"
-                  >
-                    <QrCode className="h-5 w-5" />
-                  </Button>
-
-                  {/* Camera button - overlaps avatar at 10 o'clock (only in edit mode) */}
-                  {isEditing && (
-                    <>
-                      <input
-                        type="file"
-                        id="avatar-upload"
-                        accept="image/*"
-                        className="hidden"
-                        onChange={(e) => {
-                          const file = e.target.files?.[0];
-                          if (file) {
-                            handleAvatarUpload(file);
-                          }
-                        }}
-                      />
-                      <Button
-                        size="sm"
-                        className="absolute rounded-full w-10 h-10 p-0 bg-black text-white hover:bg-gray-900 shadow-lg z-20"
-                        style={{ top: '10px', left: '-5px' }}
-                        onClick={() => document.getElementById('avatar-upload')?.click()}
-                        type="button"
-                      >
-                        <Camera className="h-5 w-5" />
-                      </Button>
-                    </>
-                  )}
-                </div>
-              </div>
-
-              {/* Name */}
-              {isEditing ? (
-                <div className="grid grid-cols-2 gap-2 mb-4 relative z-10">
-                  <FloatingInput
-                    id="firstName-profile"
-                    label="First Name"
-                    value={profileData.firstName}
-                    onChange={(e) => setProfileData({...profileData, firstName: e.target.value})}
-                    className="bg-white/90"
-                  />
-                  <FloatingInput
-                    id="lastName-profile"
-                    label="Last Name"
-                    value={profileData.lastName}
-                    onChange={(e) => setProfileData({...profileData, lastName: e.target.value})}
-                    className="bg-white/90"
-                  />
-                </div>
-              ) : (
-                <h3 className="text-[34px] font-bold text-[#1A1A1A] mb-2 relative z-10" style={{ fontFamily: 'Roboto, sans-serif' }}>
-                  {profileData.firstName} {profileData.lastName}
-                </h3>
-              )}
-
-              {/* Job Title and Company */}
-              {!isEditing && (
-                <div className="mb-2 relative z-10">
-                  <p className="text-base text-[#1D4FC4]" style={{ fontFamily: 'Roboto, sans-serif' }}>
-                    {profileData.title || (userRole === 'loan-officer' ? 'Loan Officer' : 'Realtor Partner')}
-                    {profileData.company && <span>, </span>}
-                    {profileData.company && <span className="text-[#1D4FC4]">{profileData.company}</span>}
-                  </p>
-                </div>
-              )}
-
-              {/* Location */}
-              {!isEditing && profileData.location && (
-                <div className="flex items-center gap-2 mb-4 relative z-10">
-                  <MapPin className="h-4 w-4 text-[#1D4FC4]" />
-                  <span className="text-base text-[#1D4FC4]" style={{ fontFamily: 'Roboto, sans-serif' }}>
-                    {profileData.location}
-                  </span>
-                </div>
-              )}
-
-              {/* Social Media Icons Row */}
-              {!isEditing && (profileData.linkedin || profileData.facebook || profileData.instagram || profileData.twitter || profileData.youtube || profileData.website) && (
-                <div className="flex items-center gap-3 mb-4 relative z-10">
-                  {profileData.linkedin && (
-                    <a href={profileData.linkedin} target="_blank" rel="noopener noreferrer">
-                      <Linkedin className="h-6 w-6 text-[#1A1A1A] hover:text-[#2563eb] transition-colors" />
-                    </a>
-                  )}
-                  {profileData.facebook && (
-                    <a href={profileData.facebook} target="_blank" rel="noopener noreferrer">
-                      <Facebook className="h-6 w-6 text-[#1A1A1A] hover:text-[#2563eb] transition-colors" />
-                    </a>
-                  )}
-                  {profileData.instagram && (
-                    <a href={profileData.instagram} target="_blank" rel="noopener noreferrer">
-                      <Smartphone className="h-6 w-6 text-[#1A1A1A] hover:text-[#2563eb] transition-colors" />
-                    </a>
-                  )}
-                  {profileData.twitter && (
-                    <a href={profileData.twitter} target="_blank" rel="noopener noreferrer">
-                      <Globe className="h-6 w-6 text-[#1A1A1A] hover:text-[#2563eb] transition-colors" />
-                    </a>
-                  )}
-                  {profileData.youtube && (
-                    <a href={profileData.youtube} target="_blank" rel="noopener noreferrer">
-                      <Globe className="h-6 w-6 text-[#1A1A1A] hover:text-[#2563eb] transition-colors" />
-                    </a>
-                  )}
-                  {profileData.website && (
-                    <a href={profileData.website} target="_blank" rel="noopener noreferrer">
-                      <Globe className="h-6 w-6 text-[#1A1A1A] hover:text-[#2563eb] transition-colors" />
-                    </a>
-                  )}
-                </div>
-              )}
-
-              {/* Bio Preview or Placeholder */}
-              {!isEditing && (
-                <div className="mb-4 relative z-10">
-                  <p
-                    className={`text-base ${profileData.bio ? 'text-[#1E1E1E]' : 'text-[#1E1E1E] opacity-50'}`}
-                    style={{
-                      fontFamily: 'Roboto, sans-serif',
-                      lineHeight: '22.4px'
-                    }}
-                  >
-                    {profileData.bio || 'Add a short bio. Tell the world who you are and what you do.'}
-                  </p>
-                </div>
-              )}
-
-                  {/* Edit Mode Fields */}
-                  {isEditing && (
-                    <div className="space-y-3 relative z-10">
-                      <FloatingInput
-                        id="email-profile"
-                        label="Email"
-                        type="email"
-                        value={profileData.email}
-                        onChange={(e) => setProfileData({...profileData, email: e.target.value})}
-                        className="bg-white/90"
-                      />
-                      <FloatingInput
-                        id="title-edit"
-                        label="Job Title"
-                        value={profileData.title}
-                        onChange={(e) => setProfileData({...profileData, title: e.target.value})}
-                        className="bg-white/90"
-                      />
-                      <FloatingInput
-                        id="location-edit"
-                        label="Location"
-                        value={profileData.location}
-                        onChange={(e) => setProfileData({...profileData, location: e.target.value})}
-                        className="bg-white/90"
-                      />
-                      <Textarea
-                        id="bio-edit"
-                        value={profileData.bio}
-                        onChange={(e) => setProfileData({...profileData, bio: e.target.value})}
-                        className="bg-white/90 min-h-[100px]"
-                        placeholder="Add a short bio. Tell the world who you are and what you do."
-                      />
-                      <div className="grid grid-cols-2 gap-2">
-                        <FloatingInput
-                          id="linkedin-edit"
-                          label="LinkedIn URL"
-                          type="url"
-                          value={profileData.linkedin}
-                          onChange={(e) => setProfileData({...profileData, linkedin: e.target.value})}
-                          className="bg-white/90"
-                        />
-                        <FloatingInput
-                          id="facebook-edit"
-                          label="Facebook URL"
-                          type="url"
-                          value={profileData.facebook}
-                          onChange={(e) => setProfileData({...profileData, facebook: e.target.value})}
-                          className="bg-white/90"
-                        />
-                        <FloatingInput
-                          id="instagram-edit"
-                          label="Instagram URL"
-                          type="url"
-                          value={profileData.instagram}
-                          onChange={(e) => setProfileData({...profileData, instagram: e.target.value})}
-                          className="bg-white/90"
-                        />
-                        <FloatingInput
-                          id="website-edit"
-                          label="Website URL"
-                          type="url"
-                          value={profileData.website}
-                          onChange={(e) => setProfileData({...profileData, website: e.target.value})}
-                          className="bg-white/90"
+                    {/* Back Side - QR Code */}
+                    <div
+                      className="absolute inset-0 rounded-full p-1 flex items-center justify-center bg-white"
+                      style={{
+                        backfaceVisibility: 'hidden',
+                        transform: 'rotateY(180deg)'
+                      }}
+                    >
+                      <div className="w-full h-full flex items-center justify-center p-8">
+                        <img
+                          src={`https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(`BEGIN:VCARD\nVERSION:3.0\nFN:${profileData.firstName} ${profileData.lastName}\nTEL:${profileData.phone}\nEMAIL:${profileData.email}\nTITLE:${profileData.title}\nORG:${profileData.company}\nEND:VCARD`)}`}
+                          alt="QR Code"
+                          className="w-full h-full object-contain"
                         />
                       </div>
                     </div>
+
+                    {/* QR Code button - overlaps avatar at 2 o'clock */}
+                    <Button
+                      size="sm"
+                      className="absolute rounded-full w-10 h-10 p-0 bg-black text-white hover:bg-gray-900 shadow-lg z-20"
+                      style={{ top: '10px', right: '-5px' }}
+                      onClick={() => setShowQRCode(!showQRCode)}
+                      type="button"
+                    >
+                      <QrCode className="h-5 w-5" />
+                    </Button>
+
+                    {/* Camera button - overlaps avatar at 10 o'clock (only in edit mode) */}
+                    {isEditing && (
+                      <>
+                        <input
+                          type="file"
+                          id="avatar-upload"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              handleAvatarUpload(file);
+                            }
+                          }}
+                        />
+                        <Button
+                          size="sm"
+                          className="absolute rounded-full w-10 h-10 p-0 bg-black text-white hover:bg-gray-900 shadow-lg z-20"
+                          style={{ top: '10px', left: '-5px' }}
+                          onClick={() => document.getElementById('avatar-upload')?.click()}
+                          type="button"
+                        >
+                          <Camera className="h-5 w-5" />
+                        </Button>
+                      </>
+                    )}
+                  </div>
+                </div>
+
+                {/* Save/Cancel Buttons - Only show when editing */}
+                {isEditing && (
+                  <div className="flex items-center gap-2 mb-4 relative z-10">
+                    <Button
+                      variant="outline"
+                      onClick={() => setIsEditing(false)}
+                      disabled={isSaving}
+                      size="sm"
+                    >
+                      <X className="h-4 w-4 mr-2" />
+                      Cancel
+                    </Button>
+                    <Button
+                      onClick={handleSave}
+                      className="bg-[var(--brand-electric-blue)] hover:bg-[var(--brand-electric-blue)]/90 text-white"
+                      disabled={isSaving}
+                      size="sm"
+                    >
+                      {isSaving ? (
+                        <>
+                          <LoadingSpinner size="sm" className="mr-2" />
+                          Saving...
+                        </>
+                      ) : (
+                        <>
+                          <Save className="h-4 w-4 mr-2" />
+                          Save
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                )}
+
+                {/* Name */}
+                {isEditing ? (
+                  <div className="grid grid-cols-2 gap-2 mb-4 relative z-10">
+                    <FloatingInput
+                      id="firstName-profile"
+                      label="First Name"
+                      value={profileData.firstName}
+                      onChange={(e) => setProfileData({...profileData, firstName: e.target.value})}
+                      className="bg-white/90"
+                    />
+                    <FloatingInput
+                      id="lastName-profile"
+                      label="Last Name"
+                      value={profileData.lastName}
+                      onChange={(e) => setProfileData({...profileData, lastName: e.target.value})}
+                      className="bg-white/90"
+                    />
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-between mb-2 relative z-10">
+                    <h3 className="text-[34px] font-bold text-[#1A1A1A]" style={{ fontFamily: 'Mona Sans Extended, sans-serif' }}>
+                      {profileData.firstName} {profileData.lastName}
+                    </h3>
+
+                    <Button
+                      onClick={() => setIsEditing(true)}
+                      className="bg-[var(--brand-electric-blue)] hover:bg-[var(--brand-electric-blue)]/90 text-white shadow-lg hover:shadow-xl transition-all hover:scale-105"
+                      size="sm"
+                    >
+                      <Edit className="h-4 w-4 mr-2" />
+                      Edit Profile
+                    </Button>
+                  </div>
+                )}
+
+                {/* Job Title, NMLS, and Location */}
+                {!isEditing && (
+                  <div className="mb-4 relative z-10">
+                    <p className="text-base text-[#1D4FC4] flex items-center gap-6" style={{ fontFamily: 'Roboto, sans-serif' }}>
+                      <span>
+                        {profileData.title || (userRole === 'loan-officer' ? 'Loan Officer' : 'Realtor Partner')}
+                        {(profileData.nmls || profileData.nmls_number) && <span> | NMLS {profileData.nmls || profileData.nmls_number}</span>}
+                      </span>
+                      {profileData.location && (
+                        <span className="flex items-center gap-2">
+                          <MapPin className="h-4 w-4" />
+                          {profileData.location}
+                        </span>
+                      )}
+                    </p>
+                  </div>
+                )}
+
+                {/* Social Media Icons Row */}
+                {!isEditing && (profileData.linkedin || profileData.facebook || profileData.instagram || profileData.twitter || profileData.youtube || profileData.website) && (
+                  <div className="flex items-center gap-3 mb-4 relative z-10">
+                    {profileData.linkedin && (
+                      <a href={profileData.linkedin} target="_blank" rel="noopener noreferrer">
+                        <Linkedin className="h-6 w-6 text-[#1A1A1A] hover:text-[#2563eb] transition-colors" />
+                      </a>
+                    )}
+                    {profileData.facebook && (
+                      <a href={profileData.facebook} target="_blank" rel="noopener noreferrer">
+                        <Facebook className="h-6 w-6 text-[#1A1A1A] hover:text-[#2563eb] transition-colors" />
+                      </a>
+                    )}
+                    {profileData.instagram && (
+                      <a href={profileData.instagram} target="_blank" rel="noopener noreferrer">
+                        <Smartphone className="h-6 w-6 text-[#1A1A1A] hover:text-[#2563eb] transition-colors" />
+                      </a>
+                    )}
+                    {profileData.twitter && (
+                      <a href={profileData.twitter} target="_blank" rel="noopener noreferrer">
+                        <Globe className="h-6 w-6 text-[#1A1A1A] hover:text-[#2563eb] transition-colors" />
+                      </a>
+                    )}
+                    {profileData.youtube && (
+                      <a href={profileData.youtube} target="_blank" rel="noopener noreferrer">
+                        <Globe className="h-6 w-6 text-[#1A1A1A] hover:text-[#2563eb] transition-colors" />
+                      </a>
+                    )}
+                    {profileData.website && (
+                      <a href={profileData.website} target="_blank" rel="noopener noreferrer">
+                        <Globe className="h-6 w-6 text-[#1A1A1A] hover:text-[#2563eb] transition-colors" />
+                      </a>
+                    )}
+                  </div>
+                )}
+
+                {/* Bio Preview - Only show if bio exists */}
+                {!isEditing && profileData.bio && (
+                  <div className="mb-4 relative z-10">
+                    <p
+                      className="text-base text-[#1E1E1E]"
+                      style={{
+                        fontFamily: 'Roboto, sans-serif',
+                        lineHeight: '22.4px'
+                      }}
+                    >
+                      {profileData.bio}
+                    </p>
+                  </div>
+                )}
+
+                {/* Contact Information - Always visible */}
+                {!isEditing && (
+                  <div className="flex items-center gap-6 relative z-10">
+                    {profileData.email && (
+                      <div className="flex items-center gap-2 text-sm text-gray-700">
+                        <Mail className="h-4 w-4 text-gray-500" />
+                        <a href={`mailto:${profileData.email}`} className="hover:text-[#1D4FC4] transition-colors">
+                          {profileData.email}
+                        </a>
+                      </div>
+                    )}
+                    {profileData.phone && (
+                      <div className="flex items-center gap-2 text-sm text-gray-700">
+                        <Phone className="h-4 w-4 text-gray-500" />
+                        <a href={`tel:${profileData.phone}`} className="hover:text-[#1D4FC4] transition-colors">
+                          {profileData.phone}
+                        </a>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Edit Mode Fields */}
+                {isEditing && (
+                  <div className="space-y-3 relative z-10">
+                    <FloatingInput
+                      id="email-profile"
+                      label="Email"
+                      type="email"
+                      value={profileData.email}
+                      onChange={(e) => setProfileData({...profileData, email: e.target.value})}
+                      className="bg-white/90"
+                    />
+                    <FloatingInput
+                      id="phone-profile"
+                      label="Phone"
+                      type="tel"
+                      value={profileData.phone}
+                      onChange={(e) => setProfileData({...profileData, phone: e.target.value})}
+                      className="bg-white/90"
+                    />
+                    <FloatingInput
+                      id="title-edit"
+                      label="Job Title"
+                      value={profileData.title}
+                      onChange={(e) => setProfileData({...profileData, title: e.target.value})}
+                      className="bg-white/90"
+                    />
+                    <FloatingInput
+                      id="location-edit"
+                      label="Location"
+                      value={profileData.location}
+                      onChange={(e) => setProfileData({...profileData, location: e.target.value})}
+                      className="bg-white/90"
+                    />
+                  </div>
+                )}
+              </div>
+            </Card>
+
+            {/* Right Column: Links & Social + Service Areas */}
+            <div className="space-y-4 h-full flex flex-col">
+              {/* Links & Social Card */}
+              <Card className="shadow-lg rounded-sm border border-gray-200">
+                <CardHeader className="pb-2">
+                  <CardTitle className="flex items-center gap-2 text-gray-900 text-base font-semibold">
+                    <Globe className="h-5 w-5" />
+                    Links & Social
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-2 py-3">
+                  <div className="grid grid-cols-2 gap-2">
+                    {isEditing ? (
+                      <>
+                        <FloatingInput
+                          id="website"
+                          label="Website"
+                          type="url"
+                          value={profileData.website}
+                          onChange={(e) => setProfileData({...profileData, website: e.target.value})}
+                        />
+                        <FloatingInput
+                          id="linkedin"
+                          label="LinkedIn"
+                          type="url"
+                          value={profileData.linkedin}
+                          onChange={(e) => setProfileData({...profileData, linkedin: e.target.value})}
+                        />
+                        <FloatingInput
+                          id="facebook"
+                          label="Facebook"
+                          type="url"
+                          value={profileData.facebook}
+                          onChange={(e) => setProfileData({...profileData, facebook: e.target.value})}
+                        />
+                        <FloatingInput
+                          id="instagram"
+                          label="Instagram"
+                          type="url"
+                          value={profileData.instagram}
+                          onChange={(e) => setProfileData({...profileData, instagram: e.target.value})}
+                        />
+                        <FloatingInput
+                          id="arrive"
+                          label="Arrive (Scheduling)"
+                          type="url"
+                          value={profileData.arrive}
+                          onChange={(e) => setProfileData({...profileData, arrive: e.target.value})}
+                          className="col-span-2"
+                        />
+                      </>
+                    ) : (
+                      <>
+                        <div className="flex items-center gap-2 p-2 rounded border">
+                          <Globe className="h-4 w-4 text-gray-600" />
+                          <span className="text-xs truncate">{profileData.website || 'Website'}</span>
+                        </div>
+                        <div className="flex items-center gap-2 p-2 rounded border">
+                          <Linkedin className="h-4 w-4 text-gray-600" />
+                          <span className="text-xs truncate">{profileData.linkedin || 'LinkedIn'}</span>
+                        </div>
+                        <div className="flex items-center gap-2 p-2 rounded border">
+                          <Facebook className="h-4 w-4 text-gray-600" />
+                          <span className="text-xs truncate">{profileData.facebook || 'Facebook'}</span>
+                        </div>
+                        <div className="flex items-center gap-2 p-2 rounded border">
+                          <Smartphone className="h-4 w-4 text-gray-600" />
+                          <span className="text-xs truncate">{profileData.instagram || 'Instagram'}</span>
+                        </div>
+                        {profileData.arrive && (
+                          <div className="flex items-center gap-2 p-2 rounded border col-span-2">
+                            <svg className="h-4 w-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            <span className="text-xs truncate">{profileData.arrive}</span>
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Service Areas Card */}
+              <Card className="shadow-lg rounded-sm border border-gray-200 flex-1">
+                <CardHeader className="pb-2">
+                  <CardTitle className="flex items-center gap-2 text-gray-900 text-base font-semibold">
+                    <MapPin className="h-5 w-5" />
+                    Service Areas
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-2 py-3">
+                  {isEditing ? (
+                    <div className="space-y-3">
+                      <p className="text-sm text-gray-600">Add service areas by entering city, state, zip code, or any combination.</p>
+                      <div className="grid grid-cols-3 gap-2">
+                        <FloatingInput
+                          id="service-city"
+                          label="City (Optional)"
+                          value={serviceAreaInput.city}
+                          onChange={(e) => setServiceAreaInput({...serviceAreaInput, city: e.target.value})}
+                          className="bg-white"
+                        />
+                        <FloatingInput
+                          id="service-state"
+                          label="State (Optional)"
+                          value={serviceAreaInput.state}
+                          onChange={(e) => setServiceAreaInput({...serviceAreaInput, state: e.target.value})}
+                          className="bg-white"
+                        />
+                        <FloatingInput
+                          id="service-zip"
+                          label="Zip Code (Optional)"
+                          value={serviceAreaInput.zip}
+                          onChange={(e) => setServiceAreaInput({...serviceAreaInput, zip: e.target.value})}
+                          className="bg-white"
+                        />
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-full"
+                        type="button"
+                        onClick={() => {
+                          // Build the service area string from non-empty inputs
+                          const parts = [
+                            serviceAreaInput.city,
+                            serviceAreaInput.state,
+                            serviceAreaInput.zip
+                          ].filter(part => part.trim() !== '');
+
+                          if (parts.length > 0) {
+                            const newArea = parts.join(', ');
+                            setProfileData({
+                              ...profileData,
+                              serviceAreas: [...(profileData.serviceAreas || []), newArea]
+                            });
+                            // Clear the inputs
+                            setServiceAreaInput({ city: '', state: '', zip: '' });
+                          }
+                        }}
+                      >
+                        <span className="mr-2">+</span> Add Service Area
+                      </Button>
+                      {profileData.serviceAreas && profileData.serviceAreas.length > 0 && (
+                        <div className="space-y-2">
+                          <Label className="text-sm font-medium">Current Service Areas</Label>
+                          <div className="flex flex-wrap gap-2">
+                            {profileData.serviceAreas.map((area: string, index: number) => (
+                              <Badge key={index} variant="secondary" className="text-xs flex items-center gap-1">
+                                {area}
+                                <button
+                                  onClick={() => {
+                                    setProfileData({
+                                      ...profileData,
+                                      serviceAreas: profileData.serviceAreas.filter((_: string, i: number) => i !== index)
+                                    });
+                                  }}
+                                  className="ml-1 hover:text-red-600"
+                                >
+                                  ×
+                                </button>
+                              </Badge>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="flex flex-wrap gap-2">
+                      {profileData.serviceAreas && profileData.serviceAreas.length > 0 ? (
+                        profileData.serviceAreas.map((area: string, index: number) => (
+                          <Badge key={index} variant="secondary" className="text-xs">
+                            {area}
+                          </Badge>
+                        ))
+                      ) : (
+                        <p className="text-sm text-gray-500 italic">No service areas specified.</p>
+                      )}
+                    </div>
                   )}
+                </CardContent>
+              </Card>
             </div>
+          </div>
+
+          {/* Biography Card - Full Width Below */}
+          <Card className="shadow-lg rounded-sm border border-gray-200">
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-gray-900 text-base font-semibold">
+                <FileText className="h-5 w-5" />
+                Professional Biography
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {isEditing ? (
+                <Textarea
+                  id="bio"
+                  value={profileData.bio}
+                  onChange={(e) => setProfileData({...profileData, bio: e.target.value})}
+                  className="min-h-[150px] resize-none"
+                  placeholder="Share your professional background..."
+                />
+              ) : (
+                <p className="text-sm text-gray-700 whitespace-pre-wrap">
+                  {profileData.bio || 'No biography provided.'}
+                </p>
+              )}
+            </CardContent>
           </Card>
 
+          {/* Specialties Card */}
+          <Card className="shadow-lg rounded-sm border border-gray-200">
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-gray-900 text-base font-semibold">
+                <CheckSquare className="h-5 w-5" />
+                Specialties & Credentials
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {/* Loan Officer Specialties */}
+              <div>
+                <Label className="text-sm font-medium mb-2 block">Loan Officer Specialties</Label>
+                {isEditing ? (
+                  <div className="grid grid-cols-1 gap-2">
+                    {[
+                      'Residential Mortgages',
+                      'Consumer Loans',
+                      'VA Loans',
+                      'FHA Loans',
+                      'Jumbo Loans',
+                      'Construction Loans',
+                      'Investment Property',
+                      'Reverse Mortgages',
+                      'USDA Rural Loans',
+                      'Bridge Loans'
+                    ].map((specialty) => (
+                      <label key={specialty} className="flex items-center space-x-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={profileData.specialtiesLo.includes(specialty)}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setProfileData({
+                                ...profileData,
+                                specialtiesLo: [...profileData.specialtiesLo, specialty]
+                              });
+                            } else {
+                              setProfileData({
+                                ...profileData,
+                                specialtiesLo: profileData.specialtiesLo.filter(s => s !== specialty)
+                              });
+                            }
+                          }}
+                          className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        />
+                        <span className="text-sm text-gray-700">{specialty}</span>
+                      </label>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="flex flex-wrap gap-2">
+                    {profileData.specialtiesLo.length > 0 ? (
+                      profileData.specialtiesLo.map((specialty) => (
+                        <Badge key={specialty} variant="secondary" className="text-xs">
+                          {specialty}
+                        </Badge>
+                      ))
+                    ) : (
+                      <p className="text-xs text-gray-500 italic">No specialties selected</p>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* NAMB Certifications */}
+              <div>
+                <Label className="text-sm font-medium mb-2 block">NAMB Certifications</Label>
+                {isEditing ? (
+                  <div className="grid grid-cols-1 gap-2">
+                    {[
+                      'CMC - Certified Mortgage Consultant',
+                      'CRMS - Certified Residential Mortgage Specialist',
+                      'GMA - General Mortgage Associate',
+                      'CVLS - Certified Veterans Lending Specialist'
+                    ].map((cert) => (
+                      <label key={cert} className="flex items-center space-x-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={profileData.nambCertifications.includes(cert)}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setProfileData({
+                                ...profileData,
+                                nambCertifications: [...profileData.nambCertifications, cert]
+                              });
+                            } else {
+                              setProfileData({
+                                ...profileData,
+                                nambCertifications: profileData.nambCertifications.filter(c => c !== cert)
+                              });
+                            }
+                          }}
+                          className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        />
+                        <span className="text-sm text-gray-700">{cert}</span>
+                      </label>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="flex flex-wrap gap-2">
+                    {profileData.nambCertifications.length > 0 ? (
+                      profileData.nambCertifications.map((cert) => (
+                        <Badge key={cert} variant="secondary" className="text-xs bg-purple-100 text-purple-800">
+                          {cert}
+                        </Badge>
+                      ))
+                    ) : (
+                      <p className="text-xs text-gray-500 italic">No certifications selected</p>
+                    )}
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
 
         </div>
       )}

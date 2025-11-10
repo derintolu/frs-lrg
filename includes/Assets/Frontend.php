@@ -52,7 +52,7 @@ class Frontend {
 	 * @return void
 	 */
 	public function bootstrap() {
-		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ), 20 );
 	}
 
 	/**
@@ -127,6 +127,7 @@ class Frontend {
 	 * @return bool True if portal assets should load.
 	 */
 	private function should_load_portal() {
+
 		global $post;
 
 		// Check for portal shortcodes
@@ -192,6 +193,7 @@ class Frontend {
 			'gradientUrl'  => $gradient_url,
 			'siteUrl'      => home_url(),
 			'portalUrl'    => home_url( '/portal' ),
+			'isCustomizer' => is_customize_preview(),
 
 			// Compatibility structure for DataService fallback
 			// Matches old frs-partnership-portal window.frsPortalData.currentUser

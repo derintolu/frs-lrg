@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 import type { User as UserType } from '../../utils/dataService';
 import { CollapsibleSidebar, MenuItem } from '../ui/CollapsibleSidebar';
-import { ProfileCompletionNotification } from './ProfileCompletionNotification';
+import { ProfileCompletionCard } from './ProfileCompletionCard';
 
 interface DashboardLayoutProps {
   currentUser: UserType;
@@ -82,110 +82,10 @@ export function DashboardLayout({ currentUser }: DashboardLayoutProps) {
     return () => window.removeEventListener('resize', calculateHeaderHeight);
   }, []);
 
-  // Convert navigation items to CollapsibleSidebar MenuItem format
-  const menuItems: MenuItem[] = [
-    { id: '/', label: 'Welcome', icon: Home },
-    {
-      id: 'marketing',
-      label: 'Marketing',
-      icon: Megaphone,
-      children: [
-        { id: 'marketing/orders', label: 'Social & Print' },
-        { id: 'marketing/biolink', label: 'Biolink' },
-        { id: 'marketing/calendar', label: 'Calendar' },
-        { id: 'marketing/landing-pages', label: 'Landing Pages' },
-        { id: 'marketing/email-campaigns', label: 'Email Campaigns' },
-        { id: 'marketing/local-seo', label: 'Local SEO' },
-        { id: 'marketing/brand-guide', label: 'Brand Guide' },
-      ]
-    },
-    { id: 'leads', label: 'Lead Tracking', icon: TrendingUp },
-    {
-      id: 'partnerships',
-      label: 'Partnerships',
-      icon: UserPlus,
-      children: [
-        { id: 'partnerships/overview', label: 'Overview' },
-        { id: 'partnerships/invites', label: 'Invites' },
-        { id: 'partnerships/cobranded-marketing', label: 'Co-branded Marketing' },
-      ]
-    },
-    {
-      id: 'tools',
-      label: 'Tools',
-      icon: Wrench,
-      children: [
-        { id: 'tools/mortgage-calculator', label: 'Mortgage Calculator' },
-        { id: 'tools/property-valuation', label: 'Property Valuation' },
-      ]
-    },
-  ];
+  // Determine if we're on a profile page
+  const isProfilePage = location.pathname.startsWith('/profile');
 
-  // Header content - User Profile Section with Gradient Background and GIF
-  const sidebarHeader = (
-    <div
-      className="relative p-6 flex flex-col items-center text-center w-full overflow-hidden"
-      style={{
-        background: 'linear-gradient(135deg, #2563eb 0%, #2dd4da 100%)',
-        minHeight: '200px',
-      }}
-    >
-      {/* Animated Video Background */}
-      {gradientUrl && (
-        <>
-          <video
-            autoPlay
-            muted
-            loop
-            playsInline
-            className="absolute inset-0 w-full h-full object-cover"
-            style={{ zIndex: 0 }}
-          >
-            <source src={gradientUrl} type="video/mp4" />
-          </video>
-          {/* Dark overlay for text readability */}
-          <div
-            className="absolute inset-0 bg-black/20"
-            style={{ zIndex: 1 }}
-          />
-        </>
-      )}
-
-      {/* User Avatar */}
-      <div className="relative mb-3 z-10">
-        <img
-          src={currentUser.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name || 'User')}&background=2DD4DA&color=fff`}
-          alt={currentUser.name || 'User'}
-          className="size-20 rounded-full border-4 border-white shadow-lg"
-          onError={(e) => {
-            e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name || 'User')}&background=2DD4DA&color=fff`;
-          }}
-        />
-      </div>
-
-      {/* User Info */}
-      <h3 className="font-semibold text-white text-lg mb-1 z-10 relative">{currentUser.name}</h3>
-      <p className="text-white/80 text-xs mb-3 z-10 relative">{currentUser.email || 'Loan Officer'}</p>
-
-      {/* Action Buttons */}
-      <div className="flex gap-2 z-10 relative">
-        <button
-          className="px-3 py-1 text-xs bg-white/10 hover:bg-white/20 text-white rounded border border-white/30 transition-all backdrop-blur-md shadow-lg"
-          onClick={() => navigate('/profile')}
-        >
-          View Profile
-        </button>
-        <button
-          className="px-3 py-1 text-xs bg-white/10 hover:bg-white/20 text-white rounded border border-white/30 transition-all backdrop-blur-md shadow-lg"
-          onClick={() => navigate('/profile/edit')}
-        >
-          Edit Profile
-        </button>
-      </div>
-    </div>
-  );
-
-  // Map currentUser to the format expected by ProfileCompletionNotification
+  // Map currentUser to the format expected by ProfileCompletionCard
   const [profileMetadata, setProfileMetadata] = useState({
     first_name: '',
     last_name: '',
@@ -204,46 +104,178 @@ export function DashboardLayout({ currentUser }: DashboardLayoutProps) {
   useEffect(() => {
     const loadProfileData = async () => {
       try {
-        const response = await fetch('/wp-json/frs/v1/users/me/person-profile', {
+        // Fetch from frs-users plugin profile endpoint
+        const response = await fetch('/wp-json/frs-users/v1/profiles/user/me', {
+          credentials: 'include',
           headers: {
-            'X-WP-Nonce': (window as any).frsPortalConfig?.restNonce || ''
+            'X-WP-Nonce': (window as any).wpApiSettings?.nonce || (window as any).frsPortalConfig?.restNonce || ''
           }
         });
 
         if (response.ok) {
-          const personData = await response.json();
+          const result = await response.json();
+          const profileData = result.data || result;
+
+          setProfileMetadata({
+            first_name: profileData.first_name || '',
+            last_name: profileData.last_name || '',
+            email: profileData.email || currentUser.email || '',
+            phone: profileData.phone_number || profileData.mobile_number || '',
+            job_title: profileData.job_title || '',
+            company: profileData.office || '21st Century Lending',
+            nmls_id: profileData.nmls_number || profileData.nmls || '',
+            bio: profileData.biography || '',
+            linkedin_url: profileData.linkedin_url || '',
+            facebook_url: profileData.facebook_url || '',
+            instagram_url: profileData.instagram_url || '',
+          });
+        } else {
+          // Fallback to basic user data if profile not found
           const nameParts = (currentUser.name || '').split(' ');
           setProfileMetadata({
             first_name: nameParts[0] || '',
             last_name: nameParts.slice(1).join(' ') || '',
-            email: personData.primary_business_email || currentUser.email || '',
-            phone: personData.phone_number || '',
-            job_title: personData.job_title || '',
-            company: personData.company || '21st Century Lending',
-            nmls_id: personData.nmls_id || '',
-            bio: personData.biography || '',
-            linkedin_url: personData.linkedin_url || '',
-            facebook_url: personData.facebook_url || '',
-            instagram_url: personData.instagram_url || '',
+            email: currentUser.email || '',
+            phone: '',
+            job_title: '',
+            company: '21st Century Lending',
+            nmls_id: '',
+            bio: '',
+            linkedin_url: '',
+            facebook_url: '',
+            instagram_url: '',
           });
         }
       } catch (err) {
         console.error('Failed to load profile metadata:', err);
+        // Fallback to basic user data
+        const nameParts = (currentUser.name || '').split(' ');
+        setProfileMetadata({
+          first_name: nameParts[0] || '',
+          last_name: nameParts.slice(1).join(' ') || '',
+          email: currentUser.email || '',
+          phone: '',
+          job_title: '',
+          company: '21st Century Lending',
+          nmls_id: '',
+          bio: '',
+          linkedin_url: '',
+          facebook_url: '',
+          instagram_url: '',
+        });
       }
     };
 
     loadProfileData();
   }, [currentUser]);
 
-  // Sidebar footer - Profile Completion Notification
-  const sidebarFooter = (
-    <div className="px-3 pb-3">
-      <ProfileCompletionNotification
-        userData={profileMetadata}
-        onNavigate={(path) => navigate(`/${path}`)}
-      />
+  // Convert navigation items to CollapsibleSidebar MenuItem format
+  // Show profile-specific menu when on profile page
+  const menuItems: MenuItem[] = isProfilePage ? [
+    { id: '/', label: 'Back to Dashboard', icon: Home },
+    {
+      id: '/profile',
+      label: 'Profile',
+      icon: Users,
+      customWidget: (
+        <ProfileCompletionCard userData={profileMetadata} />
+      )
+    },
+    { id: '/profile/settings', label: 'Settings', icon: Wrench },
+  ] : [
+    { id: '/', label: 'Welcome', icon: Home },
+    {
+      id: '/marketing',
+      label: 'Marketing',
+      icon: Megaphone,
+      children: [
+        { id: '/marketing/orders', label: 'Social & Print' },
+        { id: '/marketing/biolink', label: 'Biolink' },
+        { id: '/marketing/calendar', label: 'Calendar' },
+        { id: '/marketing/landing-pages', label: 'Landing Pages' },
+        { id: '/marketing/email-campaigns', label: 'Email Campaigns' },
+        { id: '/marketing/local-seo', label: 'Local SEO' },
+        { id: '/marketing/brand-guide', label: 'Brand Guide' },
+      ]
+    },
+    { id: '/leads', label: 'Lead Tracking', icon: TrendingUp },
+    {
+      id: '/partnerships',
+      label: 'Partnerships',
+      icon: UserPlus,
+      children: [
+        { id: '/partnerships/overview', label: 'Overview' },
+        { id: '/partnerships/invites', label: 'Invites' },
+        { id: '/partnerships/cobranded-marketing', label: 'Co-branded Marketing' },
+      ]
+    },
+    {
+      id: '/tools',
+      label: 'Tools',
+      icon: Wrench,
+      children: [
+        { id: '/tools/mortgage-calculator', label: 'Mortgage Calculator' },
+        { id: '/tools/property-valuation', label: 'Property Valuation' },
+      ]
+    },
+  ];
+
+  // Header content - Slim Profile Stripe + Completion Widget (only on profile pages)
+  const sidebarHeader = (
+    <div className="relative w-full overflow-hidden">
+      {/* Profile Stripe */}
+      <button
+        onClick={() => navigate('/profile')}
+        className="relative w-full pr-3 py-3 pl-[24px] flex items-center gap-3 overflow-hidden hover:bg-white/5 transition-colors group"
+        style={{
+          background: 'linear-gradient(135deg, #2563eb 0%, #2dd4da 100%)',
+        }}
+      >
+        {/* Animated Video Background */}
+        {gradientUrl && (
+          <>
+            <video
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="absolute inset-0 w-full h-full object-cover"
+              style={{ zIndex: 0 }}
+            >
+              <source src={gradientUrl} type="video/mp4" />
+            </video>
+            {/* Dark overlay for text readability */}
+            <div
+              className="absolute inset-0 bg-black/20"
+              style={{ zIndex: 1 }}
+            />
+          </>
+        )}
+
+        {/* User Avatar */}
+        <div className="relative z-10 flex-shrink-0">
+          <img
+            src={currentUser.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name || 'User')}&background=2DD4DA&color=fff`}
+            alt={currentUser.name || 'User'}
+            className="size-10 rounded-full border-2 border-white shadow-md group-hover:scale-105 transition-transform"
+            onError={(e) => {
+              e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name || 'User')}&background=2DD4DA&color=fff`;
+            }}
+          />
+        </div>
+
+        {/* User Info */}
+        <div className="flex-1 text-left z-10 relative min-w-0 space-y-0">
+          <h3 className="font-semibold text-white text-sm truncate group-hover:text-white/90 transition-colors leading-tight">{currentUser.name}</h3>
+          <p className="text-white/70 text-xs truncate leading-tight">View Profile →</p>
+        </div>
+      </button>
+
     </div>
   );
+
+  // Sidebar footer
+  const sidebarFooter = null;
 
   const handleItemClick = (item: MenuItem) => {
     navigate(item.id);
