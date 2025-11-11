@@ -415,8 +415,10 @@ export function DashboardLayout({ currentUser }: DashboardLayoutProps) {
         footer={sidebarFooter}
         width="280px"
         collapsedWidth="4rem"
-        backgroundColor="#ffffff"
-        activeItemBackground="rgba(0, 0, 0, 0.1)"
+        backgroundColor="hsl(var(--sidebar-background))"
+        textColor="hsl(var(--sidebar-foreground))"
+        activeItemColor="hsl(var(--sidebar-foreground))"
+        activeItemBackground="linear-gradient(to right, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1))"
         position="left"
         topOffset={headerHeight}
         defaultCollapsed={sidebarCollapsed}
@@ -424,7 +426,7 @@ export function DashboardLayout({ currentUser }: DashboardLayoutProps) {
       />
 
       {/* Main Content */}
-      <main>
+      <main className="max-md:p-0 max-md:pt-4 md:p-6 md:pt-8">
         <Outlet />
       </main>
     </div>
