@@ -105,25 +105,26 @@ export function CollapsibleSidebar({
   }, []);
 
   // Update body padding when sidebar collapses/expands (desktop only)
-  useEffect(() => {
-    if (isMobile) {
-      // On mobile, remove body padding
-      const paddingProperty = position === 'left' ? 'paddingLeft' : 'paddingRight';
-      document.body.style[paddingProperty] = '';
-      return;
-    }
+  // DISABLED - was pushing header to the right
+  // useEffect(() => {
+  //   if (isMobile) {
+  //     // On mobile, remove body padding
+  //     const paddingProperty = position === 'left' ? 'paddingLeft' : 'paddingRight';
+  //     document.body.style[paddingProperty] = '';
+  //     return;
+  //   }
 
-    const currentWidth = isCollapsed ? collapsedWidth : width;
-    const paddingProperty = position === 'left' ? 'paddingLeft' : 'paddingRight';
+  //   const currentWidth = isCollapsed ? collapsedWidth : width;
+  //   const paddingProperty = position === 'left' ? 'paddingLeft' : 'paddingRight';
 
-    document.body.style[paddingProperty] = currentWidth;
-    document.body.style.transition = 'padding 300ms ease-in-out';
+  //   document.body.style[paddingProperty] = currentWidth;
+  //   document.body.style.transition = 'padding 300ms ease-in-out';
 
-    return () => {
-      document.body.style[paddingProperty] = '';
-      document.body.style.transition = '';
-    };
-  }, [isCollapsed, width, collapsedWidth, position, isMobile]);
+  //   return () => {
+  //     document.body.style[paddingProperty] = '';
+  //     document.body.style.transition = '';
+  //   };
+  // }, [isCollapsed, width, collapsedWidth, position, isMobile]);
 
   // Auto-expand parent menu if child is active, or if item itself is active and has customWidget
   useEffect(() => {
@@ -331,7 +332,7 @@ export function CollapsibleSidebar({
   return (
     <aside
       className={cn(
-        'fixed transition-all duration-300 ease-in-out z-40',
+        'fixed transition-all duration-300 ease-in-out z-[1]',
         'border shadow-lg overflow-visible',
         position === 'left' ? 'left-0 border-r border-border' : 'right-0 border-l border-border',
         className
