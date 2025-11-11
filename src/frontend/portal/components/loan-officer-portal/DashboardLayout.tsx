@@ -426,7 +426,7 @@ export function DashboardLayout({ currentUser }: DashboardLayoutProps) {
       />
 
       {/* Main Content */}
-      <main className="max-md:p-0 max-md:pt-4 md:p-6 md:pt-8">
+      <main className="max-md:p-0 max-md:m-0 md:pt-8 md:pb-6 md:pl-0 md:pr-0 md:ml-[280px] md:mr-0">
         <Outlet />
       </main>
     </div>

@@ -332,7 +332,7 @@ export function CollapsibleSidebar({
   return (
     <aside
       className={cn(
-        'fixed transition-all duration-300 ease-in-out z-[1]',
+        'fixed transition-all duration-300 ease-in-out z-[50]',
         'border shadow-lg overflow-visible',
         position === 'left' ? 'left-0 border-r border-border' : 'right-0 border-l border-border',
         className
