@@ -39,7 +39,18 @@ export function ProfileCompletionCard({ userData, onDismiss }: ProfileCompletion
 
   return (
     <div className="w-full p-4">
-      <div>
+      <div className="relative">
+        {/* Dismiss button - Top right corner */}
+        {onDismiss && (
+          <button
+            onClick={onDismiss}
+            className="absolute -top-2 -right-2 z-10 flex items-center justify-center w-6 h-6 rounded-full bg-gray-200 hover:bg-gray-300 transition-colors"
+            aria-label="Dismiss profile completion card"
+          >
+            <X className="h-4 w-4 text-gray-600" />
+          </button>
+        )}
+
         {/* Half Circle Gauge */}
         <div className="relative mb-6 flex justify-center">
           <svg width="200" height="120" viewBox="0 0 200 120" className="overflow-visible">

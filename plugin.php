@@ -81,8 +81,28 @@ final class LendingResourceHub {
 		}
 
 		add_action( 'init', array( $this, 'i18n' ) );
+		add_action( 'init', array( $this, 'register_user_meta_fields' ) );
 	}
 
+	/**
+	 * Register custom user meta fields for REST API access.
+	 *
+	 * @since 1.0.0
+	 * @return void
+	 */
+	public function register_user_meta_fields() {
+		register_meta(
+			'user',
+			'profile_completion_reached_100',
+			array(
+				'type'         => 'string',
+				'description'  => 'Whether user has reached 100% profile completion',
+				'single'       => true,
+				'show_in_rest' => true,
+				'default'      => '0',
+			)
+		);
+	}
 
 	/**
 	 * Internationalization setup for language translations.

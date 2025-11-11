@@ -178,6 +178,15 @@ export function CollapsibleSidebar({
     // On mobile or when forceExpanded, always show full text; on desktop, respect isCollapsed
     const shouldShowCollapsed = !forceExpanded && !isMobile && isCollapsed;
 
+    // If item has no label and only customWidget, render just the widget
+    if (!item.label && hasCustomWidget && !shouldShowCollapsed) {
+      return (
+        <div key={item.id} className="my-2">
+          {item.customWidget}
+        </div>
+      );
+    }
+
     // Use 'a' tag for items with URLs (and no children/widget), button for parent items with children or customWidget
     const Element = (item.url && !hasChildren && !hasCustomWidget) ? 'a' : 'button';
     const elementProps = Element === 'a' ? { href: item.url } : { onClick: () => handleItemClick(item) };

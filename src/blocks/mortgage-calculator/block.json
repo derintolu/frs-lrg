@@ -8,8 +8,8 @@
 	"description": "5-in-1 mortgage calculator with lead capture for landing pages",
 	"keywords": ["mortgage", "calculator", "loan", "finance", "leads"],
 	"textdomain": "lending-resource-hub",
-	"editorScript": "file:../../assets/js/blocks/mortgage-calculator.js",
-	"viewScript": "file:../../assets/js/blocks/mortgage-calculator-view.js",
+	"editorScript": "file:./index.js",
+	"viewScript": "file:./view.js",
 	"attributes": {
 		"defaultCalculatorType": {
 			"type": "string",

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
@@ -10,6 +10,7 @@ import { Badge } from './ui/badge';
 // Avatar components removed - using simple div implementations
 import { Switch } from './ui/switch';
 import { Separator } from './ui/separator';
+import QRCodeStyling from 'qr-code-styling';
 import {
   User,
   Mail,
@@ -38,6 +39,7 @@ import { ImageWithFallback } from './figma/ImageWithFallback';
 import { LoadingSpinner } from './ui/loading';
 import { DataService } from '../utils/dataService';
 import { ProfileTour, TourTrigger } from './ProfileTour';
+import { RichTextEditor } from './ui/RichTextEditor';
 
 // Read-only field display component
 const ReadOnlyField = ({ icon: Icon, value, label }: { icon: any, value: string, label?: string }) => (
@@ -116,7 +118,8 @@ export function ProfileSection({ userRole, userId, activeTab: externalActiveTab,
     brand: '',
     arrive: '',
     canvaFolderLink: '',
-    nicheBioContent: ''
+    nicheBioContent: '',
+    username: ''
   });
 
   // Person CPT data
@@ -131,6 +134,9 @@ export function ProfileSection({ userRole, userId, activeTab: externalActiveTab,
   const [isTourOpen, setIsTourOpen] = useState(false);
   const [selectedAnnouncement, setSelectedAnnouncement] = useState<any>(null);
   const [isAnnouncementModalOpen, setIsAnnouncementModalOpen] = useState(false);
+
+  // QR Code ref
+  const qrCodeRef = useRef<HTMLDivElement>(null);
 
   // Load user profile data
   useEffect(() => {
@@ -213,7 +219,8 @@ export function ProfileSection({ userRole, userId, activeTab: externalActiveTab,
             brand: user.brand || prev.brand || '',
             arrive: user.arrive || prev.arrive || '',
             canvaFolderLink: user.canva_folder_link || prev.canvaFolderLink || '',
-            nicheBioContent: user.niche_bio_content || prev.nicheBioContent || ''
+            nicheBioContent: user.niche_bio_content || prev.nicheBioContent || '',
+            username: user.username || user.user_nicename || ''
           }));
         }
       } catch (error) {
@@ -259,6 +266,89 @@ export function ProfileSection({ userRole, userId, activeTab: externalActiveTab,
 
     loadWelcomeData();
   }, []);
+
+  // Generate QR Code with styling
+  useEffect(() => {
+    if (qrCodeRef.current) {
+      // Clear previous QR code
+      qrCodeRef.current.innerHTML = '';
+
+      // Generate biolink URL dynamically
+      const siteUrl = window.location.origin;
+      const username = profileData.username || 'user';
+      const biolinkUrl = `${siteUrl}/${username}/links`;
+
+      const qrSize = 123;
+
+      try {
+        const qrCode = new QRCodeStyling({
+          type: 'canvas',
+          shape: 'square',
+          width: qrSize,
+          height: qrSize,
+          data: biolinkUrl,
+          margin: 0,
+          qrOptions: {
+            typeNumber: 0,
+            mode: 'Byte',
+            errorCorrectionLevel: 'L'
+          },
+          dotsOptions: {
+            type: 'extra-rounded',
+            roundSize: true,
+            gradient: {
+              type: 'linear',
+              rotation: 0,
+              colorStops: [
+                { offset: 0, color: '#2563eb' },
+                { offset: 1, color: '#2dd4da' }
+              ]
+            }
+          },
+          backgroundOptions: {
+            color: '#ffffff'
+          },
+          cornersSquareOptions: {
+            type: 'extra-rounded',
+            gradient: {
+              type: 'linear',
+              rotation: 0,
+              colorStops: [
+                { offset: 0, color: '#2563ea' },
+                { offset: 1, color: '#2dd4da' }
+              ]
+            }
+          },
+          cornersDotOptions: {
+            type: '',
+            gradient: {
+              type: 'linear',
+              rotation: 0,
+              colorStops: [
+                { offset: 0, color: '#2dd4da' },
+                { offset: 1, color: '#2563e9' }
+              ]
+            }
+          }
+        });
+
+        qrCode.append(qrCodeRef.current);
+
+        // Constrain canvas size
+        setTimeout(() => {
+          const canvas = qrCodeRef.current?.querySelector('canvas');
+          if (canvas) {
+            canvas.style.width = qrSize + 'px';
+            canvas.style.height = qrSize + 'px';
+            canvas.style.maxWidth = qrSize + 'px';
+            canvas.style.maxHeight = qrSize + 'px';
+          }
+        }, 100);
+      } catch (error) {
+        console.error('Failed to generate QR code:', error);
+      }
+    }
+  }, [profileData.username, loading, showQRCode]);
 
   const handleSave = async () => {
     setIsSaving(true);
@@ -346,7 +436,7 @@ export function ProfileSection({ userRole, userId, activeTab: externalActiveTab,
         <div className="space-y-4 mt-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Profile Details Card */}
-            <Card className="border-[var(--brand-powder-blue)]" data-tour={tourAttributes?.profileSummary}>
+            <Card className="border-[var(--brand-powder-blue)] max-md:rounded-none md:rounded" data-tour={tourAttributes?.profileSummary}>
               <CardContent className="p-6">
                 <div className="space-y-6">
                   {/* Profile Header */}
@@ -431,8 +521,8 @@ export function ProfileSection({ userRole, userId, activeTab: externalActiveTab,
             </Card>
 
             {/* Announcements Card */}
-            <Card className="border-[var(--brand-powder-blue)]" data-tour={tourAttributes?.announcements}>
-              <CardHeader className="h-12 flex items-center px-4 rounded-t-lg" style={{ backgroundColor: '#B6C7D9' }}>
+            <Card className="border-[var(--brand-powder-blue)] max-md:rounded-none md:rounded" data-tour={tourAttributes?.announcements}>
+              <CardHeader className="h-12 flex items-center px-4 max-md:rounded-t-none md:rounded-t" style={{ backgroundColor: '#B6C7D9' }}>
                 <CardTitle className="flex items-center gap-1 text-gray-700 text-sm">
                   <Bell className="h-3 w-3" />
                   Announcements
@@ -499,8 +589,8 @@ export function ProfileSection({ userRole, userId, activeTab: externalActiveTab,
 
           {/* Custom Links Section */}
           {customLinks.length > 0 && (
-            <Card className="border-[var(--brand-powder-blue)]">
-              <CardHeader className="h-12 flex items-center px-4 rounded-t-lg" style={{ backgroundColor: '#B6C7D9' }}>
+            <Card className="border-[var(--brand-powder-blue)] max-md:rounded-none md:rounded">
+              <CardHeader className="h-12 flex items-center px-4 max-md:rounded-t-none md:rounded-t" style={{ backgroundColor: '#B6C7D9' }}>
                 <CardTitle className="flex items-center gap-1 text-gray-700 text-sm">
                   <Globe className="h-3 w-3" />
                   Quick Links
@@ -547,7 +637,7 @@ export function ProfileSection({ userRole, userId, activeTab: externalActiveTab,
           {/* Two Column Layout: Profile Card + Links & Social */}
           <div className="grid grid-cols-1 md:grid-cols-[1fr,1fr] gap-4">
             {/* Profile Card */}
-            <Card className="shadow-lg rounded-sm border border-gray-200 h-full">
+            <Card className="shadow-lg max-md:rounded-none md:rounded border border-gray-200 h-full">
               <div
                 className="p-8 relative overflow-hidden"
                 style={{
@@ -584,13 +674,20 @@ export function ProfileSection({ userRole, userId, activeTab: externalActiveTab,
                   >
                     {/* Front Side - Avatar */}
                     <div
-                      className="absolute inset-0 rounded-full p-1"
+                      className="absolute inset-0 rounded-full overflow-visible"
                       style={{
-                        background: 'linear-gradient(135deg, #2563eb 0%, #2dd4da 100%)',
                         backfaceVisibility: 'hidden'
                       }}
                     >
-                      <div className="w-full h-full rounded-full overflow-hidden bg-white">
+                      <div
+                        className="w-full h-full rounded-full overflow-hidden"
+                        style={{
+                          border: '3px solid transparent',
+                          backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #2563eb 0%, #2dd4da 100%)',
+                          backgroundOrigin: 'padding-box, border-box',
+                          backgroundClip: 'padding-box, border-box',
+                        }}
+                      >
                         {profileData.profileImage ? (
                           <img src={profileData.profileImage} alt="Profile" className="w-full h-full object-cover" />
                         ) : (
@@ -601,35 +698,65 @@ export function ProfileSection({ userRole, userId, activeTab: externalActiveTab,
                           </div>
                         )}
                       </div>
+
+                      {/* QR Code button - flips with avatar, shows QR icon */}
+                      <Button
+                        size="sm"
+                        className="absolute rounded-full w-10 h-10 p-0 bg-black text-white hover:bg-gray-900 shadow-lg z-20"
+                        style={{ top: '10px', right: '-5px' }}
+                        onClick={() => setShowQRCode(!showQRCode)}
+                        type="button"
+                      >
+                        <QrCode className="h-5 w-5" />
+                      </Button>
                     </div>
 
                     {/* Back Side - QR Code */}
                     <div
-                      className="absolute inset-0 rounded-full p-1 flex items-center justify-center bg-white"
+                      className="absolute inset-0 rounded-full overflow-visible"
                       style={{
                         backfaceVisibility: 'hidden',
                         transform: 'rotateY(180deg)'
                       }}
                     >
-                      <div className="w-full h-full flex items-center justify-center p-8">
-                        <img
-                          src={`https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(`BEGIN:VCARD\nVERSION:3.0\nFN:${profileData.firstName} ${profileData.lastName}\nTEL:${profileData.phone}\nEMAIL:${profileData.email}\nTITLE:${profileData.title}\nORG:${profileData.company}\nEND:VCARD`)}`}
-                          alt="QR Code"
-                          className="w-full h-full object-contain"
-                        />
+                      <div
+                        className="w-full h-full rounded-full overflow-hidden"
+                        style={{
+                          border: '3px solid transparent',
+                          backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #2563eb 0%, #2dd4da 100%)',
+                          backgroundOrigin: 'padding-box, border-box',
+                          backgroundClip: 'padding-box, border-box',
+                        }}
+                      >
+                        <div className="w-full h-full flex items-center justify-center bg-white p-5">
+                          <div
+                            ref={qrCodeRef}
+                            style={{
+                              width: '130px',
+                              height: '130px',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center'
+                            }}
+                          />
+                        </div>
                       </div>
-                    </div>
 
-                    {/* QR Code button - overlaps avatar at 2 o'clock */}
-                    <Button
-                      size="sm"
-                      className="absolute rounded-full w-10 h-10 p-0 bg-black text-white hover:bg-gray-900 shadow-lg z-20"
-                      style={{ top: '10px', right: '-5px' }}
-                      onClick={() => setShowQRCode(!showQRCode)}
-                      type="button"
-                    >
-                      <QrCode className="h-5 w-5" />
-                    </Button>
+                      {/* Avatar button - flips with QR code, shows User icon */}
+                      <Button
+                        size="sm"
+                        className="absolute rounded-full w-10 h-10 p-0 bg-black text-white hover:bg-gray-900 shadow-lg z-20"
+                        style={{
+                          top: '10px',
+                          right: '-5px',
+                          transform: 'scaleX(-1)' // Flip button content back so icon is readable
+                        }}
+                        onClick={() => setShowQRCode(!showQRCode)}
+                        type="button"
+                      >
+                        <User className="h-5 w-5" style={{ transform: 'scaleX(-1)' }} />
+                      </Button>
+                    </div>
 
                     {/* Camera button - overlaps avatar at 10 o'clock (only in edit mode) */}
                     {isEditing && (
@@ -860,7 +987,7 @@ export function ProfileSection({ userRole, userId, activeTab: externalActiveTab,
             {/* Right Column: Links & Social + Service Areas */}
             <div className="space-y-4 h-full flex flex-col">
               {/* Links & Social Card */}
-              <Card className="shadow-lg rounded-sm border border-gray-200">
+              <Card className="shadow-lg max-md:rounded-none md:rounded border border-gray-200">
                 <CardHeader className="pb-2">
                   <CardTitle className="flex items-center gap-2 text-gray-900 text-base font-semibold">
                     <Globe className="h-5 w-5" />
@@ -1053,17 +1180,16 @@ export function ProfileSection({ userRole, userId, activeTab: externalActiveTab,
             </CardHeader>
             <CardContent className="space-y-3">
               {isEditing ? (
-                <Textarea
-                  id="bio"
+                <RichTextEditor
                   value={profileData.bio}
-                  onChange={(e) => setProfileData({...profileData, bio: e.target.value})}
-                  className="min-h-[150px] resize-none"
+                  onChange={(value) => setProfileData({...profileData, bio: value})}
                   placeholder="Share your professional background..."
                 />
               ) : (
-                <p className="text-sm text-gray-700 whitespace-pre-wrap">
-                  {profileData.bio || 'No biography provided.'}
-                </p>
+                <div
+                  className="text-sm text-gray-700 prose prose-sm max-w-none"
+                  dangerouslySetInnerHTML={{ __html: profileData.bio || '<p class="text-gray-500 italic">No biography provided.</p>' }}
+                />
               )}
             </CardContent>
           </Card>
@@ -1081,7 +1207,7 @@ export function ProfileSection({ userRole, userId, activeTab: externalActiveTab,
               <div>
                 <Label className="text-sm font-medium mb-2 block">Loan Officer Specialties</Label>
                 {isEditing ? (
-                  <div className="grid grid-cols-1 gap-2">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
                     {[
                       'Residential Mortgages',
                       'Consumer Loans',
@@ -1136,7 +1262,7 @@ export function ProfileSection({ userRole, userId, activeTab: externalActiveTab,
               <div>
                 <Label className="text-sm font-medium mb-2 block">NAMB Certifications</Label>
                 {isEditing ? (
-                  <div className="grid grid-cols-1 gap-2">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
                     {[
                       'CMC - Certified Mortgage Consultant',
                       'CRMS - Certified Residential Mortgage Specialist',
@@ -1189,7 +1315,7 @@ export function ProfileSection({ userRole, userId, activeTab: externalActiveTab,
       {/* Settings Tab */}
       {currentTab === 'settings' && (
         <div className="space-y-4">
-          <Card className="border-[var(--brand-powder-blue)]">
+          <Card className="border-[var(--brand-powder-blue)] max-md:rounded-none md:rounded">
             <CardHeader>
               <CardTitle className="text-[var(--brand-dark-navy)] flex items-center">
                 <Settings className="h-5 w-5 mr-2" />
@@ -1223,7 +1349,7 @@ export function ProfileSection({ userRole, userId, activeTab: externalActiveTab,
             </CardContent>
           </Card>
 
-          <Card className="border-[var(--brand-powder-blue)]">
+          <Card className="border-[var(--brand-powder-blue)] max-md:rounded-none md:rounded">
             <CardHeader>
               <CardTitle className="text-[var(--brand-dark-navy)] flex items-center">
                 <Shield className="h-5 w-5 mr-2" />

@@ -3,6 +3,8 @@ export interface User {
   id: string;
   name: string;
   email: string;
+  username?: string;
+  user_nicename?: string;
   phone?: string;
   mobile_number?: string;
   company?: string;
@@ -551,93 +553,110 @@ class DataService {
     const wpData = this.getWpData();
 
     try {
-      // First, try to update via frs-users API
       // Get the user's profile ID first
-      try {
-        const profileUrl = userId === wpData.currentUser.id.toString()
-          ? `/wp-json/frs-users/v1/profiles/user/me`
-          : `/wp-json/frs-users/v1/profiles/user/${userId}`;
+      const profileUrl = userId === wpData.currentUser.id.toString()
+        ? `/wp-json/frs-users/v1/profiles/user/me`
+        : `/wp-json/frs-users/v1/profiles/user/${userId}`;
 
-        const profileResponse = await fetch(profileUrl, {
-          headers: {
-            'X-WP-Nonce': wpData.restNonce,
-          },
-          credentials: 'same-origin',
-        });
+      console.log('Fetching profile from:', profileUrl);
+      const profileResponse = await fetch(profileUrl, {
+        headers: {
+          'X-WP-Nonce': wpData.restNonce,
+        },
+        credentials: 'same-origin',
+      });
 
-        if (profileResponse.ok) {
-          const profileData_response = await profileResponse.json();
-
-          if (profileData_response.success && profileData_response.data) {
-            const profile = profileData_response.data;
-
-            // Map the profile data to the API format
-            const updateData: any = {};
-
-            if (profileData.firstName !== undefined) updateData.first_name = profileData.firstName;
-            if (profileData.lastName !== undefined) updateData.last_name = profileData.lastName;
-            if (profileData.email !== undefined) updateData.email = profileData.email;
-            if (profileData.phone !== undefined) updateData.phone_number = profileData.phone;
-            if (profileData.mobileNumber !== undefined) updateData.mobile_number = profileData.mobileNumber;
-            if (profileData.title !== undefined) updateData.job_title = profileData.title;
-            if (profileData.bio !== undefined) updateData.biography = profileData.bio;
-            if (profileData.location !== undefined) updateData.city_state = profileData.location;
-            if (profileData.nmls !== undefined) updateData.nmls = profileData.nmls;
-            if (profileData.nmls_number !== undefined) updateData.nmls_number = profileData.nmls_number;
-            if (profileData.license_number !== undefined) updateData.license_number = profileData.license_number;
-            if (profileData.dre_license !== undefined) updateData.dre_license = profileData.dre_license;
-            if (profileData.company !== undefined) updateData.office = profileData.company;
-            if (profileData.linkedin !== undefined) updateData.linkedin_url = profileData.linkedin;
-            if (profileData.facebook !== undefined) updateData.facebook_url = profileData.facebook;
-            if (profileData.instagram !== undefined) updateData.instagram_url = profileData.instagram;
-            if (profileData.twitter !== undefined) updateData.twitter_url = profileData.twitter;
-            if (profileData.youtube !== undefined) updateData.youtube_url = profileData.youtube;
-            if (profileData.tiktok !== undefined) updateData.tiktok_url = profileData.tiktok;
-            if (profileData.specialtiesLo !== undefined) updateData.specialties_lo = profileData.specialtiesLo;
-            if (profileData.specialties !== undefined) updateData.specialties = profileData.specialties;
-            if (profileData.languages !== undefined) updateData.languages = profileData.languages;
-            if (profileData.awards !== undefined) updateData.awards = profileData.awards;
-            if (profileData.nambCertifications !== undefined) updateData.namb_certifications = profileData.nambCertifications;
-            if (profileData.narDesignations !== undefined) updateData.nar_designations = profileData.narDesignations;
-            if (profileData.serviceAreas !== undefined) updateData.service_areas = profileData.serviceAreas;
-            if (profileData.brand !== undefined) updateData.brand = profileData.brand;
-            if (profileData.arrive !== undefined) updateData.arrive = profileData.arrive;
-            if (profileData.canvaFolderLink !== undefined) updateData.canva_folder_link = profileData.canvaFolderLink;
-            if (profileData.nicheBioContent !== undefined) updateData.niche_bio_content = profileData.nicheBioContent;
-
-            // Update the profile
-            const updateUrl = `/wp-json/frs-users/v1/profiles/${profile.id}`;
-            const updateResponse = await fetch(updateUrl, {
-              method: 'PUT',
-              headers: {
-                'Content-Type': 'application/json',
-                'X-WP-Nonce': wpData.restNonce,
-              },
-              credentials: 'same-origin',
-              body: JSON.stringify(updateData),
-            });
-
-            if (updateResponse.ok) {
-              const result = await updateResponse.json();
-              if (result.success) {
-                return true;
-              }
-            }
-          }
-        }
-      } catch (frsError) {
-        console.warn('Failed to update via frs-users API, falling back:', frsError);
+      if (!profileResponse.ok) {
+        throw new Error(`Failed to fetch profile: ${profileResponse.status} ${profileResponse.statusText}`);
       }
 
-      // Fallback to original API
-      await this.request(`/users/${userId}/profile`, {
+      const profileData_response = await profileResponse.json();
+      console.log('Profile response:', profileData_response);
+
+      // Handle both response formats: {success: true, data: {...}} or direct {...}
+      const profile = profileData_response.data || profileData_response;
+
+      if (!profile || !profile.id) {
+        throw new Error('Profile ID not found in response');
+      }
+
+      // Map the profile data to the API format
+      // Only include fields with actual non-empty values to avoid overwriting with blanks
+      const updateData: any = {};
+
+      // Helper to check if value is non-empty (not undefined, null, empty string, or whitespace-only)
+      const hasValue = (val: any) => {
+        if (val === undefined || val === null) return false;
+        if (typeof val === 'string') return val.trim().length > 0;
+        if (Array.isArray(val)) return val.length > 0;
+        return true;
+      };
+
+      if (hasValue(profileData.firstName)) updateData.first_name = profileData.firstName;
+      if (hasValue(profileData.lastName)) updateData.last_name = profileData.lastName;
+      if (hasValue(profileData.email)) updateData.email = profileData.email;
+      if (hasValue(profileData.phone)) updateData.phone_number = profileData.phone;
+      if (hasValue(profileData.mobileNumber)) updateData.mobile_number = profileData.mobileNumber;
+      if (hasValue(profileData.title)) updateData.job_title = profileData.title;
+      if (hasValue(profileData.bio)) updateData.biography = profileData.bio;
+      if (hasValue(profileData.location)) updateData.city_state = profileData.location;
+      if (hasValue(profileData.nmls)) updateData.nmls = profileData.nmls;
+      if (hasValue(profileData.nmls_number)) updateData.nmls_number = profileData.nmls_number;
+      if (hasValue(profileData.license_number)) updateData.license_number = profileData.license_number;
+      if (hasValue(profileData.dre_license)) updateData.dre_license = profileData.dre_license;
+      if (hasValue(profileData.company)) updateData.office = profileData.company;
+      if (hasValue(profileData.linkedin)) updateData.linkedin_url = profileData.linkedin;
+      if (hasValue(profileData.facebook)) updateData.facebook_url = profileData.facebook;
+      if (hasValue(profileData.instagram)) updateData.instagram_url = profileData.instagram;
+      if (hasValue(profileData.twitter)) updateData.twitter_url = profileData.twitter;
+      if (hasValue(profileData.youtube)) updateData.youtube_url = profileData.youtube;
+      if (hasValue(profileData.tiktok)) updateData.tiktok_url = profileData.tiktok;
+      if (hasValue(profileData.specialtiesLo)) updateData.specialties_lo = profileData.specialtiesLo;
+      if (hasValue(profileData.specialties)) updateData.specialties = profileData.specialties;
+      if (hasValue(profileData.languages)) updateData.languages = profileData.languages;
+      if (hasValue(profileData.awards)) updateData.awards = profileData.awards;
+      if (hasValue(profileData.nambCertifications)) updateData.namb_certifications = profileData.nambCertifications;
+      if (hasValue(profileData.narDesignations)) updateData.nar_designations = profileData.narDesignations;
+      if (hasValue(profileData.serviceAreas)) updateData.service_areas = profileData.serviceAreas;
+      if (hasValue(profileData.brand)) updateData.brand = profileData.brand;
+      if (hasValue(profileData.arrive)) updateData.arrive = profileData.arrive;
+      if (hasValue(profileData.canvaFolderLink)) updateData.canva_folder_link = profileData.canvaFolderLink;
+      if (hasValue(profileData.nicheBioContent)) updateData.niche_bio_content = profileData.nicheBioContent;
+
+      // Update the profile
+      const updateUrl = `/wp-json/frs-users/v1/profiles/${profile.id}`;
+      console.log('Sending PUT request to:', updateUrl);
+      console.log('Update data:', updateData);
+
+      const updateResponse = await fetch(updateUrl, {
         method: 'PUT',
-        body: JSON.stringify(profileData)
+        headers: {
+          'Content-Type': 'application/json',
+          'X-WP-Nonce': wpData.restNonce,
+        },
+        credentials: 'same-origin',
+        body: JSON.stringify(updateData),
       });
+
+      console.log('Update response status:', updateResponse.status);
+
+      if (!updateResponse.ok) {
+        const errorText = await updateResponse.text();
+        console.error('Update failed with response:', errorText);
+        throw new Error(`Failed to update profile: ${updateResponse.status} ${updateResponse.statusText}`);
+      }
+
+      const result = await updateResponse.json();
+      console.log('Update result:', result);
+
+      if (!result.success) {
+        throw new Error('Update API returned success: false');
+      }
+
       return true;
     } catch (error) {
       console.error('Failed to update profile:', error);
-      return false;
+      throw error; // Re-throw so the UI can show the actual error
     }
   }
 

@@ -233,45 +233,38 @@ export function WelcomeBento({ userId }: WelcomeBentoProps) {
           <div className="grid grid-cols-2 gap-3">
             {/* Clock with AM/PM */}
             <div
-              className="shadow-xl rounded-sm overflow-hidden p-1"
+              className="shadow-xl rounded-sm overflow-hidden flex flex-col items-center justify-center px-4 py-6"
               style={{
                 background: 'var(--gradient-hero)',
               }}
             >
               <div
-                className="rounded-sm flex flex-col items-center justify-center px-4 py-6"
                 style={{
-                  background: 'var(--brand-dark-navy)',
+                  color: '#ffffff',
+                  fontSize: 'clamp(2rem, 4vw, 3rem)',
+                  fontWeight: 700,
+                  lineHeight: '1',
+                  fontFamily: 'Poppins, -apple-system, sans-serif'
                 }}
               >
-                <div
-                  style={{
-                    color: '#ffffff',
-                    fontSize: 'clamp(2rem, 4vw, 3rem)',
-                    fontWeight: 700,
-                    lineHeight: '1',
-                    fontFamily: 'Poppins, -apple-system, sans-serif'
-                  }}
-                >
-                  {currentTime.toLocaleTimeString('en-US', {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    hour12: true
-                  }).split(' ')[0]}
-                </div>
-                <div
-                  style={{
-                    color: '#ffffff',
-                    fontSize: 'clamp(0.8rem, 1.5vw, 1rem)',
-                    fontWeight: 500,
-                    marginTop: '0.25em',
-                    fontFamily: 'Poppins, -apple-system, sans-serif'
-                  }}
-                >
-                  {currentTime.toLocaleTimeString('en-US', {
-                    hour12: true
-                  }).split(' ')[1]}
-                </div>
+                {currentTime.toLocaleTimeString('en-US', {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  hour12: true
+                }).split(' ')[0]}
+              </div>
+              <div
+                style={{
+                  color: '#ffffff',
+                  fontSize: 'clamp(0.8rem, 1.5vw, 1rem)',
+                  fontWeight: 500,
+                  marginTop: '0.25em',
+                  fontFamily: 'Poppins, -apple-system, sans-serif'
+                }}
+              >
+                {currentTime.toLocaleTimeString('en-US', {
+                  hour12: true
+                }).split(' ')[1]}
               </div>
             </div>
 
@@ -338,15 +331,11 @@ export function WelcomeBento({ userId }: WelcomeBentoProps) {
 
         {/* Right Sidebar - 30% (3/10 cols) - Spans both rows */}
         <div className="lg:col-span-3 lg:row-span-2 h-full">
-          <Card className="relative w-full h-full shadow-xl border-0 overflow-hidden rounded" style={{
-            background: 'linear-gradient(135deg, #000000 0%, #1a1a1a 100%)',
-          }}>
-            <div className="absolute left-1/4 top-1/4 w-56 h-56 md:w-72 md:h-72 bg-white/12 rounded-full blur-3xl"></div>
-            <div className="absolute -right-10 -bottom-5 w-44 h-44 md:w-60 md:h-60 bg-white/18 rounded-full blur-3xl"></div>
-            <CardHeader className="pt-4 px-4 md:px-6 pb-0 backdrop-blur-xl bg-gradient-to-br from-white/10 to-white/5 border-b border-white/20">
+          <Card className="relative w-full h-full shadow-xl border border-gray-200 overflow-hidden rounded bg-white">
+            <CardHeader className="pt-4 px-4 md:px-6 pb-0 border-b border-gray-200">
               <CardTitle className="flex items-center gap-2 text-base md:text-lg">
-                <Bell className="h-4 w-4 md:h-5 md:w-5 text-[#2dd4da]" />
-                <span className="bg-gradient-to-r from-[#2563eb] to-[#2dd4da] bg-clip-text text-transparent">
+                <Bell className="h-4 w-4 md:h-5 md:w-5 text-blue-600" />
+                <span className="text-gray-900">
                 Updates & News
                 </span>
               </CardTitle>
@@ -356,35 +345,35 @@ export function WelcomeBento({ userId }: WelcomeBentoProps) {
                 {/* Announcements Section */}
                 {announcements.length > 0 && (
                   <div className="space-y-3">
-                    <h3 className="text-xs font-semibold text-white/60 uppercase tracking-wider">Announcements</h3>
+                    <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Announcements</h3>
                     {announcements.map((announcement) => (
                       <div
                         key={announcement.id}
-                        className="p-3 md:p-4 rounded cursor-pointer transition-all hover:shadow-lg backdrop-blur-md bg-white/10 border border-white/20"
+                        className="p-3 md:p-4 rounded cursor-pointer transition-all hover:shadow-lg bg-gray-50 border border-gray-200 hover:border-blue-300"
                         onClick={() => {
                           setSelectedAnnouncement(announcement);
                           setIsAnnouncementModalOpen(true);
                         }}
                       >
                         <div className="flex items-start justify-between mb-1">
-                          <h4 className="font-semibold text-xs md:text-sm flex-1 bg-gradient-to-r from-[#2563eb] to-[#2dd4da] bg-clip-text text-transparent">
+                          <h4 className="font-semibold text-xs md:text-sm flex-1 text-gray-900">
                             {announcement.title}
                           </h4>
                           {announcement.badge && (
-                            <Badge className="text-white border-0 ml-2 bg-white/20 text-xs px-1.5 py-0">
+                            <Badge className="text-blue-600 border-0 ml-2 bg-blue-100 text-xs px-1.5 py-0">
                               {announcement.badge}
                             </Badge>
                           )}
                         </div>
-                        <p className="text-white/90 text-xs md:text-sm line-clamp-1 mb-1">
+                        <p className="text-gray-600 text-xs md:text-sm line-clamp-1 mb-1">
                           {announcement.excerpt}
                         </p>
                         <div className="flex items-center justify-between">
-                          <span className="text-white/70 text-xs font-medium">
+                          <span className="text-gray-500 text-xs font-medium">
                             {new Date(announcement.date).toLocaleDateString()}
                           </span>
                           {announcement.priority === 'high' && (
-                            <div className="w-2 h-2 bg-red-400 rounded-full animate-pulse"></div>
+                            <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
                           )}
                         </div>
                       </div>
@@ -395,33 +384,33 @@ export function WelcomeBento({ userId }: WelcomeBentoProps) {
                 {/* Blog Posts Section */}
                 {blogPosts.length > 0 && (
                   <div className="space-y-3">
-                    <h3 className="text-xs font-semibold text-white/60 uppercase tracking-wider">Latest Updates</h3>
+                    <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Latest Updates</h3>
                     {blogPosts.map((post) => (
                       <a
                         key={post.id}
                         href={post.link}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="block p-3 md:p-4 rounded transition-all hover:shadow-lg backdrop-blur-md bg-white/10 border border-white/20 hover:bg-white/15 no-underline"
+                        className="block p-3 md:p-4 rounded transition-all hover:shadow-lg bg-gray-50 border border-gray-200 hover:border-blue-300 no-underline"
                       >
-                        <h4 className="font-semibold text-xs md:text-sm bg-gradient-to-r from-[#2563eb] to-[#2dd4da] bg-clip-text text-transparent line-clamp-2 mb-2">
+                        <h4 className="font-semibold text-xs md:text-sm text-gray-900 line-clamp-2 mb-2">
                           {post.title}
                         </h4>
-                        <p className="text-white/90 text-xs line-clamp-2 mb-2">
+                        <p className="text-gray-600 text-xs line-clamp-2 mb-2">
                           {post.excerpt}
                         </p>
                         <div className="flex items-center gap-2">
                           <img
                             src={post.author_avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(post.author_name || 'Author')}&background=2DD4DA&color=fff&size=96`}
                             alt={post.author_name}
-                            className="w-5 h-5 rounded-full border border-white/20"
+                            className="w-5 h-5 rounded-full border border-gray-200"
                           />
-                          <div className="flex-1 flex items-center gap-2 text-xs text-white/70">
-                            <span className="font-medium text-white/90">{post.author_name}</span>
+                          <div className="flex-1 flex items-center gap-2 text-xs text-gray-500">
+                            <span className="font-medium text-gray-700">{post.author_name}</span>
                             <span>•</span>
                             <span>{post.date}</span>
                           </div>
-                          <ExternalLink className="h-3 w-3 text-white/70" />
+                          <ExternalLink className="h-3 w-3 text-gray-500" />
                         </div>
                       </a>
                     ))}
@@ -431,8 +420,8 @@ export function WelcomeBento({ userId }: WelcomeBentoProps) {
                 {/* Empty State */}
                 {announcements.length === 0 && blogPosts.length === 0 && (
                   <div className="text-center py-12">
-                    <Bell className="h-16 w-16 mx-auto mb-4 text-white/30" />
-                    <p className="text-white/70">No updates available</p>
+                    <Bell className="h-16 w-16 mx-auto mb-4 text-gray-300" />
+                    <p className="text-gray-500">No updates available</p>
                   </div>
                 )}
               </div>

@@ -8,7 +8,7 @@
 	"description": "Complete biolink page with all components",
 	"keywords": ["biolink", "page", "complete"],
 	"textdomain": "frs-partnership-portal",
-	"editorScript": "file:../../assets/js/blocks/biolink-page.js",
+	"editorScript": "file:./index.js",
 	"render": "file:./render.php",
 	"attributes": {
 		"user_id": {

@@ -6,8 +6,8 @@ import {
 	FHACalculator,
 	RefinanceCalculator,
 	AffordabilityCalculator
-} from './components';
-import { LeadCaptureModal } from './lead-capture';
+} from './components.js';
+import { LeadCaptureModal } from './lead-capture.js';
 
 function MortgageCalculatorBlock({ attributes }) {
 	const {

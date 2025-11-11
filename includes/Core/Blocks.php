@@ -36,7 +36,7 @@ class Blocks {
 	 * @return void
 	 */
 	public function register_blocks() {
-		$blocks_dir = LRH_DIR . 'blocks/';
+		$blocks_dir = LRH_DIR . 'assets/blocks/';
 
 		// Register loan officer directory block
 		register_block_type(
@@ -86,7 +86,7 @@ class Blocks {
 	public function render_loan_officer_directory( $attributes, $content, $block ) {
 		// Include render.php and let it output directly, then capture with ob
 		ob_start();
-		include LRH_DIR . 'blocks/loan-officer-directory/render.php';
+		include LRH_DIR . 'assets/blocks/loan-officer-directory/render.php';
 		return ob_get_clean();
 	}
 }

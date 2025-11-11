@@ -14,8 +14,8 @@
     "leads"
   ],
   "textdomain": "lending-resource-hub",
-  "editorScript": "file:../../assets/js/blocks/mortgage-calculator.js",
-  "viewScript": "file:../../assets/js/blocks/mortgage-calculator-view.js",
+  "editorScript": "file:./index.js",
+  "viewScript": "file:./view.js",
   "attributes": {
     "defaultCalculatorType": {
       "type": "string",

@@ -9,7 +9,7 @@ import {
 	formatCurrency,
 	formatCurrencyWithCents,
 	formatPercent
-} from './calculations';
+} from './calculations.js';
 
 // Input component
 function InputField({ label, value, onChange, type = 'number', prefix = '', suffix = '', min = 0, step = 'any' }) {

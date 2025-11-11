@@ -22,14 +22,14 @@ export function AppLauncher({ onNavigate }: AppLauncherProps) {
       name: 'Mortgage Calculator',
       icon: Calculator,
       gradient: 'var(--gradient-hero)',
-      onClick: () => onNavigate?.('tools-mortgage-calculator'),
+      onClick: () => onNavigate?.('tools/mortgage-calculator'),
     },
     {
       id: 'property-valuation',
       name: 'Property Valuation',
       icon: Home,
       gradient: 'var(--gradient-brand-navy)',
-      onClick: () => onNavigate?.('tools-property-valuation'),
+      onClick: () => onNavigate?.('tools/property-valuation'),
     },
   ];
 
@@ -66,21 +66,18 @@ export function AppLauncher({ onNavigate }: AppLauncherProps) {
             key={tool.id}
             type="button"
             onClick={tool.onClick}
-            className="relative shadow-lg rounded-lg overflow-hidden p-6 flex flex-col items-center justify-center gap-3 transition-all duration-300 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]"
-            style={{
-              background: tool.gradient,
-            }}
+            className="relative shadow-lg rounded-lg overflow-hidden p-6 flex flex-col items-center justify-center gap-3 transition-all duration-300 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] bg-white border border-gray-100"
           >
             {tool.image ? (
               <img
                 src={tool.image}
                 alt={tool.name}
-                className="w-14 h-14 object-contain relative z-10 brightness-0 invert"
+                className="w-14 h-14 object-contain relative z-10"
               />
             ) : tool.icon ? (
-              <tool.icon className="w-14 h-14 text-white relative z-10" strokeWidth={1.5} />
+              <tool.icon className="w-14 h-14 text-blue-600 relative z-10" strokeWidth={1.5} />
             ) : null}
-            <span className="text-white text-sm font-semibold text-center relative z-10">{tool.name}</span>
+            <span className="text-gray-900 text-sm font-semibold text-center relative z-10">{tool.name}</span>
           </button>
         ))}
       </div>
@@ -92,10 +89,7 @@ export function AppLauncher({ onNavigate }: AppLauncherProps) {
           key={app.id}
           type="button"
           onClick={app.onClick}
-          className="relative shadow-lg rounded-lg overflow-hidden p-6 flex flex-col items-center justify-center gap-3 transition-all duration-300 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]"
-          style={{
-            background: app.gradient,
-          }}
+          className="relative shadow-lg rounded-lg overflow-hidden p-6 flex flex-col items-center justify-center gap-3 transition-all duration-300 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] bg-white border border-gray-100"
         >
           {app.image ? (
             <img
@@ -104,9 +98,9 @@ export function AppLauncher({ onNavigate }: AppLauncherProps) {
               className={`object-contain relative z-10 ${app.id === 'arive' ? 'w-20 h-20' : 'w-14 h-14'}`}
             />
           ) : app.icon ? (
-            <app.icon className="w-14 h-14 text-white relative z-10" strokeWidth={1.5} />
+            <app.icon className="w-14 h-14 text-blue-600 relative z-10" strokeWidth={1.5} />
           ) : null}
-          <span className="text-white text-sm font-semibold text-center relative z-10">{app.name}</span>
+          <span className="text-gray-900 text-sm font-semibold text-center relative z-10">{app.name}</span>
         </button>
         ))}
       </div>

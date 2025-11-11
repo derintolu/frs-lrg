@@ -14,7 +14,6 @@
     "filter"
   ],
   "textdomain": "lending-resource-hub",
-  "editorScript": "file:../../assets/js/blocks/loan-officer-directory.js",
   "render": "file:./render.php",
   "attributes": {
     "showFilters": {

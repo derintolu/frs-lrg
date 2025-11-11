@@ -71,7 +71,7 @@ export function Settings({ userId }: SettingsProps) {
         const response = await fetch('/wp-json/wp/v2/users/me?context=edit', {
           credentials: 'include',
           headers: {
-            'X-WP-Nonce': (window as any).wpApiSettings?.nonce || '',
+            'X-WP-Nonce': (window as any).frsPortalConfig?.restNonce || '',
           },
         });
 
@@ -80,8 +80,9 @@ export function Settings({ userId }: SettingsProps) {
           setWpUser(data);
 
           // Check if user is authenticated via WPO365/Microsoft
+          // Only mark as Microsoft user if they have actual WPO365 meta data
           const wpo365Meta = data.meta?.wpo365_auth || data.meta?.wpo365_upn || data.meta?.wpo365_email;
-          const isMSUser = !!wpo365Meta || (data.email && data.email.toLowerCase().includes('@21stcenturylending.com'));
+          const isMSUser = !!wpo365Meta;
 
           setIsMicrosoftUser(isMSUser);
           setMicrosoftEmail(data.meta?.wpo365_email || data.meta?.wpo365_upn || '');
@@ -125,7 +126,7 @@ export function Settings({ userId }: SettingsProps) {
         credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
-          'X-WP-Nonce': (window as any).wpApiSettings?.nonce || '',
+          'X-WP-Nonce': (window as any).frsPortalConfig?.restNonce || '',
         },
         body: JSON.stringify(updateData),
       });
@@ -172,7 +173,7 @@ export function Settings({ userId }: SettingsProps) {
         credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
-          'X-WP-Nonce': (window as any).wpApiSettings?.nonce || '',
+          'X-WP-Nonce': (window as any).frsPortalConfig?.restNonce || '',
         },
         body: JSON.stringify({
           password: passwordData.newPassword,
