@@ -204,25 +204,23 @@ export function WelcomeBento({ userId }: WelcomeBentoProps) {
   }
 
   return (
-    <div className="max-w-full h-full overflow-hidden max-md:p-[10px] md:p-0">
-      {/* Main Grid: Left content (70%) | Right sidebar (30%) spanning 2 rows */}
-      <div className="grid grid-cols-1 lg:grid-cols-10 gap-3 auto-rows-min">
-        {/* Left Column - 70% (7/10 cols) */}
-        <div className="lg:col-span-7 space-y-3">
-          {/* Row 1: Welcome/Clock | Market Matters */}
-          <div className="grid grid-cols-1 lg:grid-cols-7 gap-3">
-            {/* Welcome Header + Clock/Calendar - 3 columns (30%) */}
-            <div className="lg:col-span-3 h-full space-y-3 flex flex-col">
+    <div className="max-w-full h-full overflow-hidden p-[10px] md:p-0">
+      {/* Fluid grid layout */}
+      <div className="space-y-2">
+        {/* Welcome + Market section */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '8px' }}>
+          {/* Welcome Header + Clock/Calendar */}
+          <div className="h-full space-y-2 flex flex-col">
           {/* Welcome Header - Brand Navy Gradient */}
-          <div className="relative overflow-hidden max-md:rounded-none md:rounded p-4 md:p-6 w-full shadow-xl flex-1 flex items-center" style={{
+          <div className="relative overflow-hidden max-md:rounded-none md:rounded p-3 w-full shadow-xl flex-1 flex items-center" style={{
             background: 'var(--gradient-brand-navy)',
           }}>
             <div className="relative z-10 flex flex-col justify-center w-full">
-              <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-2">
+              <h1 className="text-2xl md:text-3xl font-bold text-white mb-1">
                 Welcome,<br />
                 {profileData.firstName}
               </h1>
-              <p className="text-sm md:text-base text-white/90">
+              <p className="text-sm text-white/90">
                 Your dashboard is ready
               </p>
             </div>
@@ -230,10 +228,10 @@ export function WelcomeBento({ userId }: WelcomeBentoProps) {
           </div>
 
           {/* Time & Date Widget - Clock + Tear-off Calendar */}
-          <div className="grid grid-cols-2 gap-3">
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: '8px' }}>
             {/* Clock with AM/PM */}
             <div
-              className="shadow-xl rounded-sm overflow-hidden flex flex-col items-center justify-center px-4 py-6"
+              className="shadow-xl rounded-sm overflow-hidden flex flex-col items-center justify-center px-3 py-4"
               style={{
                 background: 'var(--gradient-hero)',
               }}
@@ -241,7 +239,7 @@ export function WelcomeBento({ userId }: WelcomeBentoProps) {
               <div
                 style={{
                   color: '#ffffff',
-                  fontSize: 'clamp(2rem, 4vw, 3rem)',
+                  fontSize: 'clamp(1.5rem, 3vw, 2rem)',
                   fontWeight: 700,
                   lineHeight: '1',
                   fontFamily: 'Poppins, -apple-system, sans-serif'
@@ -287,10 +285,10 @@ export function WelcomeBento({ userId }: WelcomeBentoProps) {
               </div>
 
               {/* Date number */}
-              <div className="flex flex-col items-center justify-center py-3 bg-white">
+              <div className="flex flex-col items-center justify-center py-2 bg-white">
                 <div
                   style={{
-                    fontSize: 'clamp(2.5rem, 5vw, 3.5rem)',
+                    fontSize: 'clamp(2rem, 4vw, 2.5rem)',
                     fontWeight: 700,
                     lineHeight: '1',
                     color: 'var(--brand-dark-navy)',
@@ -315,97 +313,51 @@ export function WelcomeBento({ userId }: WelcomeBentoProps) {
           </div>
         </div>
 
-            {/* Market Matters Widget - 4 columns (40%) */}
-            <div className="lg:col-span-4 h-full">
-              <Card className="w-full h-full shadow-xl border-0 overflow-hidden rounded" style={{
-                background: 'var(--gradient-hero)',
-              }}>
-                <MarketMattersWidget />
-              </Card>
-            </div>
-          </div>
-
-          {/* Row 2: Toolbox */}
-          <AppLauncher onNavigate={(view) => navigate(`/${view}`)} />
+          {/* Market Matters Widget */}
+          <Card className="w-full h-full shadow-xl border-0 overflow-hidden rounded" style={{
+            background: 'var(--gradient-hero)',
+          }}>
+            <MarketMattersWidget />
+          </Card>
         </div>
 
-        {/* Right Sidebar - 30% (3/10 cols) - Spans both rows */}
-        <div className="lg:col-span-3 lg:row-span-2 h-full">
+        {/* Blog Posts Section */}
+        <div className="h-full">
           <Card className="relative w-full h-full shadow-xl border border-gray-200 overflow-hidden rounded bg-white">
-            <CardHeader className="pt-4 px-4 md:px-6 pb-0 border-b border-gray-200">
-              <CardTitle className="flex items-center gap-2 text-base md:text-lg">
-                <Bell className="h-4 w-4 md:h-5 md:w-5 text-blue-600" />
+            <CardHeader className="pt-3 px-3 pb-1 border-b border-gray-200">
+              <CardTitle className="flex items-center gap-2 text-base">
+                <Bell className="h-4 w-4 text-blue-600" />
                 <span className="text-gray-900">
-                Updates & News
+                Latest Updates
                 </span>
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-4 md:p-6 pt-3 overflow-y-auto max-h-[calc(100vh-200px)]">
-              <div className="space-y-4">
-                {/* Announcements Section */}
-                {announcements.length > 0 && (
-                  <div className="space-y-3">
-                    <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Announcements</h3>
-                    {announcements.map((announcement) => (
-                      <div
-                        key={announcement.id}
-                        className="p-3 md:p-4 rounded cursor-pointer transition-all hover:shadow-lg bg-gray-50 border border-gray-200 hover:border-blue-300"
-                        onClick={() => {
-                          setSelectedAnnouncement(announcement);
-                          setIsAnnouncementModalOpen(true);
-                        }}
-                      >
-                        <div className="flex items-start justify-between mb-1">
-                          <h4 className="font-semibold text-xs md:text-sm flex-1 text-gray-900">
-                            {announcement.title}
-                          </h4>
-                          {announcement.badge && (
-                            <Badge className="text-blue-600 border-0 ml-2 bg-blue-100 text-xs px-1.5 py-0">
-                              {announcement.badge}
-                            </Badge>
-                          )}
-                        </div>
-                        <p className="text-gray-600 text-xs md:text-sm line-clamp-1 mb-1">
-                          {announcement.excerpt}
-                        </p>
-                        <div className="flex items-center justify-between">
-                          <span className="text-gray-500 text-xs font-medium">
-                            {new Date(announcement.date).toLocaleDateString()}
-                          </span>
-                          {announcement.priority === 'high' && (
-                            <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-
+            <CardContent className="p-2 pt-2 overflow-y-auto max-h-[300px]">
+              <div className="space-y-2">
                 {/* Blog Posts Section */}
                 {blogPosts.length > 0 && (
-                  <div className="space-y-3">
-                    <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Latest Updates</h3>
+                  <div className="space-y-2">
                     {blogPosts.map((post) => (
                       <a
                         key={post.id}
                         href={post.link}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="block p-3 md:p-4 rounded transition-all hover:shadow-lg bg-gray-50 border border-gray-200 hover:border-blue-300 no-underline"
+                        className="block p-2 rounded transition-all hover:shadow-lg bg-gray-50 border border-gray-200 hover:border-blue-300 no-underline"
                       >
-                        <h4 className="font-semibold text-xs md:text-sm text-gray-900 line-clamp-2 mb-2">
+                        <h4 className="font-semibold text-xs text-gray-900 line-clamp-1 mb-1">
                           {post.title}
                         </h4>
-                        <p className="text-gray-600 text-xs line-clamp-2 mb-2">
+                        <p className="text-gray-600 text-xs line-clamp-1 mb-1">
                           {post.excerpt}
                         </p>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1">
                           <img
                             src={post.author_avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(post.author_name || 'Author')}&background=2DD4DA&color=fff&size=96`}
                             alt={post.author_name}
-                            className="w-5 h-5 rounded-full border border-gray-200"
+                            className="w-4 h-4 rounded-full border border-gray-200"
                           />
-                          <div className="flex-1 flex items-center gap-2 text-xs text-gray-500">
+                          <div className="flex-1 flex items-center gap-1 text-xs text-gray-500">
                             <span className="font-medium text-gray-700">{post.author_name}</span>
                             <span>•</span>
                             <span>{post.date}</span>
@@ -418,7 +370,7 @@ export function WelcomeBento({ userId }: WelcomeBentoProps) {
                 )}
 
                 {/* Empty State */}
-                {announcements.length === 0 && blogPosts.length === 0 && (
+                {blogPosts.length === 0 && (
                   <div className="text-center py-12">
                     <Bell className="h-16 w-16 mx-auto mb-4 text-gray-300" />
                     <p className="text-gray-500">No updates available</p>
@@ -428,206 +380,9 @@ export function WelcomeBento({ userId }: WelcomeBentoProps) {
             </CardContent>
           </Card>
         </div>
-      </div>
 
-      {/* Old sections - Remove */}
-      <div className="hidden">
-        {/* Blog Post 1 - 1 column */}
-        {blogPosts.length > 0 && (
-          <div className="lg:col-span-1 h-full">
-            <Card className="w-full shadow-xl border-0 overflow-hidden relative rounded h-full min-h-0">
-              {blogPosts[0].featured_image && (
-                <>
-                  <div className="absolute inset-0">
-                    <img
-                      src={blogPosts[0].featured_image}
-                      alt={blogPosts[0].title}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-black/30" />
-                </>
-              )}
-              <CardContent className="relative z-10 p-4 md:p-5 text-white flex flex-col justify-end h-full">
-                <h3
-                  className="text-lg md:text-xl lg:text-2xl font-bold mb-1.5 md:mb-2 line-clamp-2"
-                  style={{
-                    color: '#ffffff',
-                    textShadow: '0 2px 8px rgba(0, 0, 0, 0.8), 0 4px 16px rgba(37, 99, 235, 0.4), 0 0 20px rgba(45, 212, 218, 0.3)',
-                    filter: 'drop-shadow(0 0 8px rgba(37, 99, 235, 0.5))'
-                  }}
-                >
-                  {blogPosts[0].title}
-                </h3>
-                <p className="text-white text-xs md:text-sm font-normal mb-2 md:mb-3 line-clamp-1 md:line-clamp-2">{blogPosts[0].excerpt}</p>
-                <div className="flex items-center justify-between flex-wrap gap-2">
-                  <div className="flex items-center gap-2 text-xs">
-                    <img
-                      src={blogPosts[0].author_avatar || `https://ui-avatars.com/api/?name=Author&background=2DD4DA&color=fff&size=96`}
-                      alt={blogPosts[0].author_name || 'Author'}
-                      className="w-6 h-6 md:w-7 md:h-7 rounded-full border-2 border-white/30"
-                    />
-                    <span className="text-white font-medium text-xs">{blogPosts[0].author_name || 'Author'}</span>
-                    <span className="text-white/50 max-md:hidden">•</span>
-                    <span className="text-white/90 max-md:hidden">{blogPosts[0].category_name || 'Blog'}</span>
-                    <span className="text-white/50 max-md:hidden">•</span>
-                    <span className="text-white/80 max-md:hidden">{blogPosts[0].date}</span>
-                  </div>
-                  <a
-                    href={blogPosts[0].link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 text-xs text-white hover:text-white/80 transition-colors bg-white/15 hover:bg-white/25 px-2.5 py-1 rounded-lg backdrop-blur-sm font-medium"
-                  >
-                    Read more <ExternalLink className="h-3 w-3" />
-                  </a>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
-
-        {/* Blog Post 2 - 1 column */}
-        {blogPosts.length > 1 && (
-          <div className="lg:col-span-1 h-full">
-            <Card className="w-full shadow-xl border-0 overflow-hidden relative rounded h-full min-h-0">
-              {/* Featured image as background */}
-              {blogPosts[1].featured_image && (
-                <>
-                  <div className="absolute inset-0">
-                    <img
-                      src={blogPosts[1].featured_image}
-                      alt={blogPosts[1].title}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  {/* Dark gradient overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-black/30" />
-                </>
-              )}
-
-              {/* Content overlaid on background */}
-              <CardContent className="relative z-10 p-4 md:p-5 text-white flex flex-col justify-end h-full">
-                <h3
-                  className="text-lg md:text-xl lg:text-2xl font-bold mb-1.5 md:mb-2 line-clamp-2"
-                  style={{
-                    color: '#ffffff',
-                    textShadow: '0 2px 8px rgba(0, 0, 0, 0.8), 0 4px 16px rgba(37, 99, 235, 0.4), 0 0 20px rgba(45, 212, 218, 0.3)',
-                    filter: 'drop-shadow(0 0 8px rgba(37, 99, 235, 0.5))'
-                  }}
-                >
-                  {blogPosts[1].title}
-                </h3>
-                <p className="text-white text-xs md:text-sm font-normal mb-2 md:mb-3 line-clamp-1 md:line-clamp-2">{blogPosts[1].excerpt}</p>
-
-                {/* Author, category and date info */}
-                <div className="flex items-center justify-between flex-wrap gap-2">
-                  <div className="flex items-center gap-2 text-xs">
-                    {/* Author avatar and name - always show */}
-                    <img
-                      src={blogPosts[1].author_avatar || `https://ui-avatars.com/api/?name=Author&background=2DD4DA&color=fff&size=96`}
-                      alt={blogPosts[1].author_name || 'Author'}
-                      className="w-6 h-6 md:w-7 md:h-7 rounded-full border-2 border-white/30"
-                    />
-                    <span className="text-white font-medium text-xs">{blogPosts[1].author_name || 'Author'}</span>
-                    <span className="text-white/50 max-md:hidden">•</span>
-
-                    {/* Category */}
-                    <span className="text-white/90 max-md:hidden">{blogPosts[1].category_name || 'Blog'}</span>
-                    <span className="text-white/50 max-md:hidden">•</span>
-
-                    {/* Date */}
-                    <span className="text-white/80 max-md:hidden">{blogPosts[1].date}</span>
-                  </div>
-                  <a
-                    href={blogPosts[1].link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 text-xs text-white hover:text-white/80 transition-colors bg-white/15 hover:bg-white/25 px-2.5 py-1 rounded-lg backdrop-blur-sm font-medium"
-                  >
-                    Read more <ExternalLink className="h-3 w-3" />
-                  </a>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
-
-        {/* Empty placeholder if needed */}
-        <div className="lg:col-span-1 h-full">
-          {/* Could add another widget here in the future */}
-        </div>
-      </div>
-
-      {/* Old blog posts section - Remove */}
-      <div className="hidden">
-        {blogPosts.length > 0 && (
-          <div className="lg:col-span-2 h-full grid grid-cols-1 md:grid-cols-2 gap-3 min-h-0">
-            {blogPosts.slice(2).map((blogPost) => (
-              <Card key={blogPost.id} className="w-full shadow-xl border-0 overflow-hidden relative rounded h-full min-h-0">
-                {/* Featured image as background */}
-                {blogPost.featured_image && (
-                  <>
-                    <div className="absolute inset-0">
-                      <img
-                        src={blogPost.featured_image}
-                        alt={blogPost.title}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    {/* Dark gradient overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-black/30" />
-                  </>
-                )}
-
-                {/* Content overlaid on background */}
-                <CardContent className="relative z-10 p-4 md:p-5 text-white flex flex-col justify-end h-full">
-                  <h3
-                    className="text-lg md:text-xl lg:text-2xl font-bold mb-1.5 md:mb-2 line-clamp-2"
-                    style={{
-                      color: '#ffffff',
-                      textShadow: '0 2px 8px rgba(0, 0, 0, 0.8), 0 4px 16px rgba(37, 99, 235, 0.4), 0 0 20px rgba(45, 212, 218, 0.3)',
-                      filter: 'drop-shadow(0 0 8px rgba(37, 99, 235, 0.5))'
-                    }}
-                  >
-                    {blogPost.title}
-                  </h3>
-                  <p className="text-white text-xs md:text-sm font-normal mb-2 md:mb-3 line-clamp-1 md:line-clamp-2">{blogPost.excerpt}</p>
-
-                  {/* Author, category and date info */}
-                  <div className="flex items-center justify-between flex-wrap gap-2">
-                    <div className="flex items-center gap-2 text-xs">
-                      {/* Author avatar and name - always show */}
-                      <img
-                        src={blogPost.author_avatar || `https://ui-avatars.com/api/?name=Author&background=2DD4DA&color=fff&size=96`}
-                        alt={blogPost.author_name || 'Author'}
-                        className="w-6 h-6 md:w-7 md:h-7 rounded-full border-2 border-white/30"
-                      />
-                      <span className="text-white font-medium text-xs">{blogPost.author_name || 'Author'}</span>
-                      <span className="text-white/50 max-md:hidden">•</span>
-
-                      {/* Category */}
-                      <span className="text-white/90 max-md:hidden">{blogPost.category_name || 'Blog'}</span>
-                      <span className="text-white/50 max-md:hidden">•</span>
-
-                      {/* Date */}
-                      <span className="text-white/80 max-md:hidden">{blogPost.date}</span>
-                    </div>
-                    <a
-                      href={blogPost.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 text-xs text-white hover:text-white/80 transition-colors bg-white/15 hover:bg-white/25 px-2.5 py-1 rounded-lg backdrop-blur-sm font-medium"
-                    >
-                      Read more <ExternalLink className="h-3 w-3" />
-                    </a>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        )}
-
+        {/* App Launcher */}
+        <AppLauncher onNavigate={(view) => navigate(`/${view}`)} />
       </div>
 
       {/* Announcement Modal */}

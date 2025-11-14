@@ -101,15 +101,15 @@ export function MarketMattersWidget() {
   if (loading) {
     return (
       <>
-        <CardHeader className="pt-4 px-4 md:px-6 pb-0 border-b border-white/20">
-          <CardTitle className="flex items-center gap-2 text-base md:text-lg">
-            <TrendingUp className="h-4 w-4 md:h-5 md:w-5 text-white" />
+        <CardHeader className="pt-2 px-3 pb-0 border-b border-white/20">
+          <CardTitle className="flex items-center gap-2 text-sm">
+            <TrendingUp className="h-4 w-4 text-white" />
             <span className="text-white">
             Market Matters
             </span>
           </CardTitle>
         </CardHeader>
-        <CardContent className="p-4 md:p-6 pt-3">
+        <CardContent className="p-2 pt-2">
           <div className="space-y-3 animate-pulse">
             <div className="h-24 bg-white/10 rounded"></div>
             <div className="h-24 bg-white/10 rounded"></div>
@@ -123,15 +123,15 @@ export function MarketMattersWidget() {
 
   return (
     <>
-      <CardHeader className="pt-4 px-4 md:px-6 pb-0 border-b border-white/20">
-        <CardTitle className="flex items-center gap-2 text-base md:text-lg">
-          <TrendingUp className="h-4 w-4 md:h-5 md:w-5 text-white" />
+      <CardHeader className="pt-2 px-3 pb-0 border-b border-white/20">
+        <CardTitle className="flex items-center gap-2 text-sm">
+          <TrendingUp className="h-4 w-4 text-white" />
           <span className="text-white">
           Market Matters
           </span>
         </CardTitle>
       </CardHeader>
-      <CardContent className="p-4 md:p-6 pt-3">
+      <CardContent className="p-2 pt-2">
         <div className="space-y-3">
           {/* 30-Year Rate Tile */}
           <div className="relative overflow-hidden p-4 bg-white/10 border border-white/20 rounded-lg">

@@ -320,8 +320,8 @@ export function DashboardLayout({ currentUser }: DashboardLayoutProps) {
               muted
               loop
               playsInline
-              className="absolute object-cover"
-              style={{ zIndex: 0, width: '278px', height: '140px' }}
+              className="absolute inset-0 w-full h-full object-cover"
+              style={{ zIndex: 0 }}
             >
               <source src={gradientUrl} type="video/mp4" />
             </video>
@@ -377,7 +377,11 @@ export function DashboardLayout({ currentUser }: DashboardLayoutProps) {
       {/* Button Section */}
       <div className="relative px-4 pb-4 bg-white" style={{ paddingTop: '32px', zIndex: 1 }}>
         <button
-          onClick={() => isOnProfile ? navigate('/') : navigate('/profile')}
+          onClick={() => {
+            // Close mobile sidebar on navigation
+            window.location.hash = '#close-sidebar';
+            isOnProfile ? navigate('/') : navigate('/profile');
+          }}
           className="mt-6 w-full px-3 py-2 text-sm font-medium text-white rounded-lg transition-colors hover:opacity-90"
           style={{
             background: 'linear-gradient(135deg, #2563eb 0%, #2dd4da 100%)',

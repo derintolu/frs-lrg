@@ -5,6 +5,7 @@ use LendingResourceHub\Core\PostTypes;
 use LendingResourceHub\Core\Redirects;
 use LendingResourceHub\Core\MortgageLandingGenerator;
 use LendingResourceHub\Core\UserPageRewrites;
+use LendingResourceHub\Core\Blocks as CoreBlocks;
 use LendingResourceHub\Admin\Menu;
 use LendingResourceHub\Core\Template;
 use LendingResourceHub\Assets\Frontend;
@@ -12,7 +13,7 @@ use LendingResourceHub\Helpers\ProfileHelpers;
 // use LendingResourceHub\Assets\Admin; // Not needed - admin uses PHP templates, not React
 use LendingResourceHub\Integrations\FluentBooking;
 use LendingResourceHub\Integrations\FluentForms;
-use LendingResourceHub\Controllers\Biolinks\Blocks;
+use LendingResourceHub\Controllers\Biolinks\Blocks as BiolinkBlocks;
 use LendingResourceHub\Traits\Base;
 
 defined( 'ABSPATH' ) || exit;
@@ -67,7 +68,8 @@ final class LendingResourceHub {
 		PostTypes::get_instance()->init();
 		UserPageRewrites::get_instance()->init();
 		Redirects::get_instance()->init();
-		Blocks::get_instance()->init();
+		CoreBlocks::get_instance()->init();
+		BiolinkBlocks::get_instance()->init();
 
 		// Initialize mortgage landing page generation
 		MortgageLandingGenerator::get_instance()->init();

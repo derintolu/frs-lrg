@@ -667,8 +667,7 @@ class DataService {
       formData.append('user_id', userId);
 
       const wpData = this.getWpData();
-      const ajaxUrl = '/wp-admin/admin-ajax.php';
-      const response = await fetch(`${ajaxUrl}?action=lrh_upload_avatar`, {
+      const response = await fetch('/wp-json/frs-users/v1/profiles/upload-avatar', {
         method: 'POST',
         body: formData,
         headers: {

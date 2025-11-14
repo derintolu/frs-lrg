@@ -160,6 +160,11 @@ export function CollapsibleSidebar({
       return; // Don't navigate for parent items with children
     }
 
+    // Close mobile sidebar on navigation
+    if (isMobile) {
+      setIsMobileOpen(false);
+    }
+
     // Call the click handler if provided
     if (onItemClick) {
       onItemClick(item);

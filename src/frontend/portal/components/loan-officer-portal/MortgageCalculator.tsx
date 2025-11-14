@@ -143,9 +143,6 @@ export function MortgageCalculator() {
         Calculate payments for different mortgage types
       </p>
 
-      {/* Loan Officer Profile */}
-      <LoanOfficerProfile />
-
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         {/* Mobile: Dropdown selector */}
         <div className="md:hidden mb-6">

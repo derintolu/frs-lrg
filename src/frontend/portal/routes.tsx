@@ -42,6 +42,7 @@ export const createRouter = (config: RouteConfig) => {
     {
       path: '/',
       element: <DashboardLayout currentUser={currentUser} />,
+      errorElement: <DashboardLayout currentUser={currentUser}><WelcomeBento userId={userId} /></DashboardLayout>,
       children: [
         {
           path: '/',
@@ -137,6 +138,28 @@ export const createRouter = (config: RouteConfig) => {
               element: <PropertyValuation />,
             },
           ],
+        },
+        // Sidebar control hash routes - these prevent 404 errors when opening mobile menu
+        {
+          path: 'open-menu',
+          element: <WelcomeBento userId={userId} />,
+        },
+        {
+          path: 'close-menu',
+          element: <WelcomeBento userId={userId} />,
+        },
+        {
+          path: 'open-sidebar',
+          element: <WelcomeBento userId={userId} />,
+        },
+        {
+          path: 'close-sidebar',
+          element: <WelcomeBento userId={userId} />,
+        },
+        // Catch-all route for any unmatched paths
+        {
+          path: '*',
+          element: <WelcomeBento userId={userId} />,
         },
       ],
     },
