@@ -122,66 +122,71 @@ export function PortalSidebarApp({
 
   const menuItems = convertMenuItems(phpMenuItems);
 
-  // Header content - User Profile Section with Gradient Background and Video
+  // Header content - Compact horizontal layout
   const sidebarHeader = (
-    <div
-      className="relative p-6 flex flex-col items-center text-center w-full overflow-hidden"
-      style={{
-        background: 'linear-gradient(135deg, #2563eb 0%, #2dd4da 100%)',
-        minHeight: '200px',
-      }}
-    >
-      {/* Animated Video Background */}
-      {gradientUrl && (
-        <>
-          <video
-            autoPlay
-            muted
-            loop
-            playsInline
-            className="absolute inset-0 w-full h-full object-cover"
-            style={{ zIndex: 0 }}
-          >
-            <source src={gradientUrl} type="video/mp4" />
-          </video>
-          {/* Dark overlay for text readability */}
-          <div
-            className="absolute inset-0 bg-black/20"
-            style={{ zIndex: 1 }}
-          />
-        </>
-      )}
+    <div className="relative w-full overflow-hidden">
+      {/* Gradient Banner */}
+      <div
+        className="relative w-full overflow-visible"
+        style={{
+          background: 'linear-gradient(135deg, #2563eb 0%, #2dd4da 100%)',
+          height: '100px'
+        }}
+      >
+        {/* Animated Video Background */}
+        {gradientUrl && (
+          <>
+            <video
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="absolute inset-0 w-full h-full object-cover"
+              style={{ zIndex: 0 }}
+            >
+              <source src={gradientUrl} type="video/mp4" />
+            </video>
+            {/* Dark overlay for text readability */}
+            <div
+              className="absolute inset-0 bg-black/20"
+              style={{ zIndex: 1 }}
+            />
+          </>
+        )}
 
-      {/* User Avatar */}
-      <div className="relative mb-3 z-10">
-        <img
-          src={userAvatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(userName || 'User')}&background=2DD4DA&color=fff`}
-          alt={userName || 'User'}
-          className="size-20 rounded-full border-4 border-white shadow-lg"
-          onError={(e) => {
-            e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(userName || 'User')}&background=2DD4DA&color=fff`;
-          }}
-        />
-      </div>
-
-      {/* User Info */}
-      <h3 className="font-semibold text-white text-lg mb-1 z-10 relative">{userName}</h3>
-      <p className="text-white/80 text-xs mb-3 z-10 relative">{userEmail || 'User'}</p>
-
-      {/* Action Buttons */}
-      <div className="flex gap-2 z-10 relative">
-        <a
-          href={`${portalUrl || siteUrl}/profile`}
-          className="px-3 py-1 text-xs bg-white/10 hover:bg-white/20 text-white rounded border border-white/30 transition-all backdrop-blur-md shadow-lg no-underline"
+        {/* Avatar and Name - Horizontal Layout */}
+        <div
+          className="relative w-full px-4 py-4 flex items-center gap-3"
+          style={{ zIndex: 10 }}
         >
-          View Profile
-        </a>
-        <a
-          href={`${portalUrl || siteUrl}/profile/edit`}
-          className="px-3 py-1 text-xs bg-white/10 hover:bg-white/20 text-white rounded border border-white/30 transition-all backdrop-blur-md shadow-lg no-underline"
-        >
-          Edit Profile
-        </a>
+          {/* Avatar with gradient border */}
+          <div className="flex-shrink-0">
+            <div
+              className="size-14 rounded-full overflow-hidden shadow-lg"
+              style={{
+                border: '2px solid transparent',
+                backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #2563eb 0%, #2dd4da 100%)',
+                backgroundOrigin: 'padding-box, border-box',
+                backgroundClip: 'padding-box, border-box',
+              }}
+            >
+              <img
+                src={userAvatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(userName || 'User')}&background=2DD4DA&color=fff`}
+                alt={userName || 'User'}
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(userName || 'User')}&background=2DD4DA&color=fff`;
+                }}
+              />
+            </div>
+          </div>
+
+          {/* Name and Email */}
+          <div className="flex-1 min-w-0">
+            <h3 className="font-bold text-white text-base mb-0.5 drop-shadow-md truncate">{userName}</h3>
+            <p className="font-normal text-white text-sm drop-shadow-md truncate">{userEmail || 'User'}</p>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -196,7 +201,7 @@ export function PortalSidebarApp({
       activeItemId={activeView}
       onItemClick={handleItemClick}
       header={sidebarHeader}
-      width="16rem"
+      width="320px"
       collapsedWidth="4rem"
       backgroundColor="hsl(var(--sidebar-background))"
       textColor="hsl(var(--sidebar-foreground))"

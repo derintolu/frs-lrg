@@ -309,7 +309,7 @@ export function DashboardLayout({ currentUser }: DashboardLayoutProps) {
         className="relative w-full overflow-visible"
         style={{
           background: 'linear-gradient(135deg, #2563eb 0%, #2dd4da 100%)',
-          height: '140px'
+          height: '100px'
         }}
       >
         {/* Animated Video Background */}
@@ -333,62 +333,39 @@ export function DashboardLayout({ currentUser }: DashboardLayoutProps) {
           </>
         )}
 
-        {/* Avatar and Name - Positioned at bottom, extending down */}
+        {/* Avatar and Name - Horizontal Layout */}
         <div
-          className="absolute w-full px-4"
-          style={{
-            bottom: 0,
-            transform: 'translateY(28px)',
-            zIndex: 10
-          }}
+          className="relative w-full px-4 py-4 flex items-center gap-3"
+          style={{ zIndex: 10 }}
         >
-          <div className="flex items-start gap-3">
-            {/* Avatar - Overlaps gradient by 50% with gradient border matching form borders */}
-            <div className="relative flex-shrink-0">
-              <div
-                className="size-16 rounded-full overflow-hidden shadow-lg"
-                style={{
-                  border: '3px solid transparent',
-                  backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #2563eb 0%, #2dd4da 100%)',
-                  backgroundOrigin: 'padding-box, border-box',
-                  backgroundClip: 'padding-box, border-box',
+          {/* Avatar with gradient border */}
+          <div className="flex-shrink-0">
+            <div
+              className="size-14 rounded-full overflow-hidden shadow-lg"
+              style={{
+                border: '2px solid transparent',
+                backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #2563eb 0%, #2dd4da 100%)',
+                backgroundOrigin: 'padding-box, border-box',
+                backgroundClip: 'padding-box, border-box',
+              }}
+            >
+              <img
+                src={currentUser.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name || 'User')}&background=2DD4DA&color=fff`}
+                alt={currentUser.name || 'User'}
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name || 'User')}&background=2DD4DA&color=fff`;
                 }}
-              >
-                <img
-                  src={currentUser.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name || 'User')}&background=2DD4DA&color=fff`}
-                  alt={currentUser.name || 'User'}
-                  className="w-full h-full object-cover"
-                  onError={(e) => {
-                    e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name || 'User')}&background=2DD4DA&color=fff`;
-                  }}
-                />
-              </div>
-            </div>
-
-            {/* Name and Title */}
-            <div className="flex-1 min-w-0 pt-2">
-              <h3 className="font-semibold text-white text-base truncate leading-none drop-shadow-sm">{currentUser.name}</h3>
-              <p className="font-semibold text-gray-600 text-xs truncate leading-none mt-5 mb-2">{profileMetadata.job_title || 'Loan Officer'}</p>
+              />
             </div>
           </div>
-        </div>
-      </div>
 
-      {/* Button Section */}
-      <div className="relative px-4 pb-4 bg-white" style={{ paddingTop: '32px', zIndex: 1 }}>
-        <button
-          onClick={() => {
-            // Close mobile sidebar on navigation
-            window.location.hash = '#close-sidebar';
-            isOnProfile ? navigate('/') : navigate('/profile');
-          }}
-          className="mt-6 w-full px-3 py-2 text-sm font-medium text-white rounded-lg transition-colors hover:opacity-90"
-          style={{
-            background: 'linear-gradient(135deg, #2563eb 0%, #2dd4da 100%)',
-          }}
-        >
-          {isOnProfile ? '← Back to Dashboard' : 'View Profile →'}
-        </button>
+          {/* Name and Title */}
+          <div className="flex-1 min-w-0">
+            <h3 className="font-bold text-white text-base mb-0.5 drop-shadow-md truncate">{currentUser.name}</h3>
+            <p className="font-normal text-white text-sm drop-shadow-md truncate">{profileMetadata.job_title || 'Loan Officer'}</p>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -417,7 +394,7 @@ export function DashboardLayout({ currentUser }: DashboardLayoutProps) {
         onItemClick={handleItemClick}
         header={sidebarHeader}
         footer={sidebarFooter}
-        width="280px"
+        width="320px"
         collapsedWidth="4rem"
         backgroundColor="hsl(var(--sidebar-background))"
         textColor="hsl(var(--sidebar-foreground))"
@@ -430,7 +407,7 @@ export function DashboardLayout({ currentUser }: DashboardLayoutProps) {
       />
 
       {/* Main Content */}
-      <main className="max-md:p-0 max-md:m-0 md:pt-8 md:pb-6 md:pl-0 md:pr-0 md:ml-[280px] md:mr-0">
+      <main className="max-md:p-0 max-md:m-0 md:pt-8 md:pb-6 md:pl-0 md:pr-0 md:ml-[320px] md:mr-0">
         <Outlet />
       </main>
     </div>
