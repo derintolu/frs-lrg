@@ -13,6 +13,7 @@ use LendingResourceHub\Helpers\ProfileHelpers;
 // use LendingResourceHub\Assets\Admin; // Not needed - admin uses PHP templates, not React
 use LendingResourceHub\Integrations\FluentBooking;
 use LendingResourceHub\Integrations\FluentForms;
+use LendingResourceHub\Integrations\FluentCRMSync;
 use LendingResourceHub\Controllers\Biolinks\Blocks as BiolinkBlocks;
 use LendingResourceHub\Traits\Base;
 
@@ -82,6 +83,14 @@ final class LendingResourceHub {
 			FluentForms::get_instance()->init();
 		}
 
+		// Initialize FluentCRM partnership sync if plugin is active
+		if ( function_exists('FluentCrmApi') ) {
+			FluentCRMSync::get_instance()->init();
+		}
+
+		// Check dependencies and show admin notices
+		add_action( 'admin_notices', array( $this, 'check_dependencies' ) );
+
 		add_action( 'init', array( $this, 'i18n' ) );
 		add_action( 'init', array( $this, 'register_user_meta_fields' ) );
 	}
@@ -104,6 +113,42 @@ final class LendingResourceHub {
 				'default'      => '0',
 			)
 		);
+	}
+
+	/**
+	 * Check plugin dependencies and show admin notices
+	 *
+	 * @since 1.0.0
+	 * @return void
+	 */
+	public function check_dependencies() {
+		$missing = array();
+
+		// Check for FRS User Profiles plugin
+		if ( !class_exists('FRSUsers') ) {
+			$missing[] = 'FRS User Profiles';
+		}
+
+		// Check for FluentCRM
+		if ( !function_exists('FluentCrmApi') ) {
+			$missing[] = 'FluentCRM (optional - required for partnership sync)';
+		}
+
+		// Show notice if dependencies are missing
+		if ( !empty($missing) ) {
+			?>
+			<div class="notice notice-warning">
+				<p>
+					<strong>FRS Lending Resource Hub</strong> requires the following plugins to function properly:
+				</p>
+				<ul style="list-style: disc; margin-left: 20px;">
+					<?php foreach ($missing as $plugin): ?>
+						<li><?php echo esc_html($plugin); ?></li>
+					<?php endforeach; ?>
+				</ul>
+			</div>
+			<?php
+		}
 	}
 
 	/**

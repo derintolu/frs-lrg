@@ -44,14 +44,14 @@ export function AppLauncher({ onNavigate }: AppLauncherProps) {
     {
       id: 'arive',
       name: 'Arive',
-      image: '/wp-content/plugins/frs-partnership-portal/assets/images/Arive-Highlight-Logo - 01.webp',
+      image: '/wp-content/plugins/frs-lrg/assets/images/Arive-Highlight-Logo - 01.webp',
       gradient: 'var(--brand-dark-navy)',
       onClick: () => window.open('https://app.arive.com/login', '_blank'),
     },
     {
       id: 'fub',
       name: 'Follow Up Boss',
-      image: '/wp-content/plugins/frs-partnership-portal/assets/images/FUB LOG.webp',
+      image: '/wp-content/plugins/frs-lrg/assets/images/FUB LOG.webp',
       gradient: 'var(--brand-dark-navy)',
       onClick: () => window.open('https://app.followupboss.com/login', '_blank'),
     },

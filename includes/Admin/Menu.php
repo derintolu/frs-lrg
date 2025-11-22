@@ -5,6 +5,7 @@ namespace LendingResourceHub\Admin;
 use LendingResourceHub\Traits\Base;
 use LendingResourceHub\Admin\Dashboard;
 use LendingResourceHub\Admin\SystemDiagnostic;
+use LendingResourceHub\Admin\Integrations;
 
 /**
  * Class Menu
@@ -202,14 +203,7 @@ class Menu {
 	 * @return void
 	 */
 	public function integrations_page() {
-		?>
-		<div class="wrap">
-			<h1><?php esc_html_e( 'Integrations', 'lending-resource-hub' ); ?></h1>
-			<div class="notice notice-info inline">
-				<p><?php esc_html_e( 'Integrations page - coming soon', 'lending-resource-hub' ); ?></p>
-			</div>
-		</div>
-		<?php
+		Integrations::get_instance()->render();
 	}
 
 	/**
