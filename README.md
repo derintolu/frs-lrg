@@ -1,3 +1,4 @@
+
 # WordPress Plugin Boilerplate
 Create your WordPress plugin in weeks, not months. Rapidly prototype and deliver your plugin with confidence!
 This boilerplate has a built-in marketing site and documentation setup that you can use to showcase your plugin.
@@ -8,7 +9,7 @@ This boilerplate has a built-in marketing site and documentation setup that you 
 ## Screenshots
 
 <table>
- 
+
   <tr>
   <td><img src="documentation/public/artworks/images/chart.png" /></td>
   <td><img src="documentation/public/artworks/images/dashboard-light.png" /></td>
@@ -16,9 +17,9 @@ This boilerplate has a built-in marketing site and documentation setup that you 
   <tr>
     <td><img src="documentation/public/artworks/images/inbox-light.png" /></td>
     <td><img src="documentation/public/artworks/images/settings-light.png" /></td>
-    
+
   </tr>
-  
+
 </table>
 
 ## ☕️ Buy me a coffee
@@ -33,7 +34,7 @@ me a coffee, so I can dedicate more time on open-source projects like this :)
 Install [PlugKit](https://github.com/prappo/plugkit). You can find the installation instructions from here [https://github.com/prappo/plugkit](https://github.com/prappo/plugkit)
 
 To create a new WordPress plugin boilerplate.
-
+2
 ```bash
 plugkit create my-plugin
 ```
@@ -189,7 +190,7 @@ Route::prefix( $prefix, function( Route $route ) {
 });
 
 // Authentication.
-Route::prefix( $prefix, function( Route $route ) 
+Route::prefix( $prefix, function( Route $route )
     $route->post( $endpoint, $callback, $auth = false );
 })->auth( 'AuthController@check' );
 ```
@@ -284,11 +285,11 @@ For example: For admin:
 
 https://github.com/prappo/wordpress-plugin-boilerplate/blob/8d982b63f50beb1dffd43c29bff894814b5e7945/includes/Assets/Frontend.php#L104-L110
 
-And access data on react like this 
+And access data on react like this
 
 https://github.com/prappo/wordpress-plugin-boilerplate/blob/8d982b63f50beb1dffd43c29bff894814b5e7945/src/frontend/components/application-layout/LayoutOne.jsx#L58
 
-Remember the object `wordpressPluginBoilerplateFrontend` name can be defined here 
+Remember the object `wordpressPluginBoilerplateFrontend` name can be defined here
 
 https://github.com/prappo/wordpress-plugin-boilerplate/blob/8d982b63f50beb1dffd43c29bff894814b5e7945/includes/Assets/Frontend.php#L30
 
@@ -300,7 +301,7 @@ You can create a shortcode by using the `Shortcode` class.
 
 /**
  * Example Usage
- * 
+ *
  * Registering a shortcode that renders a PHP view file
  */
 Shortcode::add()

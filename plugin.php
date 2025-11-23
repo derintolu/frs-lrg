@@ -6,6 +6,7 @@ use LendingResourceHub\Core\Redirects;
 use LendingResourceHub\Core\MortgageLandingGenerator;
 use LendingResourceHub\Core\UserPageRewrites;
 use LendingResourceHub\Core\Blocks as CoreBlocks;
+use LendingResourceHub\Core\DataKit;
 use LendingResourceHub\Admin\Menu;
 use LendingResourceHub\Core\Template;
 use LendingResourceHub\Assets\Frontend;
@@ -71,6 +72,11 @@ final class LendingResourceHub {
 		Redirects::get_instance()->init();
 		CoreBlocks::get_instance()->init();
 		BiolinkBlocks::get_instance()->init();
+
+		// Initialize DataKit integration if SDK is available
+		if ( class_exists( 'DataKit\DataViews\DataView\DataView' ) ) {
+			DataKit::get_instance()->init();
+		}
 
 		// Initialize mortgage landing page generation
 		MortgageLandingGenerator::get_instance()->init();
