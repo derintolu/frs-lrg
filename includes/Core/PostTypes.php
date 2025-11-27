@@ -178,6 +178,33 @@ class PostTypes {
 				'menu_icon'    => 'dashicons-admin-links',
 			)
 		);
+
+		// Partner Company Portals
+		register_post_type(
+			'frs_partner_portal',
+			array(
+				'labels'       => array(
+					'name'          => __( 'Partner Company Portals', 'lending-resource-hub' ),
+					'singular_name' => __( 'Partner Company Portal', 'lending-resource-hub' ),
+					'menu_name'     => __( 'Partner Companies', 'lending-resource-hub' ),
+					'add_new'       => __( 'Add Partner Company Portal', 'lending-resource-hub' ),
+					'edit_item'     => __( 'Edit Partner Company Portal', 'lending-resource-hub' ),
+				),
+				'public'       => true,
+				'show_ui'      => true,
+				'show_in_menu' => 'lending-resource-hub',
+				'show_in_rest' => true,
+				'supports'     => array( 'title', 'editor', 'custom-fields', 'thumbnail', 'author' ),
+				'has_archive'  => false,
+				'rewrite'      => array(
+					'slug'       => 'partner',
+					'with_front' => false,
+				),
+				'menu_icon'    => 'dashicons-groups',
+				'capability_type' => 'post',
+				'map_meta_cap' => true,
+			)
+		);
 	}
 
 	/**

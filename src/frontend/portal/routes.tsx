@@ -1,16 +1,12 @@
 import { createHashRouter } from 'react-router-dom';
 import { DashboardLayout } from './components/loan-officer-portal/DashboardLayout';
-import { WelcomeBento } from './components/loan-officer-portal/WelcomeBento';
 import { MyProfile } from './components/loan-officer-portal/MyProfile';
-import { BiolinkMarketing } from './components/loan-officer-portal/BiolinkMarketing';
+import { MarketingOverview } from './components/loan-officer-portal/MarketingOverview';
 import { LandingPagesMarketing } from './components/loan-officer-portal/LandingPagesMarketing';
 import { EmailCampaignsMarketing } from './components/loan-officer-portal/EmailCampaignsMarketing';
 import { LocalSEOMarketing } from './components/loan-officer-portal/LocalSEOMarketing';
 import { LeadTracking } from './components/loan-officer-portal/LeadTracking';
 import { MarketingOrders } from './components/loan-officer-portal/MarketingOrders';
-import { PartnershipsOverview } from './components/loan-officer-portal/PartnershipsOverview';
-import { InvitePartner } from './components/loan-officer-portal/InvitePartner';
-import { CobrandedMarketing } from './components/loan-officer-portal/CobrandedMarketing';
 import { BrandShowcase } from './components/loan-officer-portal/BrandShowcase';
 import { MortgageCalculator } from './components/loan-officer-portal/MortgageCalculator';
 import { PropertyValuation } from './components/loan-officer-portal/PropertyValuation';
@@ -42,11 +38,11 @@ export const createRouter = (config: RouteConfig) => {
     {
       path: '/',
       element: <DashboardLayout currentUser={currentUser} />,
-      errorElement: <DashboardLayout currentUser={currentUser}><WelcomeBento userId={userId} /></DashboardLayout>,
+      errorElement: <DashboardLayout currentUser={currentUser}><MarketingOverview userId={userId} /></DashboardLayout>,
       children: [
         {
           path: '/',
-          element: <WelcomeBento userId={userId} />,
+          element: <MarketingOverview userId={userId} />,
         },
         {
           path: 'profile',
@@ -69,11 +65,7 @@ export const createRouter = (config: RouteConfig) => {
           children: [
             {
               path: '',
-              element: <BiolinkMarketing userId={userId} currentUser={currentUser} />,
-            },
-            {
-              path: 'biolink',
-              element: <BiolinkMarketing userId={userId} currentUser={currentUser} />,
+              element: <MarketingOverview userId={userId} />,
             },
             {
               path: 'calendar',
@@ -102,27 +94,6 @@ export const createRouter = (config: RouteConfig) => {
           ],
         },
         {
-          path: 'partnerships',
-          children: [
-            {
-              path: '',
-              element: <PartnershipsOverview userId={userId} currentUser={currentUser} />,
-            },
-            {
-              path: 'overview',
-              element: <PartnershipsOverview userId={userId} currentUser={currentUser} />,
-            },
-            {
-              path: 'invites',
-              element: <InvitePartner userId={userId} />,
-            },
-            {
-              path: 'cobranded-marketing',
-              element: <CobrandedMarketing userRole={userRole} userId={userId} />,
-            },
-          ],
-        },
-        {
           path: 'tools',
           children: [
             {
@@ -142,24 +113,24 @@ export const createRouter = (config: RouteConfig) => {
         // Sidebar control hash routes - these prevent 404 errors when opening mobile menu
         {
           path: 'open-menu',
-          element: <WelcomeBento userId={userId} />,
+          element: <MarketingOverview userId={userId} />,
         },
         {
           path: 'close-menu',
-          element: <WelcomeBento userId={userId} />,
+          element: <MarketingOverview userId={userId} />,
         },
         {
           path: 'open-sidebar',
-          element: <WelcomeBento userId={userId} />,
+          element: <MarketingOverview userId={userId} />,
         },
         {
           path: 'close-sidebar',
-          element: <WelcomeBento userId={userId} />,
+          element: <MarketingOverview userId={userId} />,
         },
         // Catch-all route for any unmatched paths
         {
           path: '*',
-          element: <WelcomeBento userId={userId} />,
+          element: <MarketingOverview userId={userId} />,
         },
       ],
     },

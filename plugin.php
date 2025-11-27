@@ -6,6 +6,9 @@ use LendingResourceHub\Core\Redirects;
 use LendingResourceHub\Core\MortgageLandingGenerator;
 use LendingResourceHub\Core\UserPageRewrites;
 use LendingResourceHub\Core\Blocks as CoreBlocks;
+use LendingResourceHub\Core\DataKit;
+use LendingResourceHub\Core\PartnerCompanyImporter;
+use LendingResourceHub\CLI\PartnerCompanyCommands;
 use LendingResourceHub\Admin\Menu;
 use LendingResourceHub\Core\Template;
 use LendingResourceHub\Assets\Frontend;
@@ -15,6 +18,9 @@ use LendingResourceHub\Integrations\FluentBooking;
 use LendingResourceHub\Integrations\FluentForms;
 use LendingResourceHub\Integrations\FluentCRMSync;
 use LendingResourceHub\Controllers\Biolinks\Blocks as BiolinkBlocks;
+use LendingResourceHub\Controllers\PartnerPortals\Blocks as PartnerPortalBlocks;
+use LendingResourceHub\Controllers\PartnerPortals\Api as PartnerPortalApi;
+use LendingResourceHub\Controllers\PartnerPortals\PartnerCompanyPortal;
 use LendingResourceHub\Traits\Base;
 
 defined( 'ABSPATH' ) || exit;
@@ -71,6 +77,14 @@ final class LendingResourceHub {
 		Redirects::get_instance()->init();
 		CoreBlocks::get_instance()->init();
 		BiolinkBlocks::get_instance()->init();
+		PartnerPortalBlocks::get_instance()->init();
+		PartnerPortalApi::get_instance()->init();
+		PartnerCompanyPortal::get_instance()->init();
+
+		// Initialize DataKit integration if SDK is available
+		if ( class_exists( 'DataKit\DataViews\DataView\DataView' ) ) {
+			DataKit::get_instance()->init();
+		}
 
 		// Initialize mortgage landing page generation
 		MortgageLandingGenerator::get_instance()->init();
@@ -93,6 +107,36 @@ final class LendingResourceHub {
 
 		add_action( 'init', array( $this, 'i18n' ) );
 		add_action( 'init', array( $this, 'register_user_meta_fields' ) );
+		add_action( 'init', array( $this, 'register_bp_group_types' ) );
+
+		// Register WP-CLI commands
+		if ( defined( 'WP_CLI' ) && WP_CLI ) {
+			\WP_CLI::add_command( 'lrh partner-company', PartnerCompanyCommands::class );
+		}
+	}
+
+	/**
+	 * Register BuddyPress group types.
+	 *
+	 * @since 1.0.0
+	 * @return void
+	 */
+	public function register_bp_group_types() {
+		if ( ! function_exists( 'bp_groups_register_group_type' ) ) {
+			return;
+		}
+
+		// Register partner-org group type
+		bp_groups_register_group_type(
+			'partner-org',
+			array(
+				'labels' => array(
+					'name'          => __( 'Partner Companies', 'lending-resource-hub' ),
+					'singular_name' => __( 'Partner Company', 'lending-resource-hub' ),
+				),
+				'has_directory' => true,
+			)
+		);
 	}
 
 	/**

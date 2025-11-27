@@ -1,0 +1,24 @@
+import { v4wp } from "@kucrut/vite-for-wp";
+import react from "@vitejs/plugin-react";
+import path from "path"
+
+export default {
+  plugins: [
+    v4wp({
+      input: "src/frontend/partnerships-section-main.tsx",
+      outDir: "assets/partnerships-section/dist",
+    }),
+    react(),
+  ],
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
+    },
+  },
+  server: {
+    cors: true,
+    origin: 'http://localhost:5179',
+    host: 'localhost',
+    port: 5179,
+  },
+};

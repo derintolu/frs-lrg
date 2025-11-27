@@ -33,6 +33,9 @@ class Shortcode {
 		// New shortcodes
 		add_shortcode( 'lrh_portal', array( $this, 'render_portal' ) );
 		add_shortcode( 'lrh_portal_sidebar', array( $this, 'render_portal_sidebar' ) );
+		add_shortcode( 'lrh_welcome_portal', array( $this, 'render_welcome_portal' ) );
+		add_shortcode( 'lrh_partnerships_section', array( $this, 'render_partnerships_section' ) );
+		add_shortcode( 'lrh_realtor_portal', array( $this, 'render_realtor_portal' ) );
 
 		// Legacy shortcode from old plugin (backward compatibility)
 		add_shortcode( 'frs_partnership_portal', array( $this, 'render_legacy_portal' ) );
@@ -85,6 +88,48 @@ class Shortcode {
 		return '<div id="lrh-portal-sidebar-root" data-lrh-component="portal-sidebar"></div>';
 	}
 
+	/**
+	 * Render the welcome portal shortcode.
+	 *
+	 * @param array $atts Shortcode attributes.
+	 * @return string The rendered shortcode HTML.
+	 */
+	public function render_welcome_portal( $atts ) {
+		// Enqueue welcome portal assets directly when shortcode is rendered
+		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_welcome_portal_assets();
+
+		// Return root element for React to mount
+		return '<div id="lrh-welcome-portal-root"></div>';
+	}
+
+	/**
+	 * Render the partnerships section shortcode.
+	 *
+	 * @param array $atts Shortcode attributes.
+	 * @return string The rendered shortcode HTML.
+	 */
+	public function render_partnerships_section( $atts ) {
+		// Enqueue partnerships section assets directly when shortcode is rendered
+		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_partnerships_section_assets();
+
+		// Return root element for React to mount
+		return '<div id="lrh-partnerships-section-root"></div>';
+	}
+
+
+	/**
+	 * Render the realtor portal shortcode.
+	 *
+	 * @param array $atts Shortcode attributes.
+	 * @return string The rendered shortcode HTML.
+	 */
+	public function render_realtor_portal( $atts ) {
+		// Enqueue realtor portal assets directly when shortcode is rendered
+		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_realtor_portal_assets();
+
+		// Return root element for React to mount
+		return '<div id="lrh-realtor-portal-root"></div>';
+	}
 
 	/**
 	 * Get primary portal role for user.
@@ -146,4 +191,5 @@ class Shortcode {
 		$classes[] = 'has-lrh-portal-sidebar';
 		return $classes;
 	}
+
 }

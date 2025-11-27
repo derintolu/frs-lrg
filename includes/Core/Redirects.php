@@ -51,8 +51,8 @@ class Redirects {
 			return;
 		}
 
-		// Redirect all logged-in users to /dashboard
-		$dashboard_url = home_url( '/dashboard' );
+		// Redirect all logged-in users to /welcome
+		$dashboard_url = home_url( '/welcome' );
 
 		// Perform the redirect
 		wp_safe_redirect( $dashboard_url );

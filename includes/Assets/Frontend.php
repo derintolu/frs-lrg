@@ -117,6 +117,85 @@ class Frontend {
 	}
 
 	/**
+	 * Enqueue welcome portal assets.
+	 *
+	 * @return void
+	 */
+	public function enqueue_welcome_portal_assets() {
+		// Enqueue React dependencies
+		wp_enqueue_script( 'react' );
+		wp_enqueue_script( 'react-dom' );
+
+		// Enqueue welcome portal bundle
+		Assets\enqueue_asset(
+			LRH_DIR . '/assets/welcome-portal/dist',
+			'src/frontend/welcome-portal-main.jsx',
+			array(
+				'handle'       => 'lrh-welcome-portal',
+				'dependencies' => array( 'react', 'react-dom' ),
+				'in-footer'    => true,
+			)
+		);
+
+		// Add configuration data - use same config name as regular portal
+		wp_localize_script( 'lrh-welcome-portal', self::OBJ_NAME, $this->get_config_data() );
+	}
+
+	/**
+	 * Enqueue partnerships section assets.
+	 *
+	 * Called directly by shortcode handler.
+	 *
+	 * @return void
+	 */
+	public function enqueue_partnerships_section_assets() {
+		// Enqueue React dependencies
+		wp_enqueue_script( 'react' );
+		wp_enqueue_script( 'react-dom' );
+
+		// Enqueue partnerships section bundle
+		Assets\enqueue_asset(
+			LRH_DIR . '/assets/partnerships-section/dist',
+			'src/frontend/partnerships-section-main.tsx',
+			array(
+				'handle'       => 'lrh-partnerships-section',
+				'dependencies' => array( 'react', 'react-dom' ),
+				'in-footer'    => true,
+			)
+		);
+
+		// Add configuration data - use same config name as regular portal
+		wp_localize_script( 'lrh-partnerships-section', self::OBJ_NAME, $this->get_config_data() );
+	}
+
+	/**
+	 * Enqueue realtor portal assets.
+	 *
+	 * Called directly by shortcode handler.
+	 *
+	 * @return void
+	 */
+	public function enqueue_realtor_portal_assets() {
+		// Enqueue React dependencies
+		wp_enqueue_script( 'react' );
+		wp_enqueue_script( 'react-dom' );
+
+		// Enqueue realtor portal bundle
+		Assets\enqueue_asset(
+			LRH_DIR . '/assets/realtor-portal/dist',
+			'src/frontend/realtor-portal-main.tsx',
+			array(
+				'handle'       => 'lrh-realtor-portal',
+				'dependencies' => array( 'react', 'react-dom' ),
+				'in-footer'    => true,
+			)
+		);
+
+		// Add configuration data - use same config name as regular portal
+		wp_localize_script( 'lrh-realtor-portal', self::OBJ_NAME, $this->get_config_data() );
+	}
+
+	/**
 	 * Determine if portal assets should be loaded.
 	 *
 	 * Checks for:

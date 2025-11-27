@@ -261,15 +261,13 @@ export function DashboardLayout({ currentUser }: DashboardLayoutProps) {
       )
     }] : []),
   ] : [
-    { id: '/', label: 'Welcome', icon: Home },
     {
       id: '/marketing',
       label: 'Marketing',
       icon: Megaphone,
       children: [
-        { id: '/marketing/orders', label: 'Social & Print' },
-        { id: '/marketing/biolink', label: 'Biolink' },
         { id: '/marketing/calendar', label: 'Calendar' },
+        { id: '/marketing/orders', label: 'Social & Print' },
         { id: '/marketing/landing-pages', label: 'Landing Pages' },
         { id: '/marketing/email-campaigns', label: 'Email Campaigns' },
         { id: '/marketing/local-seo', label: 'Local SEO' },
@@ -277,16 +275,6 @@ export function DashboardLayout({ currentUser }: DashboardLayoutProps) {
       ]
     },
     { id: '/leads', label: 'Lead Tracking', icon: TrendingUp },
-    {
-      id: '/partnerships',
-      label: 'Partnerships',
-      icon: UserPlus,
-      children: [
-        { id: '/partnerships/overview', label: 'Overview' },
-        { id: '/partnerships/invites', label: 'Invites' },
-        { id: '/partnerships/cobranded-marketing', label: 'Co-branded Marketing' },
-      ]
-    },
     {
       id: '/tools',
       label: 'Tools',
