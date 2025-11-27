@@ -1,15 +1,19 @@
+/**
+ * Welcome Component
+ *
+ * Main welcome/dashboard page for the loan officer portal.
+ * Refactored to use unified card components.
+ */
+
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
-import { Badge } from '../ui/badge';
-import {
-  Bell,
-  Globe,
-  X
-} from 'lucide-react';
+import { Bell, Globe, X, Link as LinkIcon } from 'lucide-react';
 import { LoadingSpinner } from '../ui/loading';
 import { DataService } from '../../utils/dataService';
 import { AppLauncher } from './AppLauncher';
+import { AnnouncementCard, AnnouncementList } from '../ui/cards';
+import { FeatureCard } from '../ui/cards';
 
 interface WelcomeProps {
   userId: string;
@@ -136,7 +140,9 @@ export function Welcome({ userId, tourAttributes, onNavigate }: WelcomeProps) {
       {/* Welcome Header */}
       <div className="space-y-2">
         <div>
-          <h1 className="text-2xl font-semibold text-[var(--brand-dark-navy)]">Welcome, {profileData.firstName || 'User'}</h1>
+          <h1 className="text-2xl font-semibold text-[var(--brand-dark-navy)]">
+            Welcome, {profileData.firstName || 'User'}
+          </h1>
           <p className="text-sm text-[var(--brand-slate)] mt-1">
             View your profile overview, announcements, and quick links. Stay updated with important information and access your most-used tools.
           </p>
@@ -147,77 +153,38 @@ export function Welcome({ userId, tourAttributes, onNavigate }: WelcomeProps) {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Announcements Card - Takes 2 columns */}
         <div className="lg:col-span-2">
-          <Card className="shadow-lg border-l-4 rounded-lg h-full" style={{ borderLeftColor: 'var(--brand-electric-blue)' }} data-tour={tourAttributes?.announcements}>
-            <CardHeader className="h-12 flex items-center px-4 rounded-t-lg" style={{ backgroundColor: '#B6C7D9' }}>
+          <Card
+            className="shadow-lg border-l-4 rounded-lg h-full"
+            style={{ borderLeftColor: 'var(--brand-electric-blue)' }}
+            data-tour={tourAttributes?.announcements}
+          >
+            <CardHeader
+              className="h-12 flex items-center px-4 rounded-t-lg"
+              style={{ backgroundColor: '#B6C7D9' }}
+            >
               <CardTitle className="flex items-center gap-1 text-gray-700 text-sm">
                 <Bell className="h-3 w-3" />
                 Announcements
               </CardTitle>
             </CardHeader>
             <CardContent className="p-6">
-              {announcements.length > 0 ? (
-                <div className="space-y-3">
-                  {announcements.slice(0, 3).map((announcement) => (
-                    <div
-                      key={announcement.id}
-                      className="p-4 rounded-lg cursor-pointer transition-all hover:shadow-md border-l-4 border-l-[var(--brand-electric-blue)]"
-                      style={{ backgroundColor: 'var(--brand-off-white)' }}
-                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--brand-pale-blue)'}
-                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--brand-off-white)'}
-                      onClick={() => {
-                        setSelectedAnnouncement(announcement);
-                        setIsAnnouncementModalOpen(true);
-                      }}
-                    >
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <div className="flex items-center space-x-2 mb-2">
-                            <h4 className="font-medium text-[var(--brand-dark-navy)] text-sm">
-                              {announcement.title}
-                            </h4>
-                            {announcement.badge && (
-                              <Badge
-                                className={`text-xs px-2 py-0.5 ${
-                                  announcement.badge === 'NEW'
-                                    ? 'bg-[var(--brand-electric-blue)] text-white'
-                                    : 'bg-[var(--brand-cyan)] text-white'
-                                }`}
-                              >
-                                {announcement.badge}
-                              </Badge>
-                            )}
-                          </div>
-                          <p className="text-xs text-[var(--brand-slate)] mb-2 line-clamp-2">
-                            {announcement.excerpt}
-                          </p>
-                          <div className="flex items-center justify-between">
-                            <p className="text-xs text-[var(--brand-slate)]">
-                              {new Date(announcement.date).toLocaleDateString()}
-                            </p>
-                            <div className="w-2 h-2 rounded-full" style={{
-                              backgroundColor: announcement.priority === 'high' ? '#ef4444' : 'var(--brand-electric-blue)'
-                            }}></div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                  {announcements.length > 3 && (
-                    <div className="text-center pt-2">
-                      <p className="text-xs text-[var(--brand-slate)]">
-                        +{announcements.length - 3} more announcements
-                      </p>
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <div className="text-center py-8">
-                  <Bell className="h-8 w-8 mx-auto mb-2" style={{ color: 'var(--brand-pale-blue)' }} />
-                  <p className="text-sm text-[var(--brand-slate)]">
-                    No announcements at this time
-                  </p>
-                </div>
-              )}
+              <AnnouncementList maxItems={3}>
+                {announcements.map((announcement) => (
+                  <AnnouncementCard
+                    key={announcement.id}
+                    title={announcement.title}
+                    excerpt={announcement.excerpt}
+                    date={announcement.date}
+                    badge={announcement.badge}
+                    priority={announcement.priority === 'high' ? 'high' : 'medium'}
+                    thumbnail={announcement.thumbnail}
+                    onClick={() => {
+                      setSelectedAnnouncement(announcement);
+                      setIsAnnouncementModalOpen(true);
+                    }}
+                  />
+                ))}
+              </AnnouncementList>
             </CardContent>
           </Card>
         </div>
@@ -238,29 +205,15 @@ export function Welcome({ userId, tourAttributes, onNavigate }: WelcomeProps) {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {customLinks.map((link) => (
-                <div
+                <FeatureCard
                   key={link.id}
-                  className="p-4 border rounded-lg cursor-pointer hover:shadow-md transition-shadow group"
-                  onClick={() => window.open(link.url, '_blank')}
-                  style={{ borderColor: link.color + '20', backgroundColor: link.color + '05' }}
-                >
-                  <div className="flex items-start space-x-3">
-                    <div
-                      className="w-10 h-10 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform"
-                      style={{ backgroundColor: link.color + '15' }}
-                    >
-                      <span style={{ color: link.color }}>🔗</span>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h4 className="font-medium text-[var(--brand-dark-navy)] text-sm truncate">
-                        {link.title}
-                      </h4>
-                      <p className="text-xs text-[var(--brand-slate)] mt-1 line-clamp-2">
-                        {link.description}
-                      </p>
-                    </div>
-                  </div>
-                </div>
+                  icon={<LinkIcon className="h-5 w-5" />}
+                  title={link.title}
+                  description={link.description}
+                  href={link.url}
+                  accentColor={link.color || 'var(--brand-electric-blue)'}
+                  size="sm"
+                />
               ))}
             </div>
           </CardContent>

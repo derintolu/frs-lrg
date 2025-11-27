@@ -88,7 +88,7 @@ export function PartnershipsList({ userId }: PartnershipsListProps) {
     return (
       <div className="w-full min-h-screen p-4 md:p-8 bg-gray-50/50">
         <div className="max-w-7xl mx-auto">
-          <div className="bg-red-50 border border-red-200 text-red-800 px-6 py-4 rounded-xl">
+          <div className="bg-red-50 border border-red-200 text-red-800 px-6 py-4 rounded-md">
             {error}
           </div>
         </div>
@@ -107,7 +107,7 @@ export function PartnershipsList({ userId }: PartnershipsListProps) {
 
           <Card className="text-center py-16 bg-white border border-gray-200">
             <div className="max-w-md mx-auto">
-              <div className="p-4 rounded-2xl w-fit mx-auto mb-6" style={{ backgroundColor: 'rgba(37, 99, 235, 0.1)' }}>
+              <div className="p-4 rounded-md w-fit mx-auto mb-6" style={{ backgroundColor: 'rgba(37, 99, 235, 0.1)' }}>
                 <Building2 className="h-12 w-12" style={{ color: 'var(--brand-electric-blue)' }} />
               </div>
               <h3 className="text-2xl font-bold text-gray-900 mb-3">No Partner Companies Yet</h3>
@@ -139,7 +139,7 @@ export function PartnershipsList({ userId }: PartnershipsListProps) {
 
           {/* Featured Company - Large */}
           <Card
-            className="lg:col-span-2 lg:row-span-2 relative overflow-hidden cursor-pointer group hover:shadow-xl transition-all duration-300 bg-white border border-gray-200"
+            className="lg:col-span-2 lg:row-span-2 relative overflow-hidden cursor-pointer group hover:shadow-md transition-all duration-300 bg-white border border-gray-200"
             onClick={() => handleViewCompany(featuredCompany.slug)}
           >
             <div
@@ -152,7 +152,7 @@ export function PartnershipsList({ userId }: PartnershipsListProps) {
               <div>
                 <div className="flex items-center gap-4 mb-6">
                   <div
-                    className="p-3 rounded-2xl transition-colors"
+                    className="p-3 rounded-md transition-colors"
                     style={{
                       backgroundColor: `${featuredCompany.branding.primary_color}15`,
                     }}
@@ -175,7 +175,7 @@ export function PartnershipsList({ userId }: PartnershipsListProps) {
               {/* Stats Row */}
               <div className="flex items-center gap-6">
                 <div className="flex items-center gap-2">
-                  <div className="p-2 rounded-lg bg-gray-100">
+                  <div className="p-2 rounded-md bg-gray-100">
                     <Users className="h-4 w-4 text-gray-600" />
                   </div>
                   <div>
@@ -184,7 +184,7 @@ export function PartnershipsList({ userId }: PartnershipsListProps) {
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="p-2 rounded-lg bg-gray-100">
+                  <div className="p-2 rounded-md bg-gray-100">
                     <Activity className="h-4 w-4 text-gray-600" />
                   </div>
                   <div>
@@ -205,7 +205,7 @@ export function PartnershipsList({ userId }: PartnershipsListProps) {
           {regularCompanies.map((company) => (
             <Card
               key={company.id}
-              className="relative overflow-hidden cursor-pointer group hover:shadow-xl transition-all duration-300 bg-white border border-gray-200"
+              className="relative overflow-hidden cursor-pointer group hover:shadow-md transition-all duration-300 bg-white border border-gray-200"
               onClick={() => handleViewCompany(company.slug)}
             >
               <div
@@ -217,7 +217,7 @@ export function PartnershipsList({ userId }: PartnershipsListProps) {
               <div className="relative h-full p-6 flex flex-col justify-between">
                 <div>
                   <div
-                    className="p-2.5 rounded-xl w-fit mb-4 transition-colors"
+                    className="p-2.5 rounded-md w-fit mb-4 transition-colors"
                     style={{
                       backgroundColor: `${company.branding.primary_color}15`,
                     }}

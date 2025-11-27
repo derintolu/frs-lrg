@@ -155,7 +155,7 @@ export function PartnershipsOverview({ userId, currentUser }: PartnershipsOvervi
             <LoadingCard type="stats" count={4} />
           ) : (
             statsDisplay.map((stat, index) => (
-              <Card key={index} className="shadow-lg border-0 bg-white">
+              <Card key={index} className="shadow-sm border-0 bg-white">
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div>
@@ -172,10 +172,10 @@ export function PartnershipsOverview({ userId, currentUser }: PartnershipsOvervi
         </div>
 
         {/* Partner Profiles Card */}
-        <Card className="shadow-lg border-0 bg-white flex flex-col h-full">
+        <Card className="shadow-sm border-0 bg-white flex flex-col h-full">
           <CardHeader>
             <CardTitle className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-blue-600 to-[#2DD4DA] flex items-center justify-center">
+              <div className="w-10 h-10 rounded-md bg-gradient-to-r from-blue-600 to-[#2DD4DA] flex items-center justify-center">
                 <Users className="w-6 h-6 text-white" />
               </div>
               Partner Profiles & Resources ({partners.length})
@@ -261,7 +261,7 @@ export function PartnershipsOverview({ userId, currentUser }: PartnershipsOvervi
                         </div>
 
                         {/* Shared Resources Preview */}
-                        <div className="mt-3 p-3 bg-blue-50 rounded-lg border border-blue-100">
+                        <div className="mt-3 p-3 bg-blue-50 rounded-md border border-blue-100">
                           <div className="flex items-center justify-between">
                             <div className="text-xs text-gray-600">
                               <span className="font-medium">Shared Resources:</span>

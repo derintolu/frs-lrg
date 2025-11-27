@@ -113,8 +113,6 @@ export function MarketMattersWidget() {
           <div className="space-y-3 animate-pulse">
             <div className="h-24 bg-white/10 rounded"></div>
             <div className="h-24 bg-white/10 rounded"></div>
-            <div className="h-32 bg-white/10 rounded"></div>
-            <div className="h-32 bg-white/10 rounded"></div>
           </div>
         </CardContent>
       </>

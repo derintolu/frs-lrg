@@ -10,11 +10,11 @@ export function MarketingOverview({ userId }: MarketingOverviewProps) {
   const navigate = useNavigate();
 
   return (
-    <div className="w-full min-h-screen p-4 md:p-8 bg-gray-50/50">
+    <div className="w-full min-h-screen p-4 md:p-8">
       {/* Header Section */}
-      <div className="mb-10 max-w-7xl mx-auto">
-        <h1 className="text-4xl font-bold text-gray-900 mb-2">Marketing Hub</h1>
-        <p className="text-gray-600 text-lg">Choose a tool to get started</p>
+      <div className="brand-page-header max-w-7xl mx-auto">
+        <h1 className="brand-page-title">Marketing Hub</h1>
+        <p className="brand-page-subtitle">Choose a tool to get started</p>
       </div>
 
       {/* Bento Grid */}
@@ -23,105 +23,104 @@ export function MarketingOverview({ userId }: MarketingOverviewProps) {
 
           {/* Calendar - Large Featured */}
           <Card
-            className="lg:col-span-2 lg:row-span-2 relative overflow-hidden cursor-pointer group hover:shadow-xl transition-all duration-300 bg-white border border-gray-200"
+            className="lg:col-span-2 lg:row-span-2 brand-feature-card"
             onClick={() => navigate('/marketing/calendar')}
           >
             <div className="h-full p-8 flex flex-col justify-between">
               <div>
-                <div className="p-3 rounded-2xl w-fit mb-6 transition-colors" style={{ backgroundColor: 'rgba(37, 99, 235, 0.1)' }}>
-                  <Calendar className="h-8 w-8" style={{ color: 'var(--brand-electric-blue)' }} />
+                <div className="brand-card-icon w-12 h-12 mb-6">
+                  <Calendar className="h-6 w-6" />
                 </div>
-                <h2 className="text-3xl font-bold text-gray-900 mb-3">Calendar</h2>
-                <p className="text-gray-600 text-lg leading-relaxed">
+                <h2 className="text-2xl font-bold text-[var(--brand-dark-navy)] mb-3">Calendar</h2>
+                <p className="brand-card-description text-base">
                   Manage your booking calendar and appointments
                 </p>
               </div>
-              <div className="flex items-center gap-2 font-medium group-hover:gap-3 transition-all" style={{ color: 'var(--brand-electric-blue)' }}>
-                <span>Explore</span>
-                <ArrowRight className="h-5 w-5" />
-              </div>
+              <span className="brand-card-link">
+                Explore <ArrowRight className="h-4 w-4" />
+              </span>
             </div>
           </Card>
 
           {/* Social & Print */}
           <Card
-            className="relative overflow-hidden cursor-pointer group hover:shadow-xl transition-all duration-300 bg-white border border-gray-200"
+            className="brand-feature-card"
             onClick={() => navigate('/marketing/orders')}
           >
             <div className="h-full p-6 flex flex-col justify-between">
-              <div className="p-2.5 rounded-xl w-fit transition-colors" style={{ backgroundColor: 'rgba(45, 212, 218, 0.1)' }}>
-                <ShoppingBag className="h-6 w-6" style={{ color: 'var(--brand-cyan)' }} />
+              <div className="brand-card-icon">
+                <ShoppingBag className="h-5 w-5" />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Social & Print</h3>
-                <p className="text-gray-600 text-sm">Order marketing materials</p>
+                <h3 className="brand-card-title mb-1">Social & Print</h3>
+                <p className="brand-card-description text-sm">Order marketing materials</p>
               </div>
             </div>
           </Card>
 
           {/* Email Campaigns */}
           <Card
-            className="relative overflow-hidden cursor-pointer group hover:shadow-xl transition-all duration-300 bg-white border border-gray-200"
+            className="brand-feature-card"
             onClick={() => navigate('/marketing/email-campaigns')}
           >
             <div className="h-full p-6 flex flex-col justify-between">
-              <div className="p-2.5 rounded-xl w-fit transition-colors" style={{ backgroundColor: 'rgba(125, 179, 232, 0.1)' }}>
-                <Mail className="h-6 w-6" style={{ color: 'var(--brand-light-blue)' }} />
+              <div className="brand-card-icon">
+                <Mail className="h-5 w-5" />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Email Campaigns</h3>
-                <p className="text-gray-600 text-sm">Design and send campaigns</p>
+                <h3 className="brand-card-title mb-1">Email Campaigns</h3>
+                <p className="brand-card-description text-sm">Design and send campaigns</p>
               </div>
             </div>
           </Card>
 
           {/* Landing Pages */}
           <Card
-            className="lg:col-span-2 relative overflow-hidden cursor-pointer group hover:shadow-xl transition-all duration-300 bg-white border border-gray-200"
+            className="lg:col-span-2 brand-feature-card"
             onClick={() => navigate('/marketing/landing-pages')}
           >
             <div className="h-full p-6 flex items-center justify-between">
               <div className="flex items-center gap-4">
-                <div className="p-3 rounded-2xl transition-colors" style={{ backgroundColor: 'rgba(64, 92, 122, 0.1)' }}>
-                  <FileText className="h-7 w-7" style={{ color: 'var(--brand-steel-blue)' }} />
+                <div className="brand-card-icon w-12 h-12">
+                  <FileText className="h-6 w-6" />
                 </div>
                 <div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-1">Landing Pages</h3>
-                  <p className="text-gray-600">Create custom pages for your campaigns</p>
+                  <h3 className="brand-card-title text-xl mb-1">Landing Pages</h3>
+                  <p className="brand-card-description">Create custom pages for your campaigns</p>
                 </div>
               </div>
-              <ArrowRight className="h-6 w-6 text-gray-400 group-hover:translate-x-1 transition-all" style={{ color: 'var(--brand-steel-blue)' }} />
+              <ArrowRight className="h-5 w-5 text-[var(--brand-electric-blue)] group-hover:translate-x-1 transition-all" />
             </div>
           </Card>
 
           {/* Local SEO */}
           <Card
-            className="relative overflow-hidden cursor-pointer group hover:shadow-xl transition-all duration-300 bg-white border border-gray-200"
+            className="brand-feature-card"
             onClick={() => navigate('/marketing/local-seo')}
           >
             <div className="h-full p-6 flex flex-col justify-between">
-              <div className="p-2.5 rounded-xl w-fit transition-colors" style={{ backgroundColor: 'rgba(45, 212, 218, 0.1)' }}>
-                <MapPin className="h-6 w-6" style={{ color: 'var(--brand-cyan)' }} />
+              <div className="brand-card-icon">
+                <MapPin className="h-5 w-5" />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Local SEO</h3>
-                <p className="text-gray-600 text-sm">Optimize local presence</p>
+                <h3 className="brand-card-title mb-1">Local SEO</h3>
+                <p className="brand-card-description text-sm">Optimize local presence</p>
               </div>
             </div>
           </Card>
 
           {/* Brand Guide */}
           <Card
-            className="relative overflow-hidden cursor-pointer group hover:shadow-xl transition-all duration-300 bg-white border border-gray-200"
+            className="brand-feature-card"
             onClick={() => navigate('/marketing/brand-guide')}
           >
             <div className="h-full p-6 flex flex-col justify-between">
-              <div className="p-2.5 rounded-xl w-fit transition-colors" style={{ backgroundColor: 'rgba(68, 75, 87, 0.1)' }}>
-                <BookOpen className="h-6 w-6" style={{ color: 'var(--brand-slate)' }} />
+              <div className="brand-card-icon">
+                <BookOpen className="h-5 w-5" />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Brand Guide</h3>
-                <p className="text-gray-600 text-sm">Access brand assets</p>
+                <h3 className="brand-card-title mb-1">Brand Guide</h3>
+                <p className="brand-card-description text-sm">Access brand assets</p>
               </div>
             </div>
           </Card>

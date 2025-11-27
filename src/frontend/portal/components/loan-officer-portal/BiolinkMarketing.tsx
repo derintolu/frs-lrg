@@ -144,7 +144,7 @@ export function BiolinkMarketing({ userId, currentUser }: BiolinkMarketingProps)
         <div className="col-span-1 max-md:space-y-0 md:space-y-3 flex flex-col h-full">
 
           {/* Share Biolink Card - Combined */}
-          <Card className="shadow-md max-md:rounded-none" style={{ background: 'linear-gradient(135deg, #1a1a2e 0%, #0f0f1e 100%)' }}>
+          <Card className="shadow-sm max-md:rounded-none" style={{ background: 'linear-gradient(135deg, #1a1a2e 0%, #0f0f1e 100%)' }}>
             <CardContent className="p-4">
               {/* QR Code Section */}
               <div className="flex flex-col items-center gap-3 mb-4">
@@ -235,7 +235,7 @@ export function BiolinkMarketing({ userId, currentUser }: BiolinkMarketingProps)
           </Button>
 
           {/* Total Leads Card - Desktop Only */}
-          <Card className="max-md:hidden flex overflow-hidden shadow-md flex-1" style={{ background: 'var(--gradient-brand-blue)' }}>
+          <Card className="max-md:hidden flex overflow-hidden shadow-sm flex-1" style={{ background: 'var(--gradient-brand-blue)' }}>
             <CardContent className="p-3">
               <div className="flex items-center justify-between mb-1">
                 <TrendingUp className="h-4 w-4 text-white" />
@@ -247,7 +247,7 @@ export function BiolinkMarketing({ userId, currentUser }: BiolinkMarketingProps)
           </Card>
 
           {/* Conversion Card - Desktop Only */}
-          <Card className="max-md:hidden flex overflow-hidden shadow-md flex-1" style={{ background: 'var(--gradient-brand-teal)' }}>
+          <Card className="max-md:hidden flex overflow-hidden shadow-sm flex-1" style={{ background: 'var(--gradient-brand-teal)' }}>
             <CardContent className="p-3">
               <div className="flex items-center justify-between mb-1">
                 <BarChart3 className="h-4 w-4 text-white" />
@@ -262,7 +262,7 @@ export function BiolinkMarketing({ userId, currentUser }: BiolinkMarketingProps)
 
         {/* Right Column - iPhone Preview - Desktop Only */}
         <div className="max-md:hidden block col-span-1 md:col-span-2 h-full">
-          <Card className="shadow-lg h-full" style={{ background: 'white', border: '1px solid var(--brand-powder-blue)' }}>
+          <Card className="shadow-sm h-full" style={{ background: 'white', border: '1px solid var(--brand-powder-blue)' }}>
             <CardContent className="p-4 flex items-start gap-4 h-full">
               <div className="flex items-center gap-2" style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}>
                 <span className="font-semibold text-sm whitespace-nowrap" style={{ color: 'var(--brand-dark-navy)' }}>Biolink Preview</span>

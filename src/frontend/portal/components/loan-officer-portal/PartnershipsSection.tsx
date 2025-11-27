@@ -79,27 +79,23 @@ export function PartnershipsSection({ userId }: PartnershipsSectionProps) {
 
   if (isLoading) {
     return (
-      <div className="w-full min-h-screen p-4 md:p-8 bg-gray-50/50">
+      <div className="w-full min-h-screen p-4 md:p-8">
         <div className="max-w-7xl mx-auto">
-          <p className="text-gray-600">Loading partner companies...</p>
+          <p className="brand-card-description">Loading partner companies...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="w-full min-h-screen p-4 md:p-8 bg-gray-50/50">
+    <div className="w-full min-h-screen p-4 md:p-8">
       {/* Header */}
-      <div className="mb-8 max-w-7xl mx-auto">
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h1 className="text-4xl font-bold text-gray-900 mb-2">Partner Companies</h1>
-            <p className="text-gray-600 text-lg">Manage your real estate partner company relationships</p>
-          </div>
-        </div>
+      <div className="brand-page-header max-w-7xl mx-auto">
+        <h1 className="brand-page-title">Partner Companies</h1>
+        <p className="brand-page-subtitle">Manage your real estate partnerships</p>
 
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded mb-4">
+          <div className="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-md mt-4">
             {error}
           </div>
         )}
@@ -108,20 +104,22 @@ export function PartnershipsSection({ userId }: PartnershipsSectionProps) {
       {/* Companies Grid */}
       <div className="max-w-7xl mx-auto">
         {companies.length === 0 ? (
-          <Card className="text-center py-12">
+          <Card className="brand-card text-center py-12">
             <CardContent>
-              <Building2 className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">No Partner Companies Yet</h3>
-              <p className="text-gray-600 mb-6">You haven't been added to any partner companies yet.</p>
-              <p className="text-sm text-gray-500">Contact your administrator to be added to partner company groups.</p>
+              <div className="brand-card-icon w-16 h-16 mx-auto mb-4">
+                <Building2 className="h-8 w-8" />
+              </div>
+              <h3 className="brand-card-title text-xl mb-2">No Partner Companies Yet</h3>
+              <p className="brand-card-description mb-6">You haven't been added to any partner companies yet.</p>
+              <p className="text-sm text-[var(--brand-slate)]">Contact your administrator to be added to partner company groups.</p>
             </CardContent>
           </Card>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {companies.map((company) => (
-              <Card key={company.id} className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => handleViewCompany(company.slug)}>
+              <Card key={company.id} className="brand-card overflow-hidden cursor-pointer" onClick={() => handleViewCompany(company.slug)}>
                 <CardHeader
-                  className="border-b"
+                  className="border-b rounded-t-md"
                   style={{
                     background: `linear-gradient(135deg, ${company.branding.primary_color} 0%, ${company.branding.secondary_color} 100%)`,
                   }}
@@ -132,34 +130,34 @@ export function PartnershipsSection({ userId }: PartnershipsSectionProps) {
                       <span className="truncate">{company.name}</span>
                     </div>
                     {company.user_role === 'admin' && (
-                      <span className="text-xs bg-white/20 px-2 py-1 rounded">Admin</span>
+                      <span className="text-xs bg-white/20 px-2 py-1 rounded-md">Admin</span>
                     )}
                     {company.user_role === 'mod' && (
-                      <span className="text-xs bg-white/20 px-2 py-1 rounded">Moderator</span>
+                      <span className="text-xs bg-white/20 px-2 py-1 rounded-md">Moderator</span>
                     )}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="pt-4">
                   {/* Stats */}
                   <div className="grid grid-cols-2 gap-4 mb-4">
-                    <div className="text-center p-3 bg-gray-50 rounded">
-                      <Users className="h-5 w-5 text-gray-600 mx-auto mb-1" />
-                      <p className="text-2xl font-bold text-gray-900">{company.member_count}</p>
-                      <p className="text-xs text-gray-600">Members</p>
+                    <div className="text-center p-3 bg-[var(--brand-off-white)] rounded-md">
+                      <Users className="h-5 w-5 text-[var(--brand-electric-blue)] mx-auto mb-1" />
+                      <p className="text-2xl font-bold text-[var(--brand-dark-navy)]">{company.member_count}</p>
+                      <p className="text-xs text-[var(--brand-slate)]">Members</p>
                     </div>
-                    <div className="text-center p-3 bg-gray-50 rounded">
-                      <Activity className="h-5 w-5 text-gray-600 mx-auto mb-1" />
-                      <p className="text-2xl font-bold text-gray-900">{company.stats.activity_count}</p>
-                      <p className="text-xs text-gray-600">Activity</p>
+                    <div className="text-center p-3 bg-[var(--brand-off-white)] rounded-md">
+                      <Activity className="h-5 w-5 text-[var(--brand-electric-blue)] mx-auto mb-1" />
+                      <p className="text-2xl font-bold text-[var(--brand-dark-navy)]">{company.stats.activity_count}</p>
+                      <p className="text-xs text-[var(--brand-slate)]">Activity</p>
                     </div>
                   </div>
 
                   {/* Description */}
-                  <p className="text-sm text-gray-600 mb-4 line-clamp-2">{company.description}</p>
+                  <p className="brand-card-description mb-4 line-clamp-2">{company.description}</p>
 
                   {/* View Button */}
                   <Button
-                    className="w-full flex items-center justify-center gap-2"
+                    className="w-full flex items-center justify-center gap-2 rounded-md"
                     style={{ background: `linear-gradient(135deg, ${company.branding.primary_color} 0%, ${company.branding.secondary_color} 100%)`, color: 'white' }}
                   >
                     <span>View Company</span>

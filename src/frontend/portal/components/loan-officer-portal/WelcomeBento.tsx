@@ -204,15 +204,15 @@ export function WelcomeBento({ userId }: WelcomeBentoProps) {
   }
 
   return (
-    <div className="max-w-full h-full overflow-hidden p-[10px] md:p-0">
+    <div className="max-w-full h-full overflow-visible m-4 md:m-6 bg-gradient-to-br from-slate-50 via-white to-blue-50/30">
       {/* Fluid grid layout */}
-      <div className="space-y-2">
+      <div className="space-y-3">
         {/* Welcome + Market section */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '8px' }}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {/* Welcome Header + Clock/Calendar */}
           <div className="h-full space-y-2 flex flex-col">
           {/* Welcome Header - Brand Navy Gradient */}
-          <div className="relative overflow-hidden max-md:rounded-none md:rounded p-3 w-full shadow-xl flex-1 flex items-center" style={{
+          <div className="relative overflow-hidden max-md:rounded-none md:rounded-lg p-4 w-full shadow-[0_4px_16px_rgba(38,48,66,0.4),0_2px_6px_rgba(0,0,0,0.2)] flex-1 flex items-center ring-1 ring-white/10" style={{
             background: 'var(--gradient-brand-navy)',
           }}>
             <div className="relative z-10 flex flex-col justify-center w-full">
@@ -228,10 +228,10 @@ export function WelcomeBento({ userId }: WelcomeBentoProps) {
           </div>
 
           {/* Time & Date Widget - Clock + Tear-off Calendar */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: '8px' }}>
+          <div className="grid grid-cols-2 gap-2">
             {/* Clock with AM/PM */}
             <div
-              className="shadow-xl rounded-sm overflow-hidden flex flex-col items-center justify-center px-3 py-4"
+              className="shadow-[0_2px_8px_rgba(37,99,235,0.3),0_1px_3px_rgba(0,0,0,0.1)] rounded-lg overflow-hidden flex flex-col items-center justify-center px-3 py-4 ring-1 ring-white/20"
               style={{
                 background: 'var(--gradient-hero)',
               }}
@@ -267,7 +267,7 @@ export function WelcomeBento({ userId }: WelcomeBentoProps) {
             </div>
 
             {/* Tear-off Calendar */}
-            <div className="shadow-xl rounded-sm overflow-hidden bg-white">
+            <div className="shadow-[0_2px_8px_rgba(0,0,0,0.12),0_1px_3px_rgba(0,0,0,0.08)] rounded-lg overflow-hidden bg-white ring-1 ring-black/5">
               {/* Month header (tear-off top) */}
               <div
                 className="text-center py-1.5"
@@ -314,7 +314,7 @@ export function WelcomeBento({ userId }: WelcomeBentoProps) {
         </div>
 
           {/* Market Matters Widget */}
-          <Card className="w-full h-full shadow-xl border-0 overflow-hidden rounded" style={{
+          <Card className="w-full min-h-[240px] border-0 overflow-hidden rounded-lg shadow-[0_4px_16px_rgba(37,99,235,0.3),0_2px_6px_rgba(0,0,0,0.15)] ring-1 ring-white/20" style={{
             background: 'var(--gradient-hero)',
           }}>
             <MarketMattersWidget />
@@ -323,13 +323,11 @@ export function WelcomeBento({ userId }: WelcomeBentoProps) {
 
         {/* Blog Posts Section */}
         <div className="h-full">
-          <Card className="relative w-full h-full shadow-xl border border-gray-200 overflow-hidden rounded bg-white">
-            <CardHeader className="pt-3 px-3 pb-1 border-b border-gray-200">
-              <CardTitle className="flex items-center gap-2 text-base">
-                <Bell className="h-4 w-4 text-blue-600" />
-                <span className="text-gray-900">
-                Latest Updates
-                </span>
+          <Card className="relative w-full h-full overflow-hidden bg-white/80 backdrop-blur-sm">
+            <CardHeader className="pt-3 px-3 pb-1 border-b border-slate-100">
+              <CardTitle className="brand-section-header mb-0">
+                <Bell className="h-4 w-4 brand-section-icon" />
+                <span className="brand-section-title">Latest Updates</span>
               </CardTitle>
             </CardHeader>
             <CardContent className="p-2 pt-2 overflow-y-auto max-h-[300px]">
@@ -343,26 +341,26 @@ export function WelcomeBento({ userId }: WelcomeBentoProps) {
                         href={post.link}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="block p-2 rounded transition-all hover:shadow-lg bg-gray-50 border border-gray-200 hover:border-blue-300 no-underline"
+                        className="block p-2 rounded-lg transition-all hover:bg-slate-50 no-underline"
                       >
-                        <h4 className="font-semibold text-xs text-gray-900 line-clamp-1 mb-1">
+                        <h4 className="font-semibold text-xs text-[var(--brand-dark-navy)] line-clamp-1 mb-1">
                           {post.title}
                         </h4>
-                        <p className="text-gray-600 text-xs line-clamp-1 mb-1">
+                        <p className="text-[var(--brand-slate)] text-xs line-clamp-1 mb-1">
                           {post.excerpt}
                         </p>
                         <div className="flex items-center gap-1">
                           <img
-                            src={post.author_avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(post.author_name || 'Author')}&background=2DD4DA&color=fff&size=96`}
+                            src={post.author_avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(post.author_name || 'Author')}&background=2563EB&color=fff&size=96`}
                             alt={post.author_name}
-                            className="w-4 h-4 rounded-full border border-gray-200"
+                            className="w-4 h-4 rounded-full border border-[var(--brand-light-gray)]"
                           />
-                          <div className="flex-1 flex items-center gap-1 text-xs text-gray-500">
-                            <span className="font-medium text-gray-700">{post.author_name}</span>
+                          <div className="flex-1 flex items-center gap-1 text-xs text-[var(--brand-slate)]">
+                            <span className="font-medium text-[var(--brand-dark-navy)]">{post.author_name}</span>
                             <span>•</span>
                             <span>{post.date}</span>
                           </div>
-                          <ExternalLink className="h-3 w-3 text-gray-500" />
+                          <ExternalLink className="h-3 w-3 text-[var(--brand-slate)]" />
                         </div>
                       </a>
                     ))}
@@ -372,8 +370,10 @@ export function WelcomeBento({ userId }: WelcomeBentoProps) {
                 {/* Empty State */}
                 {blogPosts.length === 0 && (
                   <div className="text-center py-12">
-                    <Bell className="h-16 w-16 mx-auto mb-4 text-gray-300" />
-                    <p className="text-gray-500">No updates available</p>
+                    <div className="brand-card-icon w-16 h-16 mx-auto mb-4">
+                      <Bell className="h-8 w-8" />
+                    </div>
+                    <p className="brand-card-description">No updates available</p>
                   </div>
                 )}
               </div>

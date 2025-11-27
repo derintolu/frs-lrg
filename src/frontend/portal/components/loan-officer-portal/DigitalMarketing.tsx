@@ -177,7 +177,7 @@ export function DigitalMarketing({ userId, currentUser, defaultTab = 'biolink' }
   return (
     <div className="space-y-6">
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4 rounded-sm" style={{ gap: '0.09rem' }}>
+        <TabsList className="grid w-full grid-cols-4 rounded-md" style={{ gap: '0.09rem' }}>
           <TabsTrigger value="biolink">Biolink</TabsTrigger>
           <TabsTrigger value="landing-pages">Landing Pages</TabsTrigger>
           <TabsTrigger value="email-campaigns">Email Campaigns</TabsTrigger>
@@ -190,8 +190,8 @@ export function DigitalMarketing({ userId, currentUser, defaultTab = 'biolink' }
             {/* Stats Only - First Column */}
             <div className="space-y-4 overflow-y-auto max-h-full">
               {/* Biolink Leads Analytics Card */}
-              <Card className="brand-card shadow-lg border-l-4 border-l-green-500">
-                <CardHeader className="h-12 flex items-center px-4 rounded-t-lg" style={{ backgroundColor: '#B6C7D9' }}>
+              <Card className="brand-card shadow-sm border-l-4 border-l-green-500">
+                <CardHeader className="h-12 flex items-center px-4 rounded-t-md" style={{ backgroundColor: '#B6C7D9' }}>
                   <CardTitle className="flex items-center gap-1 text-gray-700 text-sm">
                     <TrendingUp className="h-3 w-3" />
                     Biolink Leads
@@ -206,7 +206,7 @@ export function DigitalMarketing({ userId, currentUser, defaultTab = 'biolink' }
                   ) : (
                     <div className="grid grid-cols-2 gap-4">
                       {biolinkStatsDisplay.map((stat, index) => (
-                        <div key={index} className="border border-[var(--brand-powder-blue)] rounded-lg">
+                        <div key={index} className="border border-[var(--brand-powder-blue)] rounded-md">
                           <div className="p-4">
                             <div className="flex items-center justify-between">
                               <div>
@@ -227,7 +227,7 @@ export function DigitalMarketing({ userId, currentUser, defaultTab = 'biolink' }
 
             {/* Biolink Preview - Second Column (Takes 2 columns) */}
             <div className="lg:col-span-2 min-h-[800px]">
-              <Card className="brand-card shadow-lg border-l-4 border-l-blue-500 h-full">
+              <Card className="brand-card shadow-sm border-l-4 border-l-blue-500 h-full">
                 <CardContent className="p-2 h-full">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
@@ -335,7 +335,7 @@ export function DigitalMarketing({ userId, currentUser, defaultTab = 'biolink' }
             <CardContent>
               <div className="space-y-4">
                 {landingPages.map((page) => (
-                  <div key={page.id} className="flex items-center justify-between p-4 rounded-lg border">
+                  <div key={page.id} className="flex items-center justify-between p-4 rounded-md border">
                     <div className="flex-1">
                       <div className="flex items-center space-x-3 mb-2">
                         <h3 className="font-medium">{page.title}</h3>
@@ -397,7 +397,7 @@ export function DigitalMarketing({ userId, currentUser, defaultTab = 'biolink' }
         {/* EMAIL CAMPAIGNS TAB */}
         <TabsContent value="email-campaigns" className="space-y-6">
           <div className="relative">
-            <div className="absolute inset-0 bg-white/80 backdrop-blur-sm z-10 rounded-lg flex items-center justify-center">
+            <div className="absolute inset-0 bg-white/80 backdrop-blur-sm z-10 rounded-md flex items-center justify-center">
               <div className="text-center">
                 <div
                   className="text-2xl font-bold mb-2"
@@ -427,7 +427,7 @@ export function DigitalMarketing({ userId, currentUser, defaultTab = 'biolink' }
         {/* LOCAL SEO TAB */}
         <TabsContent value="local-seo" className="space-y-6">
           <div className="relative">
-            <div className="absolute inset-0 bg-white/80 backdrop-blur-sm z-10 rounded-lg flex items-center justify-center">
+            <div className="absolute inset-0 bg-white/80 backdrop-blur-sm z-10 rounded-md flex items-center justify-center">
               <div className="text-center">
                 <div
                   className="text-2xl font-bold mb-2"

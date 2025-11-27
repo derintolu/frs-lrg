@@ -21,7 +21,7 @@ export function BrandShowcase() {
           <div className="grid gap-4 md:grid-cols-2">
             <div className="space-y-3">
               <div
-                className="h-20 rounded-lg shadow-lg relative overflow-hidden"
+                className="h-20 rounded-md shadow-sm relative overflow-hidden"
                 style={{ background: 'var(--gradient-primary)' }}
               >
                 <div className="absolute inset-0 bg-black/10 flex items-center justify-center">
@@ -37,7 +37,7 @@ export function BrandShowcase() {
 
             <div className="space-y-3">
               <div
-                className="h-20 rounded-lg shadow-lg relative overflow-hidden"
+                className="h-20 rounded-md shadow-sm relative overflow-hidden"
                 style={{ background: 'var(--gradient-hero)' }}
               >
                 <div className="absolute inset-0 bg-black/10 flex items-center justify-center">
@@ -53,7 +53,7 @@ export function BrandShowcase() {
 
             <div className="space-y-3">
               <div
-                className="h-20 rounded-lg shadow-lg relative overflow-hidden"
+                className="h-20 rounded-md shadow-sm relative overflow-hidden"
                 style={{ background: 'var(--gradient-subtle)' }}
               >
                 <div className="absolute inset-0 bg-black/10 flex items-center justify-center">
@@ -69,7 +69,7 @@ export function BrandShowcase() {
 
             <div className="space-y-3">
               <div
-                className="h-20 rounded-lg shadow-lg relative overflow-hidden"
+                className="h-20 rounded-md shadow-sm relative overflow-hidden"
                 style={{ background: 'var(--gradient-button-hover)' }}
               >
                 <div className="absolute inset-0 bg-black/10 flex items-center justify-center">
@@ -95,22 +95,22 @@ export function BrandShowcase() {
         <CardContent>
           <div className="grid gap-4 md:grid-cols-5">
             <div className="text-center space-y-2">
-              <div className="h-16 w-full rounded-lg shadow-md" style={{ backgroundColor: 'var(--brand-navy)' }}></div>
+              <div className="h-16 w-full rounded-md shadow-sm" style={{ backgroundColor: 'var(--brand-navy)' }}></div>
               <div className="text-sm font-medium">Navy</div>
               <div className="text-xs text-muted-foreground">#263042</div>
             </div>
             <div className="text-center space-y-2">
-              <div className="h-16 w-full rounded-lg shadow-md" style={{ backgroundColor: 'var(--brand-primary-blue)' }}></div>
+              <div className="h-16 w-full rounded-md shadow-sm" style={{ backgroundColor: 'var(--brand-primary-blue)' }}></div>
               <div className="text-sm font-medium">Primary Blue</div>
               <div className="text-xs text-muted-foreground">#2563eb</div>
             </div>
             <div className="text-center space-y-2">
-              <div className="h-16 w-full rounded-lg shadow-md" style={{ backgroundColor: 'var(--brand-rich-teal)' }}></div>
+              <div className="h-16 w-full rounded-md shadow-sm" style={{ backgroundColor: 'var(--brand-rich-teal)' }}></div>
               <div className="text-sm font-medium">Rich Teal</div>
               <div className="text-xs text-muted-foreground">#2dd4da</div>
             </div>
             <div className="text-center space-y-2">
-              <div className="h-16 w-full rounded-lg shadow-md" style={{ backgroundColor: 'var(--brand-light-blue)' }}></div>
+              <div className="h-16 w-full rounded-md shadow-sm" style={{ backgroundColor: 'var(--brand-light-blue)' }}></div>
               <div className="text-sm font-medium">Light Blue</div>
               <div className="text-xs text-muted-foreground">#c3d9f1</div>
             </div>
@@ -133,7 +133,7 @@ export function BrandShowcase() {
           <div>
             <h4 className="font-medium mb-4" style={{ color: 'var(--brand-navy)' }}>Logo Mark (Icon Only)</h4>
             <div className="grid gap-4 md:grid-cols-4">
-              <div className="bg-white border rounded-lg p-6 text-center space-y-3 shadow-sm">
+              <div className="bg-white border rounded-md p-6 text-center space-y-3 shadow-sm">
                 <div className="flex justify-center">
                   <svg className="size-20" fill="none" preserveAspectRatio="none" viewBox="0 0 80 80">
                     <g>
@@ -144,7 +144,7 @@ export function BrandShowcase() {
                 <div className="text-xs font-medium text-muted-foreground">Primary Mark</div>
               </div>
 
-              <div className="bg-gray-900 border rounded-lg p-6 text-center space-y-3 shadow-sm">
+              <div className="bg-gray-900 border rounded-md p-6 text-center space-y-3 shadow-sm">
                 <div className="flex justify-center">
                   <svg className="size-15" fill="none" preserveAspectRatio="none" viewBox="0 0 60 60">
                     <g clipPath="url(#clip0_1_23)">
@@ -160,7 +160,7 @@ export function BrandShowcase() {
                 <div className="text-xs font-medium text-white">Reversed Mark</div>
               </div>
 
-              <div className="border rounded-lg p-6 text-center space-y-3 shadow-sm" style={{ background: 'var(--gradient-hero)' }}>
+              <div className="border rounded-md p-6 text-center space-y-3 shadow-sm" style={{ background: 'var(--gradient-hero)' }}>
                 <div className="flex justify-center">
                   <svg className="size-15" fill="none" preserveAspectRatio="none" viewBox="0 0 60 60">
                     <g clipPath="url(#clip0_1_23)">
@@ -176,7 +176,7 @@ export function BrandShowcase() {
                 <div className="text-xs font-medium text-white/90">Gradient Mark</div>
               </div>
 
-              <div className="border rounded-lg p-6 text-center space-y-3 shadow-sm" style={{ backgroundColor: 'var(--brand-rich-teal)' }}>
+              <div className="border rounded-md p-6 text-center space-y-3 shadow-sm" style={{ backgroundColor: 'var(--brand-rich-teal)' }}>
                 <div className="flex justify-center">
                   <svg className="size-15" fill="none" preserveAspectRatio="none" viewBox="0 0 60 60">
                     <g clipPath="url(#clip0_1_23)">
@@ -285,7 +285,7 @@ export function BrandShowcase() {
           <div className="space-y-4">
             <h4 className="font-medium" style={{ color: 'var(--brand-navy)' }}>Cards with Brand Styling</h4>
             <div className="grid gap-4 md:grid-cols-2">
-              <Card className="border-0 shadow-lg" style={{ background: 'var(--gradient-subtle)' }}>
+              <Card className="border-0 shadow-sm" style={{ background: 'var(--gradient-subtle)' }}>
                 <CardHeader>
                   <CardTitle style={{ color: 'var(--brand-navy)' }}>Subtle Card</CardTitle>
                 </CardHeader>
@@ -294,7 +294,7 @@ export function BrandShowcase() {
                 </CardContent>
               </Card>
 
-              <Card className="border-0 shadow-lg text-white" style={{ background: 'var(--gradient-hero)' }}>
+              <Card className="border-0 shadow-sm text-white" style={{ background: 'var(--gradient-hero)' }}>
                 <CardHeader>
                   <CardTitle className="text-white">Hero Card</CardTitle>
                 </CardHeader>
