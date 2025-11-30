@@ -5,7 +5,21 @@ import { MortgageSelect } from '../ui/mortgage-select';
 import { Home, DollarSign } from 'lucide-react';
 import { US_STATES } from './constants';
 
-export function NetProceedsCalculator() {
+interface NetProceedsCalculatorProps {
+  showButtons?: boolean;
+  onEmailMe?: () => void;
+  onShare?: () => void;
+  brandColor?: string;
+  ButtonsComponent?: React.ComponentType<any>;
+}
+
+export function NetProceedsCalculator({
+  showButtons = false,
+  onEmailMe,
+  onShare,
+  brandColor = '#3b82f6',
+  ButtonsComponent
+}: NetProceedsCalculatorProps = {}) {
   const [salePrice, setSalePrice] = useState<number>(500000);
   const [mortgageBalance, setMortgageBalance] = useState<number>(300000);
   const [agentCommission, setAgentCommission] = useState<number>(6);
@@ -43,80 +57,86 @@ export function NetProceedsCalculator() {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <Card className="lg:col-span-2">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Home className="h-5 w-5" />
-            Sale Details
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <MortgageInput
-            label="Sale Price"
-            type="currency"
-            value={salePrice}
-            onChange={(val) => setSalePrice(val)}
-            defaultValue={500000}
-          />
+      <div className="lg:col-span-2 flex flex-col gap-6">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Home className="h-5 w-5" />
+              Sale Details
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <MortgageInput
+              label="Sale Price"
+              type="currency"
+              value={salePrice}
+              onChange={(val) => setSalePrice(val)}
+              defaultValue={500000}
+            />
 
-          <MortgageInput
-            label="Mortgage Balance"
-            type="currency"
-            value={mortgageBalance}
-            onChange={(val) => setMortgageBalance(val)}
-            defaultValue={300000}
-          />
+            <MortgageInput
+              label="Mortgage Balance"
+              type="currency"
+              value={mortgageBalance}
+              onChange={(val) => setMortgageBalance(val)}
+              defaultValue={300000}
+            />
 
-          <MortgageSelect
-            label="Property State"
-            value={String(propertyStateIndex)}
-            onChange={(val) => setPropertyStateIndex(val)}
-            options={US_STATES.map((state, idx) => ({ value: String(idx), label: state }))}
-          />
+            <MortgageSelect
+              label="Property State"
+              value={String(propertyStateIndex)}
+              onChange={(val) => setPropertyStateIndex(val)}
+              options={US_STATES.map((state, idx) => ({ value: String(idx), label: state }))}
+            />
 
-          <MortgageInput
-            label="Agent Commission"
-            type="percent"
-            value={agentCommission}
-            onChange={(val) => setAgentCommission(val)}
-            step="0.5"
-            defaultValue={6}
-          />
+            <MortgageInput
+              label="Agent Commission"
+              type="percent"
+              value={agentCommission}
+              onChange={(val) => setAgentCommission(val)}
+              step="0.5"
+              defaultValue={6}
+            />
 
-          <MortgageInput
-            label="Closing Costs"
-            type="percent"
-            value={closingCosts}
-            onChange={(val) => setClosingCosts(val)}
-            step="0.5"
-            defaultValue={3}
-          />
+            <MortgageInput
+              label="Closing Costs"
+              type="percent"
+              value={closingCosts}
+              onChange={(val) => setClosingCosts(val)}
+              step="0.5"
+              defaultValue={3}
+            />
 
-          <MortgageInput
-            label="Home Warranty"
-            type="currency"
-            value={homeWarranty}
-            onChange={(val) => setHomeWarranty(val)}
-            defaultValue={500}
-          />
+            <MortgageInput
+              label="Home Warranty"
+              type="currency"
+              value={homeWarranty}
+              onChange={(val) => setHomeWarranty(val)}
+              defaultValue={500}
+            />
 
-          <MortgageInput
-            label="Repairs/Concessions"
-            type="currency"
-            value={repairs}
-            onChange={(val) => setRepairs(val)}
-            defaultValue={2000}
-          />
+            <MortgageInput
+              label="Repairs/Concessions"
+              type="currency"
+              value={repairs}
+              onChange={(val) => setRepairs(val)}
+              defaultValue={2000}
+            />
 
-          <MortgageInput
-            label="Property Tax (Prorated)"
-            type="currency"
-            value={propertytax}
-            onChange={(val) => setPropertyTax(val)}
-            defaultValue={0}
-          />
-        </CardContent>
-      </Card>
+            <MortgageInput
+              label="Property Tax (Prorated)"
+              type="currency"
+              value={propertytax}
+              onChange={(val) => setPropertyTax(val)}
+              defaultValue={0}
+            />
+          </CardContent>
+        </Card>
+
+        {showButtons && ButtonsComponent && onEmailMe && onShare && (
+          <ButtonsComponent onEmailMe={onEmailMe} onShare={onShare} brandColor={brandColor} />
+        )}
+      </div>
 
       {/* Results Card */}
       <Card className="h-fit" style={{

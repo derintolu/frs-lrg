@@ -5,7 +5,6 @@ import { Input } from './ui/input';
 import { FloatingInput } from './ui/floating-input';
 import { Label } from './ui/label';
 import { Textarea } from './ui/textarea';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { Badge } from './ui/badge';
 // Avatar components removed - using simple div implementations
 import { Switch } from './ui/switch';
@@ -40,6 +39,12 @@ import { LoadingSpinner } from './ui/loading';
 import { DataService } from '../utils/dataService';
 import { ProfileTour, TourTrigger } from './ProfileTour';
 import { RichTextEditor } from './ui/RichTextEditor';
+import { BookingCalendarCard, LandingPagesCard, BrandGuideCard, PrintSocialMediaCard } from './features';
+import { WelcomeBento } from './loan-officer-portal/WelcomeBento';
+import { LeadTracking } from './loan-officer-portal/LeadTracking';
+import { MortgageCalculator } from './loan-officer-portal/MortgageCalculator';
+import { Settings } from './loan-officer-portal/Settings';
+import { ProfileCompletionSection } from './loan-officer-portal/ProfileCompletionSection';
 
 // Read-only field display component
 const ReadOnlyField = ({ icon: Icon, value, label }: { icon: any, value: string, label?: string }) => (
@@ -59,7 +64,6 @@ const ReadOnlyTextarea = ({ icon: Icon, value }: { icon: any, value: string }) =
 interface ProfileSectionProps {
   userRole: 'loan-officer' | 'realtor';
   userId: string;
-  activeTab?: 'welcome' | 'personal' | 'settings';
   autoEdit?: boolean;
   tourAttributes?: {
     announcements?: string;
@@ -67,8 +71,7 @@ interface ProfileSectionProps {
   };
 }
 
-export function ProfileSection({ userRole, userId, activeTab: externalActiveTab, autoEdit = false, tourAttributes }: ProfileSectionProps) {
-  const [activeTab, setActiveTab] = useState(externalActiveTab || 'welcome');
+export function ProfileSection({ userRole, userId, autoEdit = false, tourAttributes }: ProfileSectionProps) {
   const [isEditing, setIsEditing] = useState(autoEdit);
   const [isSaving, setIsSaving] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -407,13 +410,6 @@ export function ProfileSection({ userRole, userId, activeTab: externalActiveTab,
     );
   }
 
-
-
-  // Use external activeTab if provided, otherwise use internal state
-  const currentTab = externalActiveTab || activeTab;
-
-
-
   // Map profileData to the format expected by ProfileCompletionSection
   const completionData = {
     first_name: profileData.firstName,
@@ -430,214 +426,57 @@ export function ProfileSection({ userRole, userId, activeTab: externalActiveTab,
   };
 
   return (
-    <div className="space-y-4" style={{ marginTop: '-30px' }}>
-      {/* Tab Content - Show based on currentTab */}
-      {currentTab === 'welcome' && (
-        <div className="space-y-4 mt-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Profile Details Card */}
-            <Card className="border-[var(--brand-powder-blue)] max-md:rounded-none md:rounded" data-tour={tourAttributes?.profileSummary}>
-              <CardContent className="p-6">
-                <div className="space-y-6">
-                  {/* Profile Header */}
-                  <div className="flex items-start space-x-4">
-                    <div className="w-20 h-20 rounded-full flex items-center justify-center flex-shrink-0" style={{
-                      background: 'linear-gradient(135deg, #5ce1e6, #3851DD)',
-                      padding: '2px'
-                    }}>
-                      <div className="w-full h-full rounded-full overflow-hidden bg-[var(--brand-pale-blue)] flex items-center justify-center">
-                        {profileData.profileImage ? (
-                          <img src={profileData.profileImage} alt="Profile" className="w-full h-full object-cover" />
-                        ) : (
-                          <span className="text-xl text-[var(--brand-dark-navy)] font-semibold">
-                            {(profileData.firstName?.[0] || '?')}{(profileData.lastName?.[0] || '')}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="text-lg font-semibold text-[var(--brand-dark-navy)] mb-1">
-                        {profileData.firstName} {profileData.lastName}
-                      </h3>
-                      <p className="text-[var(--brand-slate)] mb-1">{profileData.title}</p>
-                      <p className="text-sm text-[var(--brand-slate)]">
-                        {profileData.company}
-                        {profileData.nmls && <span className="ml-2">• NMLS #{profileData.nmls}</span>}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Contact Info Grid */}
-                  <div className="grid grid-cols-1 gap-3">
-                    <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-                      <Mail className="h-4 w-4 text-blue-600 flex-shrink-0" />
-                      <span className="text-sm font-medium truncate">{profileData.email}</span>
-                    </div>
-                    <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-                      <Phone className="h-4 w-4 text-green-600 flex-shrink-0" />
-                      <span className="text-sm font-medium">{profileData.phone || 'Not provided'}</span>
-                    </div>
-                    {profileData.location && (
-                      <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-                        <MapPin className="h-4 w-4 text-red-600 flex-shrink-0" />
-                        <span className="text-sm font-medium">{profileData.location}</span>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Arrive Link as text */}
-                  {personCPTData?.arrive && (
-                    <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
-                      <div className="flex items-center space-x-2 mb-1">
-                        <Globe className="h-4 w-4 text-blue-600" />
-                        <span className="text-sm font-medium text-blue-900">Arrive Registration</span>
-                      </div>
-                      <p className="text-xs text-blue-700 break-all ml-6">{personCPTData.arrive}</p>
-                    </div>
-                  )}
-
-                  {/* Professional Links */}
-                  {(profileData.linkedin || profileData.facebook || profileData.website) && (
-                    <div className="flex space-x-2">
-                      {profileData.linkedin && (
-                        <Button size="sm" variant="outline" onClick={() => window.open(profileData.linkedin, '_blank')}>
-                          <Linkedin className="h-4 w-4" />
-                        </Button>
-                      )}
-                      {profileData.facebook && (
-                        <Button size="sm" variant="outline" onClick={() => window.open(profileData.facebook, '_blank')}>
-                          <Facebook className="h-4 w-4" />
-                        </Button>
-                      )}
-                      {profileData.website && (
-                        <Button size="sm" variant="outline" onClick={() => window.open(profileData.website, '_blank')}>
-                          <Globe className="h-4 w-4" />
-                        </Button>
-                      )}
-                    </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Announcements Card */}
-            <Card className="border-[var(--brand-powder-blue)] max-md:rounded-none md:rounded" data-tour={tourAttributes?.announcements}>
-              <CardHeader className="h-12 flex items-center px-4 max-md:rounded-t-none md:rounded-t" style={{ backgroundColor: '#B6C7D9' }}>
-                <CardTitle className="flex items-center gap-1 text-gray-700 text-sm">
-                  <Bell className="h-3 w-3" />
-                  Announcements
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                {announcements.length > 0 ? (
-                  <div className="space-y-3">
-                    {announcements.slice(0, 3).map((announcement) => (
-                      <div
-                        key={announcement.id}
-                        className="p-4 rounded-lg cursor-pointer transition-all hover:shadow-md border-l-4 bg-gray-50 border-l-blue-500 hover:bg-gray-100"
-                        onClick={() => {
-                          setSelectedAnnouncement(announcement);
-                          setIsAnnouncementModalOpen(true);
-                        }}
-                      >
-                        <div className="flex items-start justify-between">
-                          <div className="flex-1">
-                            <div className="flex items-center space-x-2 mb-2">
-                              <h4 className="font-medium text-[var(--brand-dark-navy)] text-sm">
-                                {announcement.title}
-                              </h4>
-                              {announcement.priority === 'high' && (
-                                <Badge variant="destructive" className="text-xs px-2 py-1">
-                                  Priority
-                                </Badge>
-                              )}
-                            </div>
-                            <p className="text-xs text-[var(--brand-slate)] mb-2 line-clamp-2">
-                              {announcement.excerpt}
-                            </p>
-                            <div className="flex items-center justify-between">
-                              <p className="text-xs text-[var(--brand-slate)]">
-                                {new Date(announcement.date).toLocaleDateString()}
-                              </p>
-                              <div className={`w-2 h-2 rounded-full ${
-                                announcement.priority === 'high' ? 'bg-red-500' : 'bg-blue-500'
-                              }`}></div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                    {announcements.length > 3 && (
-                      <div className="text-center pt-2">
-                        <p className="text-xs text-[var(--brand-slate)]">
-                          +{announcements.length - 3} more announcements
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                ) : (
-                  <div className="text-center py-8">
-                    <Bell className="h-8 w-8 text-gray-300 mx-auto mb-2" />
-                    <p className="text-sm text-[var(--brand-slate)]">
-                      No announcements at this time
-                    </p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+    <div className="space-y-8 pb-8">
+      {/* 1. EDIT PROFILE BUTTON (sticky at top) */}
+      <div className="sticky top-0 z-20 bg-white/95 backdrop-blur-sm border-b border-gray-200 px-4 py-3 flex justify-end shadow-sm">
+        {!isEditing ? (
+          <Button
+            onClick={() => setIsEditing(true)}
+            className="bg-[var(--brand-electric-blue)] hover:bg-[var(--brand-electric-blue)]/90 text-white shadow-lg"
+          >
+            <Edit className="h-4 w-4 mr-2" />
+            Edit Profile
+          </Button>
+        ) : (
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={() => setIsEditing(false)} disabled={isSaving}>
+              <X className="h-4 w-4 mr-2" />
+              Cancel
+            </Button>
+            <Button
+              onClick={handleSave}
+              disabled={isSaving}
+              className="bg-[var(--brand-electric-blue)] hover:bg-[var(--brand-electric-blue)]/90 text-white"
+            >
+              {isSaving ? (
+                <>
+                  <LoadingSpinner size="sm" className="mr-2" />
+                  Saving...
+                </>
+              ) : (
+                <>
+                  <Save className="h-4 w-4 mr-2" />
+                  Save Changes
+                </>
+              )}
+            </Button>
           </div>
+        )}
+      </div>
 
-          {/* Custom Links Section */}
-          {customLinks.length > 0 && (
-            <Card className="border-[var(--brand-powder-blue)] max-md:rounded-none md:rounded">
-              <CardHeader className="h-12 flex items-center px-4 max-md:rounded-t-none md:rounded-t" style={{ backgroundColor: '#B6C7D9' }}>
-                <CardTitle className="flex items-center gap-1 text-gray-700 text-sm">
-                  <Globe className="h-3 w-3" />
-                  Quick Links
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {customLinks.map((link) => (
-                    <div
-                      key={link.id}
-                      className="p-4 border rounded-lg cursor-pointer hover:shadow-md transition-shadow group"
-                      onClick={() => window.open(link.url, '_blank')}
-                      style={{ borderColor: link.color + '20', backgroundColor: link.color + '05' }}
-                    >
-                      <div className="flex items-start space-x-3">
-                        <div
-                          className="w-10 h-10 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform"
-                          style={{ backgroundColor: link.color + '15' }}
-                        >
-                          <span style={{ color: link.color }}>🔗</span>
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <h4 className="font-medium text-[var(--brand-dark-navy)] text-sm truncate">
-                            {link.title}
-                          </h4>
-                          <p className="text-xs text-[var(--brand-slate)] mt-1 line-clamp-2">
-                            {link.description}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          )}
-        </div>
-      )}
+      {/* 2. WELCOME SECTION */}
+      <section id="welcome" className="scroll-mt-20">
+        <WelcomeBento userId={userId} />
+      </section>
 
-      {/* Personal Information Tab */}
-      {currentTab === 'personal' && (
-        <div className="space-y-4" style={{ paddingTop: '30px' }}>
+      {/* 3. PROFILE INFORMATION */}
+      <section id="profile" className="scroll-mt-20 px-4">
+        <h2 className="text-2xl font-bold text-gray-900 mb-6">Profile Information</h2>
 
-          {/* Two Column Layout: Profile Card + Links & Social */}
-          <div className="grid grid-cols-1 md:grid-cols-[1fr,1fr] gap-4">
-            {/* Profile Card */}
-            <Card className="shadow-lg max-md:rounded-none md:rounded border border-gray-200 h-full">
+        {/* Two Column Layout: Profile Card + Links & Social */}
+        <div className="grid grid-cols-1 md:grid-cols-[1fr,1fr] gap-4">
+          {/* Profile Card */}
+          <Card className="shadow-lg max-md:rounded-none md:rounded border border-gray-200 h-full">
               <div
                 className="p-8 relative overflow-hidden"
                 style={{
@@ -1308,77 +1147,124 @@ export function ProfileSection({ userRole, userId, activeTab: externalActiveTab,
               </div>
             </CardContent>
           </Card>
+      </section>
 
+      {/* 4. MARKETING TOOLS */}
+      <section id="marketing" className="scroll-mt-20 px-4">
+        <h2 className="text-2xl font-bold text-gray-900 mb-6">Marketing Tools</h2>
+
+        {/* Feature Cards Grid - 3 column system with asymmetric layout */}
+        <div className="space-y-6">
+          {/* Row 1: Booking Calendar (2 cols) + Landing Pages (1 col) */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2">
+              <BookingCalendarCard />
+            </div>
+
+            <div className="lg:col-span-1">
+              <LandingPagesCard />
+            </div>
+          </div>
+
+          {/* Row 2: Brand Guide (1 col) + Print & Social Media (2 cols) */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-1">
+              <BrandGuideCard />
+            </div>
+
+            <div className="lg:col-span-2">
+              <PrintSocialMediaCard />
+            </div>
+          </div>
         </div>
-      )}
+      </section>
 
-      {/* Settings Tab */}
-      {currentTab === 'settings' && (
-        <div className="space-y-4">
-          <Card className="border-[var(--brand-powder-blue)] max-md:rounded-none md:rounded">
-            <CardHeader>
-              <CardTitle className="text-[var(--brand-dark-navy)] flex items-center">
-                <Settings className="h-5 w-5 mr-2" />
-                Account Settings
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="flex items-center justify-between p-4 border rounded-lg">
-                <div className="space-y-1">
-                  <h4 className="text-sm font-medium text-[var(--brand-dark-navy)]">Email Notifications</h4>
-                  <p className="text-sm text-[var(--brand-slate)]">Receive notifications for new leads and partnerships</p>
-                </div>
-                <Switch defaultChecked />
-              </div>
+      {/* 5. LEAD TRACKING */}
+      <section id="leads" className="scroll-mt-20 px-4">
+        <LeadTracking userId={userId} />
+      </section>
 
-              <div className="flex items-center justify-between p-4 border rounded-lg">
-                <div className="space-y-1">
-                  <h4 className="text-sm font-medium text-[var(--brand-dark-navy)]">SMS Notifications</h4>
-                  <p className="text-sm text-[var(--brand-slate)]">Get text messages for urgent updates</p>
-                </div>
-                <Switch />
-              </div>
+      {/* 6. TOOLS */}
+      <section id="tools" className="scroll-mt-20 px-4">
+        <MortgageCalculator />
+      </section>
 
-              <div className="flex items-center justify-between p-4 border rounded-lg">
-                <div className="space-y-1">
-                  <h4 className="text-sm font-medium text-[var(--brand-dark-navy)]">Profile Visibility</h4>
-                  <p className="text-sm text-[var(--brand-slate)]">Make your profile visible to potential partners</p>
-                </div>
-                <Switch defaultChecked />
-              </div>
-            </CardContent>
-          </Card>
+      {/* 7. SETTINGS (includes Notifications as a tab) */}
+      <section id="settings" className="scroll-mt-20 px-4">
+        <Settings userId={userId} />
+      </section>
 
-          <Card className="border-[var(--brand-powder-blue)] max-md:rounded-none md:rounded">
-            <CardHeader>
-              <CardTitle className="text-[var(--brand-dark-navy)] flex items-center">
-                <Shield className="h-5 w-5 mr-2" />
-                Privacy & Security
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <Button variant="outline" className="w-full justify-start">
-                <Bell className="h-4 w-4 mr-2" />
-                Change Password
-              </Button>
-
-              <Button variant="outline" className="w-full justify-start">
-                <FileText className="h-4 w-4 mr-2" />
-                Download My Data
-              </Button>
-
-              <div className="pt-4 border-t">
-                <Button variant="destructive" className="w-full">
-                  Delete Account
+      {/* 9. PROFILE LINK SECTION */}
+      <section id="profile-link" className="scroll-mt-20 px-4">
+        <Card className="shadow-lg border border-gray-200">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-gray-900 text-lg">
+              <QrCode className="h-5 w-5" />
+              Your Profile Link
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid md:grid-cols-2 gap-6">
+              {/* QR Code Display */}
+              <div className="flex flex-col items-center justify-center">
+                <div
+                  ref={qrCodeRef}
+                  className="w-32 h-32 mb-3"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}
+                />
+                <p className="text-sm text-gray-600 text-center">Scan to visit your biolink</p>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="mt-2"
+                  onClick={() => setShowQRCode(!showQRCode)}
+                >
+                  {showQRCode ? 'Show Avatar' : 'Show QR Code'}
                 </Button>
-                <p className="text-xs text-[var(--brand-slate)] mt-2 text-center">
-                  This action cannot be undone. All your data will be permanently removed.
+              </div>
+
+              {/* Biolink URL */}
+              <div className="flex flex-col justify-center">
+                <Label className="text-sm font-medium mb-3">Biolink URL</Label>
+                <div className="flex gap-2 mb-4">
+                  <Input
+                    readOnly
+                    value={`${window.location.origin}/${profileData.username}/links`}
+                    className="font-mono text-sm bg-gray-50"
+                  />
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => {
+                      navigator.clipboard.writeText(`${window.location.origin}/${profileData.username}/links`);
+                      const toast = document.createElement('div');
+                      toast.className = 'fixed bottom-4 right-4 bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg z-50';
+                      toast.textContent = 'Link copied to clipboard!';
+                      document.body.appendChild(toast);
+                      setTimeout(() => toast.remove(), 2000);
+                    }}
+                    title="Copy link"
+                  >
+                    <Link className="h-4 w-4" />
+                  </Button>
+                </div>
+                <p className="text-xs text-gray-500">
+                  Share this link to let people view your profile and contact information.
                 </p>
               </div>
-            </CardContent>
-          </Card>
-        </div>
-      )}
+            </div>
+          </CardContent>
+        </Card>
+      </section>
+
+      {/* 10. PROFILE COMPLETION */}
+      <section id="completion" className="scroll-mt-20 px-4">
+        <ProfileCompletionSection userData={completionData} />
+      </section>
 
       {/* Announcement Modal */}
       {isAnnouncementModalOpen && selectedAnnouncement && (

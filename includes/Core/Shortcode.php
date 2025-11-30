@@ -36,6 +36,7 @@ class Shortcode {
 		add_shortcode( 'lrh_welcome_portal', array( $this, 'render_welcome_portal' ) );
 		add_shortcode( 'lrh_partnerships_section', array( $this, 'render_partnerships_section' ) );
 		add_shortcode( 'lrh_realtor_portal', array( $this, 'render_realtor_portal' ) );
+		add_shortcode( 'frs_mortgage_calculator', array( $this, 'render_mortgage_calculator' ) );
 
 		// Legacy shortcode from old plugin (backward compatibility)
 		add_shortcode( 'frs_partnership_portal', array( $this, 'render_legacy_portal' ) );
@@ -190,6 +191,65 @@ class Shortcode {
 	public function add_sidebar_body_class( $classes ) {
 		$classes[] = 'has-lrh-portal-sidebar';
 		return $classes;
+	}
+
+	/**
+	 * Render the mortgage calculator shortcode.
+	 *
+	 * Shortcode attributes:
+	 * - loan_officer_id: User ID of the loan officer (defaults to current user or URL param)
+	 * - webhook_url: URL to send lead data via webhook
+	 * - show_lead_form: Whether to show the lead capture form (default: true)
+	 * - brand_color: Brand color hex code (default: #3b82f6)
+	 * - logo_url: URL to logo image
+	 *
+	 * Example: [frs_mortgage_calculator loan_officer_id="123" webhook_url="https://example.com/webhook"]
+	 *
+	 * @param array $atts Shortcode attributes.
+	 * @return string The rendered shortcode HTML.
+	 */
+	public function render_mortgage_calculator( $atts ) {
+		// Parse attributes
+		$atts = shortcode_atts(
+			array(
+				'loan_officer_id' => '',
+				'webhook_url'     => '',
+				'show_lead_form'  => 'true',
+				'brand_color'     => '',
+				'logo_url'        => '',
+			),
+			$atts,
+			'frs_mortgage_calculator'
+		);
+
+		// Enqueue widget assets directly when shortcode is rendered
+		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_widget_assets();
+
+		// Build data attributes for the widget
+		$data_attrs = array();
+
+		if ( ! empty( $atts['loan_officer_id'] ) ) {
+			$data_attrs[] = 'data-loan-officer-id="' . esc_attr( $atts['loan_officer_id'] ) . '"';
+		}
+
+		if ( ! empty( $atts['webhook_url'] ) ) {
+			$data_attrs[] = 'data-webhook-url="' . esc_url( $atts['webhook_url'] ) . '"';
+		}
+
+		if ( ! empty( $atts['show_lead_form'] ) ) {
+			$data_attrs[] = 'data-show-lead-form="' . esc_attr( $atts['show_lead_form'] ) . '"';
+		}
+
+		if ( ! empty( $atts['brand_color'] ) ) {
+			$data_attrs[] = 'data-brand-color="' . esc_attr( $atts['brand_color'] ) . '"';
+		}
+
+		if ( ! empty( $atts['logo_url'] ) ) {
+			$data_attrs[] = 'data-logo-url="' . esc_url( $atts['logo_url'] ) . '"';
+		}
+
+		// Return root element for React to mount
+		return '<div id="mortgage-calculator" ' . implode( ' ', $data_attrs ) . '></div>';
 	}
 
 }
