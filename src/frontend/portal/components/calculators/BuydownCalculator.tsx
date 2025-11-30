@@ -7,7 +7,21 @@ import { US_STATES, CREDIT_SCORES } from './constants';
 
 type BuydownType = '2-1' | '1-1' | '3-2-1' | '1-0';
 
-export function BuydownCalculator() {
+interface BuydownCalculatorProps {
+  showButtons?: boolean;
+  onEmailMe?: () => void;
+  onShare?: () => void;
+  brandColor?: string;
+  ButtonsComponent?: React.ComponentType<any>;
+}
+
+export function BuydownCalculator({
+  showButtons = false,
+  onEmailMe,
+  onShare,
+  brandColor = '#3b82f6',
+  ButtonsComponent
+}: BuydownCalculatorProps = {}) {
   const [homePrice, setHomePrice] = useState<number>(300000);
   const [downPayment, setDownPayment] = useState<number>(60000);
   const [interestRate, setInterestRate] = useState<number>(7.0);
@@ -89,79 +103,85 @@ export function BuydownCalculator() {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <Card className="lg:col-span-2">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Home className="h-5 w-5" />
-            Buydown Details
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <MortgageInput
-            label="Home Price"
-            type="currency"
-            value={homePrice}
-            onChange={(val) => setHomePrice(val)}
-            defaultValue={300000}
-          />
+      <div className="lg:col-span-2 flex flex-col gap-6">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Home className="h-5 w-5" />
+              Buydown Details
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <MortgageInput
+              label="Home Price"
+              type="currency"
+              value={homePrice}
+              onChange={(val) => setHomePrice(val)}
+              defaultValue={300000}
+            />
 
-          <MortgageInput
-            label="Down Payment"
-            type="currency"
-            value={downPayment}
-            onChange={(val) => setDownPayment(val)}
-            defaultValue={60000}
-          />
+            <MortgageInput
+              label="Down Payment"
+              type="currency"
+              value={downPayment}
+              onChange={(val) => setDownPayment(val)}
+              defaultValue={60000}
+            />
 
-          <MortgageSelect
-            label="Property State"
-            value={String(propertyStateIndex)}
-            onChange={(val) => setPropertyStateIndex(val)}
-            options={US_STATES.map((state, idx) => ({ value: String(idx), label: state }))}
-          />
-
-          <MortgageSelect
-            label="Credit Score"
-            value={String(creditScoreIndex)}
-            onChange={(val) => setCreditScoreIndex(val)}
-            options={CREDIT_SCORES.map((score, idx) => ({ value: String(idx), label: score.label }))}
-          />
-
-          <MortgageInput
-            label="Interest Rate"
-            type="percent"
-            value={interestRate}
-            onChange={(val) => setInterestRate(val)}
-            step="0.1"
-            defaultValue={7.0}
-          />
-
-          <MortgageSelect
-            label="Loan Term"
-            value={String(loanTerm)}
-            onChange={(val) => setLoanTerm(Number(val))}
-            options={[
-              { value: '15', label: '15 years' },
-              { value: '20', label: '20 years' },
-              { value: '30', label: '30 years' }
-            ]}
-          />
-
-          <div className="md:col-span-2">
             <MortgageSelect
-              label="Buydown Type"
-              value={buydownType}
-              onChange={(val) => setBuydownType(val as BuydownType)}
+              label="Property State"
+              value={String(propertyStateIndex)}
+              onChange={(val) => setPropertyStateIndex(val)}
+              options={US_STATES.map((state, idx) => ({ value: String(idx), label: state }))}
+            />
+
+            <MortgageSelect
+              label="Credit Score"
+              value={String(creditScoreIndex)}
+              onChange={(val) => setCreditScoreIndex(val)}
+              options={CREDIT_SCORES.map((score, idx) => ({ value: String(idx), label: score.label }))}
+            />
+
+            <MortgageInput
+              label="Interest Rate"
+              type="percent"
+              value={interestRate}
+              onChange={(val) => setInterestRate(val)}
+              step="0.1"
+              defaultValue={7.0}
+            />
+
+            <MortgageSelect
+              label="Loan Term"
+              value={String(loanTerm)}
+              onChange={(val) => setLoanTerm(Number(val))}
               options={[
-                { value: '2-1', label: '2-1 Buydown' },
-                { value: '1-1', label: '1-1 Buydown' },
-                { value: '3-2-1', label: '3-2-1 Buydown' },
-                { value: '1-0', label: '1-0 Buydown' }
+                { value: '15', label: '15 years' },
+                { value: '20', label: '20 years' },
+                { value: '30', label: '30 years' }
               ]}
             />
-          </div>
-        </CardContent>
-      </Card>
+
+            <div className="md:col-span-2">
+              <MortgageSelect
+                label="Buydown Type"
+                value={buydownType}
+                onChange={(val) => setBuydownType(val as BuydownType)}
+                options={[
+                  { value: '2-1', label: '2-1 Buydown' },
+                  { value: '1-1', label: '1-1 Buydown' },
+                  { value: '3-2-1', label: '3-2-1 Buydown' },
+                  { value: '1-0', label: '1-0 Buydown' }
+                ]}
+              />
+            </div>
+          </CardContent>
+        </Card>
+
+        {showButtons && ButtonsComponent && onEmailMe && onShare && (
+          <ButtonsComponent onEmailMe={onEmailMe} onShare={onShare} brandColor={brandColor} />
+        )}
+      </div>
 
       {/* Results Card */}
       <Card className="h-fit" style={{
