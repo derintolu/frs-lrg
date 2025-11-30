@@ -10,21 +10,7 @@ import {
 import { RefinanceResultsCard } from './ResultsCard';
 import { US_STATES, CREDIT_SCORES } from './constants';
 
-interface RefinanceCalculatorProps {
-  showButtons?: boolean;
-  onEmailMe?: () => void;
-  onShare?: () => void;
-  brandColor?: string;
-  ButtonsComponent?: React.ComponentType<any>;
-}
-
-export function RefinanceCalculator({
-  showButtons = false,
-  onEmailMe,
-  onShare,
-  brandColor = '#3b82f6',
-  ButtonsComponent
-}: RefinanceCalculatorProps = {}) {
+export function RefinanceCalculator() {
   const [inputs, setInputs] = useState<RefinanceInputs>({
     currentLoanBalance: '' as any,
     currentInterestRate: '' as any,
@@ -42,94 +28,88 @@ export function RefinanceCalculator({
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <div className="lg:col-span-2 flex flex-col gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Calculator className="h-5 w-5" />
-              Refinance Details
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <Card className="lg:col-span-2">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Calculator className="h-5 w-5" />
+            Refinance Details
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-            <MortgageSelect
-              label="Property State"
-              value={String(propertyStateIndex)}
-              onChange={(val) => setPropertyStateIndex(val)}
-              options={US_STATES.map((state, idx) => ({ value: String(idx), label: state }))}
-            />
+          <MortgageSelect
+            label="Property State"
+            value={String(propertyStateIndex)}
+            onChange={(val) => setPropertyStateIndex(val)}
+            options={US_STATES.map((state, idx) => ({ value: String(idx), label: state }))}
+          />
 
-            <MortgageSelect
-              label="Credit Score"
-              value={String(creditScoreIndex)}
-              onChange={(val) => setCreditScoreIndex(val)}
-              options={CREDIT_SCORES.map((score, idx) => ({ value: String(idx), label: score.label }))}
-            />
+          <MortgageSelect
+            label="Credit Score"
+            value={String(creditScoreIndex)}
+            onChange={(val) => setCreditScoreIndex(val)}
+            options={CREDIT_SCORES.map((score, idx) => ({ value: String(idx), label: score.label }))}
+          />
 
+          <MortgageInput
+            label="Current Balance"
+            type="currency"
+            value={inputs.currentLoanBalance}
+            onChange={(val) => setInputs({...inputs, currentLoanBalance: val})}
+            defaultValue={250000}
+          />
+
+          <MortgageInput
+            label="Current Rate"
+            type="percent"
+            value={inputs.currentInterestRate}
+            onChange={(val) => setInputs({...inputs, currentInterestRate: val})}
+            step="0.1"
+            defaultValue={7.5}
+          />
+
+          <div className="md:col-span-2">
             <MortgageInput
-              label="Current Balance"
+              label="Current Monthly Payment"
               type="currency"
-              value={inputs.currentLoanBalance}
-              onChange={(val) => setInputs({...inputs, currentLoanBalance: val})}
-              defaultValue={250000}
+              value={inputs.currentPayment}
+              onChange={(val) => setInputs({...inputs, currentPayment: val})}
+              defaultValue={1748}
             />
+          </div>
 
+
+          <MortgageInput
+            label="New Rate"
+            type="percent"
+            value={inputs.newInterestRate}
+            onChange={(val) => setInputs({...inputs, newInterestRate: val})}
+            step="0.1"
+            defaultValue={6.0}
+          />
+
+          <MortgageSelect
+            label="New Term"
+            value={String(inputs.newLoanTerm)}
+            onChange={(val) => setInputs({...inputs, newLoanTerm: val})}
+            options={[
+              { value: '15', label: '15 years' },
+              { value: '20', label: '20 years' },
+              { value: '30', label: '30 years' }
+            ]}
+          />
+
+          <div className="md:col-span-2">
             <MortgageInput
-              label="Current Rate"
-              type="percent"
-              value={inputs.currentInterestRate}
-              onChange={(val) => setInputs({...inputs, currentInterestRate: val})}
-              step="0.1"
-              defaultValue={7.5}
+              label="Closing Costs"
+              type="currency"
+              value={inputs.closingCosts}
+              onChange={(val) => setInputs({...inputs, closingCosts: val})}
+              defaultValue={5000}
             />
-
-            <div className="md:col-span-2">
-              <MortgageInput
-                label="Current Monthly Payment"
-                type="currency"
-                value={inputs.currentPayment}
-                onChange={(val) => setInputs({...inputs, currentPayment: val})}
-                defaultValue={1748}
-              />
-            </div>
-
-
-            <MortgageInput
-              label="New Rate"
-              type="percent"
-              value={inputs.newInterestRate}
-              onChange={(val) => setInputs({...inputs, newInterestRate: val})}
-              step="0.1"
-              defaultValue={6.0}
-            />
-
-            <MortgageSelect
-              label="New Term"
-              value={String(inputs.newLoanTerm)}
-              onChange={(val) => setInputs({...inputs, newLoanTerm: val})}
-              options={[
-                { value: '15', label: '15 years' },
-                { value: '20', label: '20 years' },
-                { value: '30', label: '30 years' }
-              ]}
-            />
-
-            <div className="md:col-span-2">
-              <MortgageInput
-                label="Closing Costs"
-                type="currency"
-                value={inputs.closingCosts}
-                onChange={(val) => setInputs({...inputs, closingCosts: val})}
-                defaultValue={5000}
-              />
-            </div>
-          </CardContent>
-        </Card>
-
-        {showButtons && ButtonsComponent && onEmailMe && onShare && (
-          <ButtonsComponent onEmailMe={onEmailMe} onShare={onShare} brandColor={brandColor} />
-        )}
-      </div>
+          </div>
+        </CardContent>
+      </Card>
 
       <RefinanceResultsCard results={results} />
     </div>

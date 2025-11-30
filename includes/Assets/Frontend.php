@@ -196,30 +196,6 @@ class Frontend {
 	}
 
 	/**
-	 * Enqueue mortgage calculator widget assets.
-	 *
-	 * Called directly by shortcode handler.
-	 *
-	 * @return void
-	 */
-	public function enqueue_widget_assets() {
-		// Enqueue React dependencies
-		wp_enqueue_script( 'react' );
-		wp_enqueue_script( 'react-dom' );
-
-		// Enqueue widget bundle
-		Assets\enqueue_asset(
-			LRH_DIR . '/assets/widget/dist',
-			'src/widget/widget.tsx',
-			array(
-				'handle'       => 'frs-mortgage-calculator',
-				'dependencies' => array( 'react', 'react-dom' ),
-				'in-footer'    => true,
-			)
-		);
-	}
-
-	/**
 	 * Determine if portal assets should be loaded.
 	 *
 	 * Checks for:

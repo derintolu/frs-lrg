@@ -5,21 +5,7 @@ import { MortgageSelect } from '../ui/mortgage-select';
 import { Home, TrendingUp } from 'lucide-react';
 import { US_STATES, CREDIT_SCORES } from './constants';
 
-interface RentVsBuyCalculatorProps {
-  showButtons?: boolean;
-  onEmailMe?: () => void;
-  onShare?: () => void;
-  brandColor?: string;
-  ButtonsComponent?: React.ComponentType<any>;
-}
-
-export function RentVsBuyCalculator({
-  showButtons = false,
-  onEmailMe,
-  onShare,
-  brandColor = '#3b82f6',
-  ButtonsComponent
-}: RentVsBuyCalculatorProps = {}) {
+export function RentVsBuyCalculator() {
   // Buy inputs
   const [homePrice, setHomePrice] = useState<number>(400000);
   const [downPayment, setDownPayment] = useState<number>(80000);
@@ -104,164 +90,158 @@ export function RentVsBuyCalculator({
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <div className="lg:col-span-2 flex flex-col gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Home className="h-5 w-5" />
-              Comparison Details
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            {/* Buy Section */}
-            <div className="pb-4 border-b">
-              <h3 className="text-sm font-semibold mb-4">Buying</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <MortgageInput
-                  label="Home Price"
-                  type="currency"
-                  value={homePrice}
-                  onChange={(val) => setHomePrice(val)}
-                  defaultValue={400000}
-                />
-                <MortgageInput
-                  label="Down Payment"
-                  type="currency"
-                  value={downPayment}
-                  onChange={(val) => setDownPayment(val)}
-                  defaultValue={80000}
-                />
-                <MortgageInput
-                  label="Interest Rate"
-                  type="percent"
-                  value={interestRate}
-                  onChange={(val) => setInterestRate(val)}
-                  step="0.1"
-                  defaultValue={7.0}
-                />
-                <MortgageSelect
-                  label="Loan Term"
-                  value={String(loanTerm)}
-                  onChange={(val) => setLoanTerm(Number(val))}
-                  options={[
-                    { value: '15', label: '15 years' },
-                    { value: '20', label: '20 years' },
-                    { value: '30', label: '30 years' }
-                  ]}
-                />
-                <MortgageInput
-                  label="Property Tax (Annual)"
-                  type="currency"
-                  value={propertyTax}
-                  onChange={(val) => setPropertyTax(val)}
-                  defaultValue={4000}
-                />
-                <MortgageInput
-                  label="Insurance (Annual)"
-                  type="currency"
-                  value={insurance}
-                  onChange={(val) => setInsurance(val)}
-                  defaultValue={1500}
-                />
-                <MortgageInput
-                  label="HOA Fees (Monthly)"
-                  type="currency"
-                  value={hoa}
-                  onChange={(val) => setHOA(val)}
-                  defaultValue={0}
-                />
-                <MortgageInput
-                  label="Maintenance (Monthly)"
-                  type="currency"
-                  value={maintenance}
-                  onChange={(val) => setMaintenance(val)}
-                  defaultValue={200}
-                />
-                <MortgageInput
-                  label="Home Appreciation"
-                  type="percent"
-                  value={homeAppreciation}
-                  onChange={(val) => setHomeAppreciation(val)}
-                  step="0.5"
-                  defaultValue={3}
-                />
-              </div>
+      <Card className="lg:col-span-2">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Home className="h-5 w-5" />
+            Comparison Details
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          {/* Buy Section */}
+          <div className="pb-4 border-b">
+            <h3 className="text-sm font-semibold mb-4">Buying</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <MortgageInput
+                label="Home Price"
+                type="currency"
+                value={homePrice}
+                onChange={(val) => setHomePrice(val)}
+                defaultValue={400000}
+              />
+              <MortgageInput
+                label="Down Payment"
+                type="currency"
+                value={downPayment}
+                onChange={(val) => setDownPayment(val)}
+                defaultValue={80000}
+              />
+              <MortgageInput
+                label="Interest Rate"
+                type="percent"
+                value={interestRate}
+                onChange={(val) => setInterestRate(val)}
+                step="0.1"
+                defaultValue={7.0}
+              />
+              <MortgageSelect
+                label="Loan Term"
+                value={String(loanTerm)}
+                onChange={(val) => setLoanTerm(Number(val))}
+                options={[
+                  { value: '15', label: '15 years' },
+                  { value: '20', label: '20 years' },
+                  { value: '30', label: '30 years' }
+                ]}
+              />
+              <MortgageInput
+                label="Property Tax (Annual)"
+                type="currency"
+                value={propertyTax}
+                onChange={(val) => setPropertyTax(val)}
+                defaultValue={4000}
+              />
+              <MortgageInput
+                label="Insurance (Annual)"
+                type="currency"
+                value={insurance}
+                onChange={(val) => setInsurance(val)}
+                defaultValue={1500}
+              />
+              <MortgageInput
+                label="HOA Fees (Monthly)"
+                type="currency"
+                value={hoa}
+                onChange={(val) => setHOA(val)}
+                defaultValue={0}
+              />
+              <MortgageInput
+                label="Maintenance (Monthly)"
+                type="currency"
+                value={maintenance}
+                onChange={(val) => setMaintenance(val)}
+                defaultValue={200}
+              />
+              <MortgageInput
+                label="Home Appreciation"
+                type="percent"
+                value={homeAppreciation}
+                onChange={(val) => setHomeAppreciation(val)}
+                step="0.5"
+                defaultValue={3}
+              />
             </div>
+          </div>
 
-            {/* Rent Section */}
-            <div className="pb-4 border-b">
-              <h3 className="text-sm font-semibold mb-4">Renting</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <MortgageInput
-                  label="Monthly Rent"
-                  type="currency"
-                  value={monthlyRent}
-                  onChange={(val) => setMonthlyRent(val)}
-                  defaultValue={2500}
-                />
-                <MortgageInput
-                  label="Renter's Insurance (Annual)"
-                  type="currency"
-                  value={renterInsurance}
-                  onChange={(val) => setRenterInsurance(val)}
-                  defaultValue={200}
-                />
-                <MortgageInput
-                  label="Annual Rent Increase"
-                  type="percent"
-                  value={rentIncrease}
-                  onChange={(val) => setRentIncrease(val)}
-                  step="0.5"
-                  defaultValue={3}
-                />
-                <MortgageInput
-                  label="Investment Return"
-                  type="percent"
-                  value={investmentReturn}
-                  onChange={(val) => setInvestmentReturn(val)}
-                  step="0.5"
-                  defaultValue={7}
-                />
-              </div>
+          {/* Rent Section */}
+          <div className="pb-4 border-b">
+            <h3 className="text-sm font-semibold mb-4">Renting</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <MortgageInput
+                label="Monthly Rent"
+                type="currency"
+                value={monthlyRent}
+                onChange={(val) => setMonthlyRent(val)}
+                defaultValue={2500}
+              />
+              <MortgageInput
+                label="Renter's Insurance (Annual)"
+                type="currency"
+                value={renterInsurance}
+                onChange={(val) => setRenterInsurance(val)}
+                defaultValue={200}
+              />
+              <MortgageInput
+                label="Annual Rent Increase"
+                type="percent"
+                value={rentIncrease}
+                onChange={(val) => setRentIncrease(val)}
+                step="0.5"
+                defaultValue={3}
+              />
+              <MortgageInput
+                label="Investment Return"
+                type="percent"
+                value={investmentReturn}
+                onChange={(val) => setInvestmentReturn(val)}
+                step="0.5"
+                defaultValue={7}
+              />
             </div>
+          </div>
 
-            {/* Other Inputs */}
-            <div>
-              <h3 className="text-sm font-semibold mb-4">General</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <MortgageSelect
-                  label="Property State"
-                  value={String(propertyStateIndex)}
-                  onChange={(val) => setPropertyStateIndex(val)}
-                  options={US_STATES.map((state, idx) => ({ value: String(idx), label: state }))}
-                />
-                <MortgageSelect
-                  label="Credit Score"
-                  value={String(creditScoreIndex)}
-                  onChange={(val) => setCreditScoreIndex(val)}
-                  options={CREDIT_SCORES.map((score, idx) => ({ value: String(idx), label: score.label }))}
-                />
-                <MortgageSelect
-                  label="Years to Compare"
-                  value={String(yearsToCompare)}
-                  onChange={(val) => setYearsToCompare(Number(val))}
-                  options={[
-                    { value: '5', label: '5 years' },
-                    { value: '10', label: '10 years' },
-                    { value: '15', label: '15 years' },
-                    { value: '20', label: '20 years' },
-                    { value: '30', label: '30 years' }
-                  ]}
-                />
-              </div>
+          {/* Other Inputs */}
+          <div>
+            <h3 className="text-sm font-semibold mb-4">General</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <MortgageSelect
+                label="Property State"
+                value={String(propertyStateIndex)}
+                onChange={(val) => setPropertyStateIndex(val)}
+                options={US_STATES.map((state, idx) => ({ value: String(idx), label: state }))}
+              />
+              <MortgageSelect
+                label="Credit Score"
+                value={String(creditScoreIndex)}
+                onChange={(val) => setCreditScoreIndex(val)}
+                options={CREDIT_SCORES.map((score, idx) => ({ value: String(idx), label: score.label }))}
+              />
+              <MortgageSelect
+                label="Years to Compare"
+                value={String(yearsToCompare)}
+                onChange={(val) => setYearsToCompare(Number(val))}
+                options={[
+                  { value: '5', label: '5 years' },
+                  { value: '10', label: '10 years' },
+                  { value: '15', label: '15 years' },
+                  { value: '20', label: '20 years' },
+                  { value: '30', label: '30 years' }
+                ]}
+              />
             </div>
-          </CardContent>
-        </Card>
-
-        {showButtons && ButtonsComponent && onEmailMe && onShare && (
-          <ButtonsComponent onEmailMe={onEmailMe} onShare={onShare} brandColor={brandColor} />
-        )}
-      </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Results Card */}
       <Card className="h-fit" style={{
