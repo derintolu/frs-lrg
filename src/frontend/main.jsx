@@ -16,6 +16,7 @@ import { PropertyValuation } from './portal/components/loan-officer-portal/Prope
 import { Settings } from './portal/components/loan-officer-portal/Settings';
 import { MarketingSubnav } from './portal/components/loan-officer-portal/MarketingSubnav';
 import { DataService } from './portal/utils/dataService';
+import { BrowserRouter } from 'react-router-dom';
 
 /**
  * Consolidated Frontend Entry Point
@@ -165,7 +166,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (component) {
       console.log(`[LRH] Mounting content-only page: ${contentType}`);
-      createRoot(root).render(component);
+      createRoot(root).render(
+        <BrowserRouter>
+          {component}
+        </BrowserRouter>
+      );
     }
   });
 
