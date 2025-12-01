@@ -205,6 +205,34 @@ class PostTypes {
 				'map_meta_cap' => true,
 			)
 		);
+
+		// LO Portal Pages
+		register_post_type(
+			'lo_portal_page',
+			array(
+				'labels'       => array(
+					'name'          => __( 'LO Portal Pages', 'lending-resource-hub' ),
+					'singular_name' => __( 'LO Portal Page', 'lending-resource-hub' ),
+					'menu_name'     => __( 'LO Portal', 'lending-resource-hub' ),
+					'add_new'       => __( 'Add LO Page', 'lending-resource-hub' ),
+					'edit_item'     => __( 'Edit LO Page', 'lending-resource-hub' ),
+				),
+				'public'          => true,
+				'show_ui'         => true,
+				'show_in_menu'    => 'lending-resource-hub',
+				'show_in_rest'    => true,
+				'supports'        => array( 'title', 'editor', 'custom-fields', 'page-attributes' ),
+				'hierarchical'    => true,
+				'has_archive'     => false,
+				'rewrite'         => array(
+					'slug'       => 'lo',
+					'with_front' => false,
+				),
+				'menu_icon'       => 'dashicons-businessman',
+				'capability_type' => 'page',
+				'map_meta_cap'    => true,
+			)
+		);
 	}
 
 	/**

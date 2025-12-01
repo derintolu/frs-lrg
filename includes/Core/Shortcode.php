@@ -38,6 +38,21 @@ class Shortcode {
 		add_shortcode( 'lrh_realtor_portal', array( $this, 'render_realtor_portal' ) );
 		add_shortcode( 'frs_mortgage_calculator', array( $this, 'render_mortgage_calculator' ) );
 
+		// Content-only shortcodes (without sidebar - for use in portal frames)
+		add_shortcode( 'lrh_content_welcome', array( $this, 'render_content_welcome' ) );
+		add_shortcode( 'lrh_content_profile', array( $this, 'render_content_profile' ) );
+		add_shortcode( 'lrh_content_marketing', array( $this, 'render_content_marketing' ) );
+		add_shortcode( 'lrh_content_calendar', array( $this, 'render_content_calendar' ) );
+		add_shortcode( 'lrh_content_landing_pages', array( $this, 'render_content_landing_pages' ) );
+		add_shortcode( 'lrh_content_email_campaigns', array( $this, 'render_content_email_campaigns' ) );
+		add_shortcode( 'lrh_content_local_seo', array( $this, 'render_content_local_seo' ) );
+		add_shortcode( 'lrh_content_brand_guide', array( $this, 'render_content_brand_guide' ) );
+		add_shortcode( 'lrh_content_orders', array( $this, 'render_content_orders' ) );
+		add_shortcode( 'lrh_content_lead_tracking', array( $this, 'render_content_lead_tracking' ) );
+		add_shortcode( 'lrh_content_tools', array( $this, 'render_content_tools' ) );
+		add_shortcode( 'lrh_content_settings', array( $this, 'render_content_settings' ) );
+		add_shortcode( 'lrh_content_notifications', array( $this, 'render_content_notifications' ) );
+
 		// Legacy shortcode from old plugin (backward compatibility)
 		add_shortcode( 'frs_partnership_portal', array( $this, 'render_legacy_portal' ) );
 	}
@@ -250,6 +265,77 @@ class Shortcode {
 
 		// Return root element for React to mount
 		return '<div id="mortgage-calculator" ' . implode( ' ', $data_attrs ) . '></div>';
+	}
+
+	/**
+	 * Content-only shortcode renderers
+	 * These render just the page content without the portal sidebar
+	 * For use in portal frames that provide their own sidebar
+	 */
+
+	public function render_content_welcome( $atts ) {
+		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_welcome_portal_assets();
+		return '<div id="lrh-welcome-portal-root" data-content-only="true"></div>';
+	}
+
+	public function render_content_profile( $atts ) {
+		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_portal_content_assets( 'profile' );
+		return '<div id="lrh-content-profile-root" data-lrh-content="profile"></div>';
+	}
+
+	public function render_content_marketing( $atts ) {
+		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_portal_content_assets( 'marketing' );
+		return '<div id="lrh-content-marketing-root" data-lrh-content="marketing"></div>';
+	}
+
+	public function render_content_calendar( $atts ) {
+		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_portal_content_assets( 'calendar' );
+		return '<div id="lrh-content-calendar-root" data-lrh-content="calendar"></div>';
+	}
+
+	public function render_content_landing_pages( $atts ) {
+		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_portal_content_assets( 'landing-pages' );
+		return '<div id="lrh-content-landing-pages-root" data-lrh-content="landing-pages"></div>';
+	}
+
+	public function render_content_email_campaigns( $atts ) {
+		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_portal_content_assets( 'email-campaigns' );
+		return '<div id="lrh-content-email-campaigns-root" data-lrh-content="email-campaigns"></div>';
+	}
+
+	public function render_content_local_seo( $atts ) {
+		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_portal_content_assets( 'local-seo' );
+		return '<div id="lrh-content-local-seo-root" data-lrh-content="local-seo"></div>';
+	}
+
+	public function render_content_brand_guide( $atts ) {
+		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_portal_content_assets( 'brand-guide' );
+		return '<div id="lrh-content-brand-guide-root" data-lrh-content="brand-guide"></div>';
+	}
+
+	public function render_content_orders( $atts ) {
+		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_portal_content_assets( 'orders' );
+		return '<div id="lrh-content-orders-root" data-lrh-content="orders"></div>';
+	}
+
+	public function render_content_lead_tracking( $atts ) {
+		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_portal_content_assets( 'lead-tracking' );
+		return '<div id="lrh-content-lead-tracking-root" data-lrh-content="lead-tracking"></div>';
+	}
+
+	public function render_content_tools( $atts ) {
+		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_portal_content_assets( 'tools' );
+		return '<div id="lrh-content-tools-root" data-lrh-content="tools"></div>';
+	}
+
+	public function render_content_settings( $atts ) {
+		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_portal_content_assets( 'settings' );
+		return '<div id="lrh-content-settings-root" data-lrh-content="settings"></div>';
+	}
+
+	public function render_content_notifications( $atts ) {
+		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_portal_content_assets( 'notifications' );
+		return '<div id="lrh-content-notifications-root" data-lrh-content="notifications"></div>';
 	}
 
 }
