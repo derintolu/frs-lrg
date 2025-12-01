@@ -12,6 +12,7 @@ import { MarketingOrders } from './components/loan-officer-portal/MarketingOrder
 import { MortgageCalculator } from './components/loan-officer-portal/MortgageCalculator';
 import { PropertyValuation } from './components/loan-officer-portal/PropertyValuation';
 import { Settings } from './components/loan-officer-portal/Settings';
+import { MarketingSubnav } from './components/loan-officer-portal/MarketingSubnav';
 import { DataService } from './utils/dataService';
 import "./index.css";
 
@@ -124,6 +125,27 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (component) {
       console.log(`Mounting content-only page: ${contentType}`);
+      createRoot(root as HTMLElement).render(component);
+    }
+  });
+
+  // Mount subnav panels
+  const subnavRoots = document.querySelectorAll('[data-lrh-subnav]');
+  subnavRoots.forEach((root) => {
+    const subnavType = root.getAttribute('data-lrh-subnav');
+    let component = null;
+
+    switch (subnavType) {
+      case 'marketing':
+        component = <MarketingSubnav />;
+        break;
+      default:
+        console.warn(`Unknown subnav type: ${subnavType}`);
+        return;
+    }
+
+    if (component) {
+      console.log(`Mounting subnav: ${subnavType}`);
       createRoot(root as HTMLElement).render(component);
     }
   });

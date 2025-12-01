@@ -59,6 +59,9 @@ class Shortcode {
 		add_shortcode( 'lrh_brand_guide_card', array( $this, 'render_brand_guide_card' ) );
 		add_shortcode( 'lrh_print_social_media_card', array( $this, 'render_print_social_media_card' ) );
 
+		// Subnavigation panels
+		add_shortcode( 'lrh_marketing_subnav', array( $this, 'render_marketing_subnav' ) );
+
 		// Individual page shortcodes (full pages from portal routes)
 		add_shortcode( 'lrh_marketing_overview', array( $this, 'render_marketing_overview_page' ) );
 		add_shortcode( 'lrh_my_profile', array( $this, 'render_my_profile_page' ) );
@@ -444,6 +447,14 @@ class Shortcode {
 	public function render_settings_page( $atts ) {
 		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_portal_assets_public();
 		return '<div id="lrh-settings-root" data-lrh-page="settings"></div>';
+	}
+
+	/**
+	 * Render marketing subnavigation panel
+	 */
+	public function render_marketing_subnav( $atts ) {
+		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_portal_assets_public();
+		return '<div id="lrh-marketing-subnav-root" data-lrh-subnav="marketing"></div>';
 	}
 
 }

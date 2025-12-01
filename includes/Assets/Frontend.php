@@ -237,7 +237,21 @@ class Frontend {
 		if ( $post && is_object( $post ) && isset( $post->post_content ) ) {
 			if ( has_shortcode( $post->post_content, 'lrh_portal' ) ||
 				has_shortcode( $post->post_content, 'frs_partnership_portal' ) ||
-				has_shortcode( $post->post_content, 'lrh_portal_sidebar' ) ) {
+				has_shortcode( $post->post_content, 'lrh_portal_sidebar' ) ||
+				has_shortcode( $post->post_content, 'lrh_content_marketing' ) ||
+				has_shortcode( $post->post_content, 'lrh_content_profile' ) ||
+				has_shortcode( $post->post_content, 'lrh_content_calendar' ) ||
+				has_shortcode( $post->post_content, 'lrh_content_landing_pages' ) ||
+				has_shortcode( $post->post_content, 'lrh_content_email_campaigns' ) ||
+				has_shortcode( $post->post_content, 'lrh_content_local_seo' ) ||
+				has_shortcode( $post->post_content, 'lrh_content_brand_guide' ) ||
+				has_shortcode( $post->post_content, 'lrh_content_orders' ) ||
+				has_shortcode( $post->post_content, 'lrh_content_lead_tracking' ) ||
+				has_shortcode( $post->post_content, 'lrh_content_tools' ) ||
+				has_shortcode( $post->post_content, 'lrh_content_settings' ) ||
+				has_shortcode( $post->post_content, 'lrh_content_notifications' ) ||
+				has_shortcode( $post->post_content, 'lrh_content_welcome' ) ||
+				has_shortcode( $post->post_content, 'lrh_marketing_subnav' ) ) {
 				return true;
 			}
 		}
