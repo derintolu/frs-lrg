@@ -1,5 +1,18 @@
 import { createRoot } from "react-dom/client";
 import LoanOfficerPortal from "./LoanOfficerPortal.tsx";
+import { MyProfile } from './components/loan-officer-portal/MyProfile';
+import { MarketingOverview } from './components/loan-officer-portal/MarketingOverview';
+import { LeadTracking } from './components/loan-officer-portal/LeadTracking';
+import { FluentBookingCalendar } from './components/loan-officer-portal/FluentBookingCalendar';
+import { LandingPagesMarketing } from './components/loan-officer-portal/LandingPagesMarketing';
+import { EmailCampaignsMarketing } from './components/loan-officer-portal/EmailCampaignsMarketing';
+import { LocalSEOMarketing } from './components/loan-officer-portal/LocalSEOMarketing';
+import { BrandShowcase } from './components/loan-officer-portal/BrandShowcase';
+import { MarketingOrders } from './components/loan-officer-portal/MarketingOrders';
+import { MortgageCalculator } from './components/loan-officer-portal/MortgageCalculator';
+import { PropertyValuation } from './components/loan-officer-portal/PropertyValuation';
+import { Settings } from './components/loan-officer-portal/Settings';
+import { DataService } from './utils/dataService';
 import "./index.css";
 
 // WordPress integration - look for the portal root element
@@ -48,3 +61,70 @@ if (partnershipPortalRoot) {
 
   console.log('Loan Officer Portal mounted successfully');
 }
+
+// Mount content-only pages (uses [lrh_content_*] shortcodes)
+document.addEventListener('DOMContentLoaded', async () => {
+  const contentRoots = document.querySelectorAll('[data-lrh-content]');
+
+  if (contentRoots.length === 0) return;
+
+  // Load current user data
+  let currentUser;
+  try {
+    currentUser = await DataService.getCurrentUser();
+  } catch (err) {
+    console.error('Failed to load user for content pages:', err);
+    return;
+  }
+
+  const userId = currentUser.id;
+
+  contentRoots.forEach((root) => {
+    const contentType = root.getAttribute('data-lrh-content');
+    let component = null;
+
+    switch (contentType) {
+      case 'profile':
+        component = <MyProfile userId={userId} autoEdit={false} />;
+        break;
+      case 'marketing':
+        component = <MarketingOverview userId={userId} />;
+        break;
+      case 'calendar':
+        component = <FluentBookingCalendar userId={userId} />;
+        break;
+      case 'landing-pages':
+        component = <LandingPagesMarketing userId={userId} currentUser={currentUser} />;
+        break;
+      case 'email-campaigns':
+        component = <EmailCampaignsMarketing userId={userId} currentUser={currentUser} />;
+        break;
+      case 'local-seo':
+        component = <LocalSEOMarketing userId={userId} currentUser={currentUser} />;
+        break;
+      case 'brand-guide':
+        component = <BrandShowcase />;
+        break;
+      case 'orders':
+        component = <MarketingOrders userId={userId} currentUser={currentUser} />;
+        break;
+      case 'lead-tracking':
+        component = <LeadTracking userId={userId} />;
+        break;
+      case 'tools':
+        component = <MortgageCalculator />;
+        break;
+      case 'settings':
+        component = <Settings userId={userId} />;
+        break;
+      default:
+        console.warn(`Unknown content type: ${contentType}`);
+        return;
+    }
+
+    if (component) {
+      console.log(`Mounting content-only page: ${contentType}`);
+      createRoot(root as HTMLElement).render(component);
+    }
+  });
+});
