@@ -268,6 +268,32 @@ class DataService {
   static async getCurrentUser(): Promise<User> {
     const wpData = this.getWpData();
 
+    // Check if we have basic WordPress user data first
+    if (!wpData.currentUser || !wpData.currentUser.id || wpData.currentUser.id === 0) {
+      // Use basic WordPress data from config
+      if (wpData.userId && wpData.userId !== 0) {
+        const userRoles = wpData.currentUser?.roles || [];
+        let role: 'loan_officer' | 'realtor' = 'loan_officer';
+
+        if (userRoles.includes('realtor') || userRoles.includes('realtor_partner')) {
+          role = 'realtor';
+        }
+
+        return {
+          id: wpData.userId.toString(),
+          name: wpData.userName || 'User',
+          email: wpData.userEmail || '',
+          avatar: wpData.userAvatar || '',
+          role: role,
+          status: 'active',
+          createdAt: new Date().toISOString(),
+          company: role === 'realtor' ? 'Real Estate Agency' : '21st Century Lending',
+          location: 'Denver, Colorado'
+        };
+      }
+      throw new Error('No user data available');
+    }
+
     try {
       // First, try to get profile from frs-users API
       const profileUrl = `/wp-json/frs-users/v1/profiles/user/me`;

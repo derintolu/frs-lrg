@@ -27,7 +27,10 @@
     "change-text-domain": "grunt change-text-domain --force",
     "i18n": "wp i18n make-pot . languages/wordpress-plugin-boilerplate.pot --domain=wordpress-plugin-boilerplate --exclude='*/js/*,build'",
     "block:start": "wp-scripts start --webpack-src-dir=src/blocks --output-path=assets/blocks",
-    "block:build": "wp-scripts build --webpack-src-dir=src/blocks --output-path=assets/blocks"
+    "block:build": "wp-scripts build --webpack-src-dir=src/blocks --output-path=assets/blocks",
+    "lint": "eslint src --ext .js,.jsx,.ts,.tsx",
+    "lint:fix": "eslint src --ext .js,.jsx,.ts,.tsx --fix",
+    "type-check": "tsc --noEmit"
   },
   "devDependencies": {
     "@ianvs/prettier-plugin-sort-imports": "^4.1.1",
@@ -45,11 +48,15 @@
     "@types/node": "^20.10.5",
     "@types/react": "^18.2.22",
     "@types/react-dom": "^18.0.6",
+    "@typescript-eslint/eslint-plugin": "^8.48.0",
+    "@typescript-eslint/parser": "^8.48.0",
     "@vitejs/plugin-react": "^4.1.0",
     "@wordpress/scripts": "^30.5.1",
     "autoprefixer": "^10.4.20",
     "concurrently": "^9.0.1",
-    "eslint": "^8.52.0",
+    "eslint": "^8.57.1",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-storybook": "^0.6.15",
     "grunt": "^1.6.1",
     "grunt-checktextdomain": "^1.0.1",

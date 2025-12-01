@@ -1,4 +1,4 @@
-import { createHashRouter } from 'react-router-dom';
+import { createBrowserRouter } from 'react-router-dom';
 import { DashboardLayout } from './components/loan-officer-portal/DashboardLayout';
 import { MyProfile } from './components/loan-officer-portal/MyProfile';
 import { MarketingOverview } from './components/loan-officer-portal/MarketingOverview';
@@ -23,18 +23,7 @@ interface RouteConfig {
 export const createRouter = (config: RouteConfig) => {
   const { currentUser, userId, userRole } = config;
 
-  // Check if we're in WordPress Customizer - skip URL manipulation if so
-  const wpData = (window as any).frsPortalConfig;
-  const isCustomizer = wpData?.isCustomizer || false;
-
-  // Ensure the current URL has a trailing slash before the hash
-  // Skip this in the WordPress Customizer to prevent breaking the customizer
-  if (!isCustomizer && window.location.pathname && !window.location.pathname.endsWith('/')) {
-    const newUrl = window.location.pathname + '/' + window.location.hash;
-    window.history.replaceState(null, '', newUrl);
-  }
-
-  return createHashRouter([
+  return createBrowserRouter([
     {
       path: '/',
       element: <DashboardLayout currentUser={currentUser} />,
