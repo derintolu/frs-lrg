@@ -150,82 +150,6 @@ class Api {
 			)
 		);
 
-		// Get group members with pagination
-		register_rest_route(
-			LRH_ROUTE_PREFIX,
-			'/partner-companies/by-slug/(?P<slug>[a-zA-Z0-9-]+)/members',
-			array(
-				'methods'             => 'GET',
-				'callback'            => array( $this, 'get_group_members' ),
-				'permission_callback' => array( $this, 'check_loan_officer_permission' ),
-			)
-		);
-
-		// Get group activity
-		register_rest_route(
-			LRH_ROUTE_PREFIX,
-			'/partner-companies/by-slug/(?P<slug>[a-zA-Z0-9-]+)/activity',
-			array(
-				'methods'             => 'GET',
-				'callback'            => array( $this, 'get_group_activity' ),
-				'permission_callback' => array( $this, 'check_loan_officer_permission' ),
-			)
-		);
-
-		// Send group invite
-		register_rest_route(
-			LRH_ROUTE_PREFIX,
-			'/partner-companies/by-slug/(?P<slug>[a-zA-Z0-9-]+)/invite',
-			array(
-				'methods'             => 'POST',
-				'callback'            => array( $this, 'send_group_invite' ),
-				'permission_callback' => array( $this, 'check_group_admin_permission' ),
-			)
-		);
-
-		// Remove member from group
-		register_rest_route(
-			LRH_ROUTE_PREFIX,
-			'/partner-companies/by-slug/(?P<slug>[a-zA-Z0-9-]+)/members/(?P<user_id>\d+)',
-			array(
-				'methods'             => 'DELETE',
-				'callback'            => array( $this, 'remove_group_member' ),
-				'permission_callback' => array( $this, 'check_group_admin_permission' ),
-			)
-		);
-
-		// Change member role
-		register_rest_route(
-			LRH_ROUTE_PREFIX,
-			'/partner-companies/by-slug/(?P<slug>[a-zA-Z0-9-]+)/members/(?P<user_id>\d+)/role',
-			array(
-				'methods'             => 'PUT',
-				'callback'            => array( $this, 'change_member_role' ),
-				'permission_callback' => array( $this, 'check_group_admin_permission' ),
-			)
-		);
-
-		// Get pending invites
-		register_rest_route(
-			LRH_ROUTE_PREFIX,
-			'/partner-companies/by-slug/(?P<slug>[a-zA-Z0-9-]+)/invites',
-			array(
-				'methods'             => 'GET',
-				'callback'            => array( $this, 'get_group_invites' ),
-				'permission_callback' => array( $this, 'check_group_admin_permission' ),
-			)
-		);
-
-		// Post activity to group
-		register_rest_route(
-			LRH_ROUTE_PREFIX,
-			'/partner-companies/by-slug/(?P<slug>[a-zA-Z0-9-]+)/activity',
-			array(
-				'methods'             => 'POST',
-				'callback'            => array( $this, 'post_group_activity' ),
-				'permission_callback' => array( $this, 'check_loan_officer_permission' ),
-			)
-		);
 	}
 
 	/**
@@ -277,70 +201,6 @@ class Api {
 		return true;
 	}
 
-	/**
-	 * Check if user is a member of the group specified by slug.
-	 *
-	 * @param WP_REST_Request $request Request object.
-	 * @return bool|WP_Error
-	 */
-	public function check_group_member_permission( $request ) {
-		if ( ! is_user_logged_in() ) {
-			return new WP_Error( 'rest_forbidden', __( 'You must be logged in.', 'lending-resource-hub' ), array( 'status' => 401 ) );
-		}
-
-		$slug    = $request->get_param( 'slug' );
-		$user_id = get_current_user_id();
-
-		// Admin has access to all
-		if ( current_user_can( 'manage_options' ) ) {
-			return true;
-		}
-
-		// Get group by slug
-		$group = groups_get_group_by(
-			array(
-				'slug' => $slug,
-			)
-		);
-
-		if ( ! $group || ! $group->id ) {
-			return new WP_Error( 'group_not_found', __( 'Group not found.', 'lending-resource-hub' ), array( 'status' => 404 ) );
-		}
-
-		// Check if user is a member of this group
-		if ( ! groups_is_user_member( $user_id, $group->id ) ) {
-			return new WP_Error( 'rest_forbidden', __( 'You are not a member of this partner company.', 'lending-resource-hub' ), array( 'status' => 403 ) );
-		}
-
-		return true;
-	}
-
-	/**
-	 * Check if user is an admin or moderator of the group specified by slug.
-	 *
-	 * @param WP_REST_Request $request Request object.
-	 * @return bool|WP_Error
-	 */
-	public function check_group_admin_permission( $request ) {
-		$permission_check = $this->check_loan_officer_permission();
-		if ( is_wp_error( $permission_check ) ) {
-			return $permission_check;
-		}
-
-		$slug  = $request->get_param( 'slug' );
-		$group = bp_get_group_by( 'slug', $slug );
-
-		if ( ! $group || ! $group->id ) {
-			return new \WP_Error( 'group_not_found', __( 'Group not found.', 'lending-resource-hub' ), array( 'status' => 404 ) );
-		}
-
-		$user_id = get_current_user_id();
-		if ( ! groups_is_user_admin( $user_id, $group->id ) && ! groups_is_user_mod( $user_id, $group->id ) ) {
-			return new \WP_Error( 'rest_forbidden', __( 'You do not have permission to manage this group.', 'lending-resource-hub' ), array( 'status' => 403 ) );
-		}
-
-		return true;
-	}
 
 	/**
 	 * Get all partner companies for current loan officer.
@@ -394,7 +254,6 @@ class Api {
 	public function create_partner_company( $request ) {
 		$user_id      = get_current_user_id();
 		$company_name = sanitize_text_field( $request->get_param( 'company_name' ) );
-		$group_id     = intval( $request->get_param( 'buddypress_group_id' ) );
 
 		if ( empty( $company_name ) ) {
 			return new WP_Error( 'missing_company_name', __( 'Company name is required.', 'lending-resource-hub' ), array( 'status' => 400 ) );
@@ -422,11 +281,6 @@ class Api {
 		// Set meta fields
 		carbon_set_post_meta( $post_id, 'pp_company_name', $company_name );
 		carbon_set_post_meta( $post_id, 'pp_loan_officers', array( array( 'id' => $user_id, 'type' => 'user' ) ) );
-
-		if ( $group_id ) {
-			carbon_set_post_meta( $post_id, 'pp_buddypress_group_id', $group_id );
-		}
-
 		carbon_set_post_meta( $post_id, '_pp_page_views', 0 );
 
 		return new WP_REST_Response(
@@ -471,14 +325,9 @@ class Api {
 	public function update_partner_company( $request ) {
 		$company_id   = $request->get_param( 'id' );
 		$company_name = $request->get_param( 'company_name' );
-		$group_id     = $request->get_param( 'buddypress_group_id' );
 
 		if ( $company_name ) {
 			carbon_set_post_meta( $company_id, 'pp_company_name', sanitize_text_field( $company_name ) );
-		}
-
-		if ( $group_id !== null ) {
-			carbon_set_post_meta( $company_id, 'pp_buddypress_group_id', intval( $group_id ) );
 		}
 
 		return new WP_REST_Response(
@@ -516,118 +365,19 @@ class Api {
 	}
 
 	/**
-	 * Bulk add realtors to partner company.
-	 *
-	 * Expected format:
-	 * {
-	 *   "realtors": [
-	 *     {"email": "realtor@example.com", "first_name": "John", "last_name": "Doe"},
-	 *     ...
-	 *   ]
-	 * }
+	 * Get current user's partner companies.
 	 *
 	 * @param WP_REST_Request $request Request object.
-	 * @return WP_REST_Response|WP_Error
+	 * @return WP_REST_Response
 	 */
 	public function get_my_companies( $request ) {
-		$user_id = get_current_user_id();
-
-		if ( ! function_exists( 'groups_get_user_groups' ) ) {
-			return new WP_REST_Response(
-				array(
-					'success' => false,
-					'message' => __( 'BuddyPress Groups is not active.', 'lending-resource-hub' ),
-				),
-				500
-			);
-		}
-
-		// Get ALL partner-org groups (not just ones user is member of)
-		// All loan officers and leadership should see all partner companies
-		$all_groups = groups_get_groups(
-			array(
-				'type'     => 'alphabetical',
-				'per_page' => 999,
-			)
-		);
-
-		$companies = array();
-
-		foreach ( $all_groups['groups'] as $group ) {
-			// Check if this is a partner-org group
-			$group_type = bp_groups_get_group_type( $group->id );
-			if ( $group_type !== 'partner-org' ) {
-				continue;
-			}
-
-			$group_id = $group->id;
-
-			$group = groups_get_group( $group_id );
-			if ( ! $group || ! $group->id ) {
-				continue;
-			}
-
-			// Get user's role in the group (if they are a member)
-			$is_member = groups_is_user_member( $user_id, $group_id );
-			$is_admin  = groups_is_user_admin( $user_id, $group_id );
-			$is_mod    = groups_is_user_mod( $user_id, $group_id );
-
-			if ( ! $is_member ) {
-				$role = 'non-member';
-			} else {
-				$role = $is_admin ? 'admin' : ( $is_mod ? 'mod' : 'member' );
-			}
-
-			// Get branding
-			$branding = array(
-				'primary_color'   => groups_get_groupmeta( $group_id, 'pp_primary_color' ) ?: '#2563eb',
-				'secondary_color' => groups_get_groupmeta( $group_id, 'pp_secondary_color' ) ?: '#2dd4da',
-				'button_style'    => groups_get_groupmeta( $group_id, 'pp_button_style' ) ?: 'rounded',
-			);
-
-			// Get stats
-			$stats = array(
-				'activity_count' => 0, // TODO: Get actual activity count
-				'page_views'     => (int) groups_get_groupmeta( $group_id, '_pp_page_views' ) ?: 0,
-			);
-
-			// Get member count
-			$member_count = groups_get_total_member_count( $group_id );
-
-			$companies[] = array(
-				'id'           => $group->id,
-				'name'         => $group->name,
-				'description'  => $group->description,
-				'slug'         => $group->slug,
-				'avatar_urls'  => array(
-					'full'  => bp_core_fetch_avatar(
-						array(
-							'item_id' => $group_id,
-							'object'  => 'group',
-							'type'    => 'full',
-							'html'    => false,
-						)
-					),
-					'thumb' => bp_core_fetch_avatar(
-						array(
-							'item_id' => $group_id,
-							'object'  => 'group',
-							'type'    => 'thumb',
-							'html'    => false,
-						)
-					),
-				),
-				'member_count' => $member_count,
-				'user_role'    => $role,
-				'branding'     => $branding,
-				'stats'        => $stats,
-			);
-		}
-
+		// BuddyPress removed - return empty array
+		// TODO: Implement custom company management
 		return new WP_REST_Response(
 			array(
 				'success' => true,
-				'data'    => $companies,
+				'data'    => array(),
+				'message' => __( 'Partner company management moved to custom system.', 'lending-resource-hub' ),
 			),
 			200
 		);
@@ -640,100 +390,28 @@ class Api {
 	 * @return WP_REST_Response|WP_Error
 	 */
 	public function get_company_by_slug( $request ) {
-		$slug    = $request->get_param( 'slug' );
-		$user_id = get_current_user_id();
+		$slug = $request->get_param( 'slug' );
 
-		// Get group by slug using correct BuddyPress function
-		$group = bp_get_group_by( 'slug', $slug );
+		// Query for partner portal by slug
+		$args = array(
+			'post_type'   => 'frs_partner_portal',
+			'name'        => $slug,
+			'post_status' => 'publish',
+			'numberposts' => 1,
+		);
 
-		if ( ! $group || ! $group->id ) {
-			return new WP_Error( 'group_not_found', __( 'Group not found.', 'lending-resource-hub' ), array( 'status' => 404 ) );
+		$posts = get_posts( $args );
+
+		if ( empty( $posts ) ) {
+			return new WP_Error( 'company_not_found', __( 'Partner company not found.', 'lending-resource-hub' ), array( 'status' => 404 ) );
 		}
 
-		$group_id = $group->id;
-
-		// Check if this is a partner-org group
-		$group_type = bp_groups_get_group_type( $group_id );
-		if ( $group_type !== 'partner-org' ) {
-			return new WP_Error( 'invalid_group_type', __( 'This is not a partner company group.', 'lending-resource-hub' ), array( 'status' => 400 ) );
-		}
-
-		// Get user's role in the group
-		$is_admin = groups_is_user_admin( $user_id, $group_id );
-		$is_mod   = groups_is_user_mod( $user_id, $group_id );
-		$role     = $is_admin ? 'admin' : ( $is_mod ? 'mod' : 'member' );
-
-		// Get branding
-		$branding = array(
-			'primary_color'   => groups_get_groupmeta( $group_id, 'pp_primary_color' ) ?: '#2563eb',
-			'secondary_color' => groups_get_groupmeta( $group_id, 'pp_secondary_color' ) ?: '#2dd4da',
-			'button_style'    => groups_get_groupmeta( $group_id, 'pp_button_style' ) ?: 'rounded',
-		);
-
-		// Get stats
-		$stats = array(
-			'activity_count' => 0, // TODO: Get actual activity count
-			'page_views'     => (int) groups_get_groupmeta( $group_id, '_pp_page_views' ) ?: 0,
-		);
-
-		// Get member count
-		$member_count = groups_get_total_member_count( $group_id );
-
-		// Get members (first 10 for preview)
-		$members = groups_get_group_members(
-			array(
-				'group_id' => $group_id,
-				'per_page' => 10,
-				'page'     => 1,
-			)
-		);
-
-		$members_data = array();
-		if ( ! empty( $members['members'] ) ) {
-			foreach ( $members['members'] as $member ) {
-				$members_data[] = array(
-					'id'         => $member->ID,
-					'name'       => $member->display_name,
-					'avatar_url' => get_avatar_url( $member->ID ),
-					'role'       => groups_is_user_admin( $member->ID, $group_id ) ? 'admin' : ( groups_is_user_mod( $member->ID, $group_id ) ? 'mod' : 'member' ),
-				);
-			}
-		}
-
-		$company_data = array(
-			'id'           => $group->id,
-			'name'         => $group->name,
-			'description'  => $group->description,
-			'slug'         => $group->slug,
-			'avatar_urls'  => array(
-				'full'  => bp_core_fetch_avatar(
-					array(
-						'item_id' => $group_id,
-						'object'  => 'group',
-						'type'    => 'full',
-						'html'    => false,
-					)
-				),
-				'thumb' => bp_core_fetch_avatar(
-					array(
-						'item_id' => $group_id,
-						'object'  => 'group',
-						'type'    => 'thumb',
-						'html'    => false,
-					)
-				),
-			),
-			'member_count' => $member_count,
-			'user_role'    => $role,
-			'branding'     => $branding,
-			'stats'        => $stats,
-			'members'      => $members_data,
-		);
+		$post = $posts[0];
 
 		return new WP_REST_Response(
 			array(
 				'success' => true,
-				'data'    => $company_data,
+				'data'    => $this->format_company_data( $post ),
 			),
 			200
 		);
@@ -794,12 +472,6 @@ class Api {
 			} else {
 				$results['updated']++;
 			}
-
-			// TODO: Add user to BuddyPress group if group_id exists
-			$group_id = carbon_get_post_meta( $company_id, 'pp_buddypress_group_id' );
-			if ( $group_id && function_exists( 'groups_join_group' ) ) {
-				groups_join_group( $group_id, $user->ID );
-			}
 		}
 
 		return new WP_REST_Response(
@@ -851,314 +523,6 @@ class Api {
 		);
 	}
 
-	/**
-	 * Get group members.
-	 *
-	 * @param WP_REST_Request $request Request object.
-	 * @return WP_REST_Response|WP_Error
-	 */
-	public function get_group_members( $request ) {
-		$slug  = $request->get_param( 'slug' );
-		$page  = $request->get_param( 'page' ) ?? 1;
-		$per_page = $request->get_param( 'per_page' ) ?? 20;
-
-		$group = bp_get_group_by( 'slug', $slug );
-
-		if ( ! $group || ! $group->id ) {
-			return new \WP_Error( 'group_not_found', __( 'Group not found.', 'lending-resource-hub' ), array( 'status' => 404 ) );
-		}
-
-		$members = groups_get_group_members(
-			array(
-				'group_id' => $group->id,
-				'page'     => $page,
-				'per_page' => $per_page,
-			)
-		);
-
-		$formatted_members = array();
-		if ( ! empty( $members['members'] ) ) {
-			foreach ( $members['members'] as $member ) {
-				$formatted_members[] = array(
-					'id'         => $member->ID,
-					'name'       => $member->display_name,
-					'avatar_url' => get_avatar_url( $member->ID ),
-					'role'       => groups_is_user_admin( $member->ID, $group->id ) ? 'admin' : ( groups_is_user_mod( $member->ID, $group->id ) ? 'mod' : 'member' ),
-				);
-			}
-		}
-
-		return new \WP_REST_Response(
-			array(
-				'success' => true,
-				'data'    => $formatted_members,
-				'total'   => $members['count'],
-			),
-			200
-		);
-	}
-
-	/**
-	 * Get group activity.
-	 *
-	 * @param WP_REST_Request $request Request object.
-	 * @return WP_REST_Response|WP_Error
-	 */
-	public function get_group_activity( $request ) {
-		$slug  = $request->get_param( 'slug' );
-		$page  = $request->get_param( 'page' ) ?? 1;
-		$per_page = $request->get_param( 'per_page' ) ?? 20;
-
-		$group = bp_get_group_by( 'slug', $slug );
-
-		if ( ! $group || ! $group->id ) {
-			return new \WP_Error( 'group_not_found', __( 'Group not found.', 'lending-resource-hub' ), array( 'status' => 404 ) );
-		}
-
-		$activities = bp_activity_get(
-			array(
-				'object'      => 'groups',
-				'primary_id'  => $group->id,
-				'page'        => $page,
-				'per_page'    => $per_page,
-			)
-		);
-
-		$formatted_activities = array();
-		if ( ! empty( $activities['activities'] ) ) {
-			foreach ( $activities['activities'] as $activity ) {
-				$formatted_activities[] = array(
-					'id'         => $activity->id,
-					'user_id'    => $activity->user_id,
-					'user_name'  => bp_core_get_user_displayname( $activity->user_id ),
-					'avatar_url' => get_avatar_url( $activity->user_id ),
-					'content'    => $activity->content,
-					'date'       => $activity->date_recorded,
-					'type'       => $activity->type,
-				);
-			}
-		}
-
-		return new \WP_REST_Response(
-			array(
-				'success' => true,
-				'data'    => $formatted_activities,
-				'total'   => $activities['total'],
-			),
-			200
-		);
-	}
-
-	/**
-	 * Send group invite.
-	 *
-	 * @param WP_REST_Request $request Request object.
-	 * @return WP_REST_Response|WP_Error
-	 */
-	public function send_group_invite( $request ) {
-		$slug    = $request->get_param( 'slug' );
-		$user_id = $request->get_param( 'user_id' );
-		$message = $request->get_param( 'message' ) ?? '';
-
-		$group = bp_get_group_by( 'slug', $slug );
-
-		if ( ! $group || ! $group->id ) {
-			return new \WP_Error( 'group_not_found', __( 'Group not found.', 'lending-resource-hub' ), array( 'status' => 404 ) );
-		}
-
-		if ( ! $user_id ) {
-			return new \WP_Error( 'missing_user_id', __( 'User ID is required.', 'lending-resource-hub' ), array( 'status' => 400 ) );
-		}
-
-		// Check if user already a member
-		if ( groups_is_user_member( $user_id, $group->id ) ) {
-			return new \WP_Error( 'already_member', __( 'User is already a member.', 'lending-resource-hub' ), array( 'status' => 400 ) );
-		}
-
-		$inviter_id = get_current_user_id();
-		$invite     = groups_invite_user(
-			array(
-				'user_id'       => $user_id,
-				'group_id'      => $group->id,
-				'inviter_id'    => $inviter_id,
-				'send_invite'   => 1,
-			)
-		);
-
-		if ( ! $invite ) {
-			return new \WP_Error( 'invite_failed', __( 'Failed to send invite.', 'lending-resource-hub' ), array( 'status' => 500 ) );
-		}
-
-		return new \WP_REST_Response(
-			array(
-				'success' => true,
-				'message' => __( 'Invite sent successfully.', 'lending-resource-hub' ),
-			),
-			200
-		);
-	}
-
-	/**
-	 * Remove group member.
-	 *
-	 * @param WP_REST_Request $request Request object.
-	 * @return WP_REST_Response|WP_Error
-	 */
-	public function remove_group_member( $request ) {
-		$slug    = $request->get_param( 'slug' );
-		$user_id = $request->get_param( 'user_id' );
-
-		$group = bp_get_group_by( 'slug', $slug );
-
-		if ( ! $group || ! $group->id ) {
-			return new \WP_Error( 'group_not_found', __( 'Group not found.', 'lending-resource-hub' ), array( 'status' => 404 ) );
-		}
-
-		if ( ! groups_is_user_member( $user_id, $group->id ) ) {
-			return new \WP_Error( 'not_member', __( 'User is not a member.', 'lending-resource-hub' ), array( 'status' => 400 ) );
-		}
-
-		$removed = groups_remove_member( $user_id, $group->id );
-
-		if ( ! $removed ) {
-			return new \WP_Error( 'remove_failed', __( 'Failed to remove member.', 'lending-resource-hub' ), array( 'status' => 500 ) );
-		}
-
-		return new \WP_REST_Response(
-			array(
-				'success' => true,
-				'message' => __( 'Member removed successfully.', 'lending-resource-hub' ),
-			),
-			200
-		);
-	}
-
-	/**
-	 * Change member role.
-	 *
-	 * @param WP_REST_Request $request Request object.
-	 * @return WP_REST_Response|WP_Error
-	 */
-	public function change_member_role( $request ) {
-		$slug    = $request->get_param( 'slug' );
-		$user_id = $request->get_param( 'user_id' );
-		$role    = $request->get_param( 'role' );
-
-		$group = bp_get_group_by( 'slug', $slug );
-
-		if ( ! $group || ! $group->id ) {
-			return new \WP_Error( 'group_not_found', __( 'Group not found.', 'lending-resource-hub' ), array( 'status' => 404 ) );
-		}
-
-		if ( ! in_array( $role, array( 'admin', 'mod', 'member' ) ) ) {
-			return new \WP_Error( 'invalid_role', __( 'Invalid role.', 'lending-resource-hub' ), array( 'status' => 400 ) );
-		}
-
-		$member = new \BP_Groups_Member( $user_id, $group->id );
-
-		if ( ! $member->id ) {
-			return new \WP_Error( 'not_member', __( 'User is not a member.', 'lending-resource-hub' ), array( 'status' => 400 ) );
-		}
-
-		if ( $role === 'admin' ) {
-			$member->promote( 'admin' );
-		} elseif ( $role === 'mod' ) {
-			$member->promote( 'mod' );
-		} else {
-			$member->demote();
-		}
-
-		return new \WP_REST_Response(
-			array(
-				'success' => true,
-				'message' => __( 'Member role updated successfully.', 'lending-resource-hub' ),
-			),
-			200
-		);
-	}
-
-	/**
-	 * Get group invites.
-	 *
-	 * @param WP_REST_Request $request Request object.
-	 * @return WP_REST_Response|WP_Error
-	 */
-	public function get_group_invites( $request ) {
-		$slug  = $request->get_param( 'slug' );
-
-		$group = bp_get_group_by( 'slug', $slug );
-
-		if ( ! $group || ! $group->id ) {
-			return new \WP_Error( 'group_not_found', __( 'Group not found.', 'lending-resource-hub' ), array( 'status' => 404 ) );
-		}
-
-		$invites = groups_get_invites_for_group( get_current_user_id(), $group->id );
-
-		$formatted_invites = array();
-		if ( ! empty( $invites ) ) {
-			foreach ( $invites as $invite ) {
-				$formatted_invites[] = array(
-					'id'          => $invite->id,
-					'user_id'     => $invite->user_id,
-					'user_name'   => bp_core_get_user_displayname( $invite->user_id ),
-					'avatar_url'  => get_avatar_url( $invite->user_id ),
-					'invited_by'  => bp_core_get_user_displayname( $invite->inviter_id ),
-					'date'        => $invite->date_modified,
-				);
-			}
-		}
-
-		return new \WP_REST_Response(
-			array(
-				'success' => true,
-				'data'    => $formatted_invites,
-			),
-			200
-		);
-	}
-
-	/**
-	 * Post activity to group.
-	 *
-	 * @param WP_REST_Request $request Request object.
-	 * @return WP_REST_Response|WP_Error
-	 */
-	public function post_group_activity( $request ) {
-		$slug    = $request->get_param( 'slug' );
-		$content = $request->get_param( 'content' );
-
-		$group = bp_get_group_by( 'slug', $slug );
-
-		if ( ! $group || ! $group->id ) {
-			return new \WP_Error( 'group_not_found', __( 'Group not found.', 'lending-resource-hub' ), array( 'status' => 404 ) );
-		}
-
-		if ( empty( $content ) ) {
-			return new \WP_Error( 'empty_content', __( 'Activity content is required.', 'lending-resource-hub' ), array( 'status' => 400 ) );
-		}
-
-		$activity_id = groups_record_activity(
-			array(
-				'user_id'   => get_current_user_id(),
-				'group_id'  => $group->id,
-				'type'      => 'activity_update',
-				'content'   => wp_kses_post( $content ),
-			)
-		);
-
-		if ( ! $activity_id ) {
-			return new \WP_Error( 'activity_failed', __( 'Failed to post activity.', 'lending-resource-hub' ), array( 'status' => 500 ) );
-		}
-
-		return new \WP_REST_Response(
-			array(
-				'success' => true,
-				'message' => __( 'Activity posted successfully.', 'lending-resource-hub' ),
-				'data'    => array( 'activity_id' => $activity_id ),
-			),
-			200
-		);
-	}
 
 	/**
 	 * Format partner company data for API response.
@@ -1168,14 +532,6 @@ class Api {
 	 */
 	private function format_company_data( $post ) {
 		$loan_officers = carbon_get_post_meta( $post->ID, 'pp_loan_officers' );
-		$group_id      = carbon_get_post_meta( $post->ID, 'pp_buddypress_group_id' );
-
-		// Get group member count
-		$member_count = 0;
-		if ( $group_id && function_exists( 'groups_get_group' ) ) {
-			$group        = groups_get_group( $group_id );
-			$member_count = $group->total_member_count ?? 0;
-		}
 
 		return array(
 			'id'                  => $post->ID,
@@ -1184,8 +540,7 @@ class Api {
 			'slug'                => $post->post_name,
 			'url'                 => get_permalink( $post->ID ),
 			'edit_url'            => get_edit_post_link( $post->ID, 'raw' ),
-			'buddypress_group_id' => $group_id,
-			'member_count'        => $member_count,
+			'member_count'        => 0, // TODO: Implement custom member management
 			'loan_officers'       => $loan_officers,
 			'branding'            => array(
 				'primary_color'       => carbon_get_post_meta( $post->ID, 'pp_primary_color' ),
