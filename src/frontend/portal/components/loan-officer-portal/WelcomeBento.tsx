@@ -39,13 +39,8 @@ interface DashboardStats {
 }
 
 export function WelcomeBento({ userId }: WelcomeBentoProps) {
-  // Try to get navigate, but make it optional for use outside router
-  let navigate;
-  try {
-    navigate = useNavigate();
-  } catch (e) {
-    navigate = () => {}; // No-op if not in router context
-  }
+  // useNavigate requires router context - entry points must wrap this component in BrowserRouter
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [profileData, setProfileData] = useState({

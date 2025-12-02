@@ -1,7 +1,8 @@
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import LoanOfficerPortal from "./portal/LoanOfficerPortal";
-import { PortalSidebarApp } from "./portal/components/PortalSidebarApp";
+import { PortalSidebarLayout } from "./portal/components/PortalSidebarLayout";
+import { ProfileEditProvider } from "./portal/contexts/ProfileEditContext";
 import { MyProfile } from './portal/components/loan-officer-portal/MyProfile';
 import { MarketingOverview } from './portal/components/loan-officer-portal/MarketingOverview';
 import { LeadTracking } from './portal/components/loan-officer-portal/LeadTracking';
@@ -77,24 +78,28 @@ if (portalRoot) {
 const sidebarRoot = document.getElementById("lrh-portal-sidebar-root");
 
 if (sidebarRoot) {
-  console.log('[LRH] Mounting Portal Sidebar');
+  console.log('[LRH] Mounting Portal Sidebar (Navy Layout)');
   console.log('[LRH] Config data:', config);
-  console.log('[LRH] gradientUrl:', config.gradientUrl);
+
+  // Build currentUser object for PortalSidebarLayout
+  const currentUser = {
+    id: String(config.userId || ''),
+    name: config.userName || '',
+    email: config.userEmail || '',
+    avatar: config.userAvatar || '',
+    profile_slug: config.profileSlug || '',
+    job_title: config.userJobTitle || '',
+  };
 
   try {
     createRoot(sidebarRoot).render(
-      <PortalSidebarApp
-        userId={config.userId}
-        userName={config.userName}
-        userEmail={config.userEmail}
-        userAvatar={config.userAvatar}
-        userRole={config.userRole}
-        siteUrl={config.siteUrl || window.location.origin}
-        portalUrl={config.portalUrl || window.location.origin + '/portal'}
-        restNonce={config.restNonce}
-        gradientUrl={config.gradientUrl}
-        menuItems={config.menuItems || []}
-      />
+      <ProfileEditProvider>
+        <PortalSidebarLayout
+          currentUser={currentUser}
+          isOwnProfile={true}
+          sidebarOnly={true}
+        />
+      </ProfileEditProvider>
     );
     console.log('[LRH] Portal Sidebar mounted successfully');
   } catch (error) {

@@ -14,6 +14,10 @@ import {
 import type { User as UserType } from '../../utils/dataService';
 import { CollapsibleSidebar, MenuItem } from '../ui/CollapsibleSidebar';
 import { ProfileCompletionCard } from './ProfileCompletionCard';
+import { getCurrentPortalBranding } from '../../utils/portalBranding';
+
+// Get MarketingSidebarOverlay from child theme global
+const MarketingSidebarOverlay = (window as any).FRSComponents?.MarketingSidebarOverlay;
 import { calculateProfileCompletion } from '../../utils/profileCompletion';
 
 interface DashboardLayoutProps {
@@ -29,8 +33,9 @@ export function DashboardLayout({ currentUser }: DashboardLayoutProps) {
     return typeof window !== 'undefined' && window.innerWidth < 768;
   });
 
-  // Get gradient URL from WordPress data
-  const gradientUrl = (window as any).frsPortalConfig?.gradientUrl || (window as any).frsSidebarData?.gradientUrl || '';
+  // Get dynamic branding based on portal type
+  const branding = getCurrentPortalBranding();
+  const gradientUrl = branding.gradientVideo || (window as any).frsPortalConfig?.gradientUrl || '';
 
   // Calculate total offset (header + admin bar)
   useEffect(() => {
@@ -83,8 +88,19 @@ export function DashboardLayout({ currentUser }: DashboardLayoutProps) {
     return () => window.removeEventListener('resize', calculateHeaderHeight);
   }, []);
 
-  // Determine if we're on a profile page
+  // Determine if we're on a profile or marketing page
   const isProfilePage = location.pathname.startsWith('/profile');
+  const isMarketingPage = location.pathname.startsWith('/marketing');
+  const [showMarketingOverlay, setShowMarketingOverlay] = useState(false);
+
+  // Auto-show marketing overlay when on marketing pages
+  useEffect(() => {
+    if (isMarketingPage) {
+      setShowMarketingOverlay(true);
+    } else {
+      setShowMarketingOverlay(false);
+    }
+  }, [isMarketingPage]);
 
   // Map currentUser to the format expected by ProfileCompletionCard
   const [profileMetadata, setProfileMetadata] = useState({
@@ -247,8 +263,8 @@ export function DashboardLayout({ currentUser }: DashboardLayoutProps) {
   const shouldShowProfileCard = isProfilePage && !hasReached100Percent && !isCardDismissed;
 
   const menuItems: MenuItem[] = isProfilePage ? [
-    { id: '/profile', label: 'Profile', icon: Users },
-    { id: '/profile/settings', label: 'Settings', icon: Wrench },
+    { id: '/profile', label: 'Profile', icon: Users, url: '/profile' },
+    { id: '/profile/settings', label: 'Settings', icon: Wrench, url: '/profile/settings' },
     // Only show ProfileCompletionCard if not at 100% and not dismissed
     ...(shouldShowProfileCard ? [{
       id: 'profile-completion-widget',
@@ -265,23 +281,26 @@ export function DashboardLayout({ currentUser }: DashboardLayoutProps) {
       id: '/marketing',
       label: 'Marketing',
       icon: Megaphone,
+      url: '/marketing',
       children: [
-        { id: '/marketing/calendar', label: 'Calendar' },
-        { id: '/marketing/orders', label: 'Social & Print' },
-        { id: '/marketing/landing-pages', label: 'Landing Pages' },
-        { id: '/marketing/email-campaigns', label: 'Email Campaigns' },
-        { id: '/marketing/local-seo', label: 'Local SEO' },
-        { id: '/marketing/brand-guide', label: 'Brand Guide' },
+        { id: '/marketing/calendar', label: 'Calendar', url: '/marketing/calendar' },
+        { id: '/marketing/orders', label: 'Social & Print', url: '/marketing/orders' },
+        { id: '/marketing/landing-pages', label: 'Landing Pages', url: '/marketing/landing-pages' },
+        { id: '/marketing/email-campaigns', label: 'Email Campaigns', url: '/marketing/email-campaigns' },
+        { id: '/marketing/local-seo', label: 'Local SEO', url: '/marketing/local-seo' },
+        { id: '/marketing/brand-guide', label: 'Brand Guide', url: '/marketing/brand-guide' },
       ]
     },
-    { id: '/leads', label: 'Lead Tracking', icon: TrendingUp },
+    { id: '/leads', label: 'Lead Tracking', icon: TrendingUp, url: '/leads' },
     {
       id: '/tools',
       label: 'Tools',
       icon: Wrench,
+      url: '/tools',
       children: [
-        { id: '/tools/mortgage-calculator', label: 'Mortgage Calculator' },
-        { id: '/tools/property-valuation', label: 'Property Valuation' },
+        { id: '/tools/for-your-website', label: 'For Your Website', url: '/tools/for-your-website' },
+        { id: '/tools/mortgage-calculator', label: 'Mortgage Calculator', url: '/tools/mortgage-calculator' },
+        { id: '/tools/property-valuation', label: 'Property Valuation', url: '/tools/property-valuation' },
       ]
     },
   ];
@@ -296,8 +315,8 @@ export function DashboardLayout({ currentUser }: DashboardLayoutProps) {
       <div
         className="relative w-full overflow-visible"
         style={{
-          background: 'linear-gradient(135deg, #2563eb 0%, #2dd4da 100%)',
-          height: '100px'
+          background: `linear-gradient(135deg, ${branding.gradientStart} 0%, ${branding.gradientEnd} 100%)`,
+          height: '140px'
         }}
       >
         {/* Animated Video Background */}
@@ -321,6 +340,20 @@ export function DashboardLayout({ currentUser }: DashboardLayoutProps) {
           </>
         )}
 
+        {/* Logo - Show for RE portal */}
+        {branding.type === 're' && branding.logo && (
+          <div
+            className="relative w-full px-4 pt-3 pb-2 flex justify-center"
+            style={{ zIndex: 10 }}
+          >
+            <img
+              src={branding.logo}
+              alt={branding.name}
+              className="h-8 object-contain drop-shadow-lg"
+            />
+          </div>
+        )}
+
         {/* Avatar and Name - Horizontal Layout */}
         <div
           className="relative w-full px-4 py-4 flex items-center gap-3"
@@ -332,7 +365,7 @@ export function DashboardLayout({ currentUser }: DashboardLayoutProps) {
               className="size-14 rounded-full overflow-hidden shadow-lg"
               style={{
                 border: '2px solid transparent',
-                backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #2563eb 0%, #2dd4da 100%)',
+                backgroundImage: `linear-gradient(white, white), linear-gradient(135deg, ${branding.gradientStart} 0%, ${branding.gradientEnd} 100%)`,
                 backgroundOrigin: 'padding-box, border-box',
                 backgroundClip: 'padding-box, border-box',
               }}
@@ -369,7 +402,7 @@ export function DashboardLayout({ currentUser }: DashboardLayoutProps) {
     <div
       className="min-h-screen"
       style={{
-        background: 'var(--brand-page-background)',
+        background: branding.type === 're' || branding.type === 'c21p' ? '#000000' : 'var(--brand-page-background)',
         position: 'relative',
         zIndex: 1,
         width: '100%',
@@ -393,6 +426,22 @@ export function DashboardLayout({ currentUser }: DashboardLayoutProps) {
         defaultCollapsed={sidebarCollapsed}
         onCollapsedChange={setSidebarCollapsed}
       />
+
+      {/* Marketing Overlay - rendered from child theme component */}
+      {showMarketingOverlay && MarketingSidebarOverlay && (
+        <MarketingSidebarOverlay
+          activeItemId={location.pathname}
+          onItemClick={(path) => {
+            navigate(path);
+          }}
+          onBackClick={() => setShowMarketingOverlay(false)}
+          isCollapsed={sidebarCollapsed}
+          backgroundColor="hsl(var(--sidebar-background))"
+          textColor="hsl(var(--sidebar-foreground))"
+          activeItemColor="hsl(var(--sidebar-foreground))"
+          activeItemBackground="linear-gradient(to right, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1))"
+        />
+      )}
 
       {/* Main Content */}
       <main className="max-md:p-0 max-md:m-0 md:pt-8 md:pb-6 md:pl-0 md:pr-0 md:ml-[320px] md:mr-0">

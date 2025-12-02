@@ -1,5 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom';
 import { DashboardLayout } from './components/loan-officer-portal/DashboardLayout';
+import { Directory } from './components/loan-officer-portal/Directory';
 import { MyProfile } from './components/loan-officer-portal/MyProfile';
 import { MarketingOverview } from './components/loan-officer-portal/MarketingOverview';
 import { LandingPagesMarketing } from './components/loan-officer-portal/LandingPagesMarketing';
@@ -12,6 +13,7 @@ import { MortgageCalculator } from './components/loan-officer-portal/MortgageCal
 import { PropertyValuation } from './components/loan-officer-portal/PropertyValuation';
 import { FluentBookingCalendar } from './components/loan-officer-portal/FluentBookingCalendar';
 import { Settings } from './components/loan-officer-portal/Settings';
+import { ToolsLandingPage } from './components/loan-officer-portal/ToolsLandingPage';
 import type { User } from './utils/dataService';
 
 interface RouteConfig {
@@ -88,6 +90,10 @@ export const createRouter = (config: RouteConfig) => {
             {
               path: '',
               element: <MortgageCalculator />,
+            },
+            {
+              path: 'for-your-website',
+              element: <ToolsLandingPage />,
             },
             {
               path: 'mortgage-calculator',

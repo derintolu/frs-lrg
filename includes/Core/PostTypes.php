@@ -39,6 +39,32 @@ class PostTypes {
 	 * @return void
 	 */
 	public function register_post_types() {
+		// RE portal pages
+		register_post_type(
+			'frs_re_portal',
+			array(
+				'labels'       => array(
+					'name'          => __( 'RE Portal Pages', 'lending-resource-hub' ),
+					'singular_name' => __( 'RE Portal Page', 'lending-resource-hub' ),
+					'menu_name'     => __( 'RE Portal', 'lending-resource-hub' ),
+					'add_new'       => __( 'Add Portal Page', 'lending-resource-hub' ),
+					'edit_item'     => __( 'Edit Portal Page', 'lending-resource-hub' ),
+				),
+				'public'       => true,
+				'show_ui'      => true,
+				'show_in_menu' => 'lending-resource-hub',
+				'show_in_rest' => true,
+				'supports'     => array( 'title', 'editor', 'custom-fields', 'thumbnail', 'page-attributes' ),
+				'has_archive'  => false,
+				'hierarchical' => true,
+				'rewrite'      => array(
+					'slug'       => 're',
+					'with_front' => false,
+				),
+				'menu_icon'    => 'dashicons-admin-home',
+			)
+		);
+
 		// Biolink landing pages
 		register_post_type(
 			'frs_biolink',

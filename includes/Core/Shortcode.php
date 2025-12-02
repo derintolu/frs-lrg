@@ -37,6 +37,8 @@ class Shortcode {
 		add_shortcode( 'lrh_partnerships_section', array( $this, 'render_partnerships_section' ) );
 		add_shortcode( 'lrh_realtor_portal', array( $this, 'render_realtor_portal' ) );
 		add_shortcode( 'frs_mortgage_calculator', array( $this, 'render_mortgage_calculator' ) );
+		add_shortcode( 'frs_property_valuation', array( $this, 'render_property_valuation' ) );
+		add_shortcode( 'frs_tools_landing', array( $this, 'render_tools_landing_page' ) );
 
 		// Content-only shortcodes (without sidebar - for use in portal frames)
 		add_shortcode( 'lrh_content_welcome', array( $this, 'render_content_welcome' ) );
@@ -78,6 +80,9 @@ class Shortcode {
 
 		// Legacy shortcode from old plugin (backward compatibility)
 		add_shortcode( 'frs_partnership_portal', array( $this, 'render_legacy_portal' ) );
+
+		// Legacy welcome shortcode alias
+		add_shortcode( 'frs_lo_welcome', array( $this, 'render_content_welcome' ) );
 	}
 
 	/**
@@ -90,8 +95,8 @@ class Shortcode {
 		// Enqueue portal assets directly when shortcode is rendered
 		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_portal_assets_public();
 
-		// Return root element for React to mount
-		return '<div id="lrh-portal-root"></div>';
+		// Return root element for React to mount with Interactivity API router region
+		return '<div id="lrh-portal-root" data-wp-interactive="lrh-portal" data-wp-router-region="lrh-portal"></div>';
 	}
 
 	/**
@@ -121,10 +126,12 @@ class Shortcode {
 		// Add body class for sidebar styling
 		add_filter( 'body_class', array( $this, 'add_sidebar_body_class' ) );
 
-		// Return ONLY the container div
-		// Frontend.php handles ALL asset loading and configuration
-		// when it detects this shortcode via should_load_portal()
-		return '<div id="lrh-portal-sidebar-root" data-lrh-component="portal-sidebar"></div>';
+		// Enqueue portal assets directly when shortcode is rendered
+		// This ensures assets load even when shortcode is called via do_shortcode() in themes
+		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_portal_assets_public();
+
+		// Return container with data-wp-interactive for Interactivity API router
+		return '<div id="lrh-portal-sidebar-root" data-lrh-component="portal-sidebar" data-wp-interactive="lrh-portal"></div>';
 	}
 
 	/**
@@ -166,8 +173,8 @@ class Shortcode {
 		// Enqueue realtor portal assets directly when shortcode is rendered
 		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_realtor_portal_assets();
 
-		// Return root element for React to mount
-		return '<div id="lrh-realtor-portal-root"></div>';
+		// Return root element for React to mount with Interactivity API router region
+		return '<div id="lrh-realtor-portal-root" data-wp-interactive="lrh-portal" data-wp-router-region="lrh-realtor-portal"></div>';
 	}
 
 	/**
@@ -291,6 +298,39 @@ class Shortcode {
 	}
 
 	/**
+	 * Render the property valuation shortcode.
+	 *
+	 * Embeddable property valuation tool.
+	 *
+	 * Example: [frs_property_valuation user_id="123"]
+	 *
+	 * @param array $atts Shortcode attributes.
+	 * @return string The rendered shortcode HTML.
+	 */
+	public function render_property_valuation( $atts ) {
+		$atts = shortcode_atts(
+			array(
+				'user_id' => '',
+			),
+			$atts,
+			'frs_property_valuation'
+		);
+
+		// Enqueue widget assets
+		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_widget_assets();
+
+		// Build data attributes
+		$data_attrs = array();
+
+		if ( ! empty( $atts['user_id'] ) ) {
+			$data_attrs[] = 'data-loan-officer-id="' . esc_attr( $atts['user_id'] ) . '"';
+		}
+
+		// Return root element for React to mount
+		return '<div id="property-valuation" ' . implode( ' ', $data_attrs ) . '></div>';
+	}
+
+	/**
 	 * Content-only shortcode renderers
 	 * These render just the page content without the portal sidebar
 	 * For use in portal frames that provide their own sidebar
@@ -298,67 +338,67 @@ class Shortcode {
 
 	public function render_content_welcome( $atts ) {
 		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_welcome_portal_assets();
-		return '<div id="lrh-welcome-portal-root" data-content-only="true"></div>';
+		return '<div id="lrh-welcome-portal-root" data-content-only="true" data-wp-interactive="lrh-portal"></div>';
 	}
 
 	public function render_content_profile( $atts ) {
 		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_portal_assets_public();
-		return '<div id="lrh-content-profile-root" data-lrh-content="profile"></div>';
+		return '<div id="lrh-content-profile-root" data-lrh-content="profile" data-wp-interactive="lrh-portal" data-wp-router-region="lrh-content"></div>';
 	}
 
 	public function render_content_marketing( $atts ) {
 		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_portal_assets_public();
-		return '<div id="lrh-content-marketing-root" data-lrh-content="marketing"></div>';
+		return '<div id="lrh-content-marketing-root" data-lrh-content="marketing" data-wp-interactive="lrh-portal" data-wp-router-region="lrh-content"></div>';
 	}
 
 	public function render_content_calendar( $atts ) {
 		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_portal_assets_public();
-		return '<div id="lrh-content-calendar-root" data-lrh-content="calendar"></div>';
+		return '<div id="lrh-content-calendar-root" data-lrh-content="calendar" data-wp-interactive="lrh-portal" data-wp-router-region="lrh-content"></div>';
 	}
 
 	public function render_content_landing_pages( $atts ) {
 		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_portal_assets_public();
-		return '<div id="lrh-content-landing-pages-root" data-lrh-content="landing-pages"></div>';
+		return '<div id="lrh-content-landing-pages-root" data-lrh-content="landing-pages" data-wp-interactive="lrh-portal" data-wp-router-region="lrh-content"></div>';
 	}
 
 	public function render_content_email_campaigns( $atts ) {
 		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_portal_assets_public();
-		return '<div id="lrh-content-email-campaigns-root" data-lrh-content="email-campaigns"></div>';
+		return '<div id="lrh-content-email-campaigns-root" data-lrh-content="email-campaigns" data-wp-interactive="lrh-portal" data-wp-router-region="lrh-content"></div>';
 	}
 
 	public function render_content_local_seo( $atts ) {
 		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_portal_assets_public();
-		return '<div id="lrh-content-local-seo-root" data-lrh-content="local-seo"></div>';
+		return '<div id="lrh-content-local-seo-root" data-lrh-content="local-seo" data-wp-interactive="lrh-portal" data-wp-router-region="lrh-content"></div>';
 	}
 
 	public function render_content_brand_guide( $atts ) {
 		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_portal_assets_public();
-		return '<div id="lrh-content-brand-guide-root" data-lrh-content="brand-guide"></div>';
+		return '<div id="lrh-content-brand-guide-root" data-lrh-content="brand-guide" data-wp-interactive="lrh-portal" data-wp-router-region="lrh-content"></div>';
 	}
 
 	public function render_content_orders( $atts ) {
 		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_portal_assets_public();
-		return '<div id="lrh-content-orders-root" data-lrh-content="orders"></div>';
+		return '<div id="lrh-content-orders-root" data-lrh-content="orders" data-wp-interactive="lrh-portal" data-wp-router-region="lrh-content"></div>';
 	}
 
 	public function render_content_lead_tracking( $atts ) {
 		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_portal_assets_public();
-		return '<div id="lrh-content-lead-tracking-root" data-lrh-content="lead-tracking"></div>';
+		return '<div id="lrh-content-lead-tracking-root" data-lrh-content="lead-tracking" data-wp-interactive="lrh-portal" data-wp-router-region="lrh-content"></div>';
 	}
 
 	public function render_content_tools( $atts ) {
 		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_portal_assets_public();
-		return '<div id="lrh-content-tools-root" data-lrh-content="tools"></div>';
+		return '<div id="lrh-content-tools-root" data-lrh-content="tools" data-wp-interactive="lrh-portal" data-wp-router-region="lrh-content"></div>';
 	}
 
 	public function render_content_settings( $atts ) {
 		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_portal_assets_public();
-		return '<div id="lrh-content-settings-root" data-lrh-content="settings"></div>';
+		return '<div id="lrh-content-settings-root" data-lrh-content="settings" data-wp-interactive="lrh-portal" data-wp-router-region="lrh-content"></div>';
 	}
 
 	public function render_content_notifications( $atts ) {
 		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_portal_assets_public();
-		return '<div id="lrh-content-notifications-root" data-lrh-content="notifications"></div>';
+		return '<div id="lrh-content-notifications-root" data-lrh-content="notifications" data-wp-interactive="lrh-portal" data-wp-router-region="lrh-content"></div>';
 	}
 
 	/**
@@ -367,22 +407,22 @@ class Shortcode {
 
 	public function render_booking_calendar_card( $atts ) {
 		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_dashboard_cards_assets();
-		return '<div id="lrh-booking-calendar-card-root" data-lrh-card="booking-calendar"></div>';
+		return '<div id="lrh-booking-calendar-card-root" data-lrh-card="booking-calendar" data-wp-interactive="lrh-portal"></div>';
 	}
 
 	public function render_landing_pages_card( $atts ) {
 		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_dashboard_cards_assets();
-		return '<div id="lrh-landing-pages-card-root" data-lrh-card="landing-pages"></div>';
+		return '<div id="lrh-landing-pages-card-root" data-lrh-card="landing-pages" data-wp-interactive="lrh-portal"></div>';
 	}
 
 	public function render_brand_guide_card( $atts ) {
 		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_dashboard_cards_assets();
-		return '<div id="lrh-brand-guide-card-root" data-lrh-card="brand-guide"></div>';
+		return '<div id="lrh-brand-guide-card-root" data-lrh-card="brand-guide" data-wp-interactive="lrh-portal"></div>';
 	}
 
 	public function render_print_social_media_card( $atts ) {
 		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_dashboard_cards_assets();
-		return '<div id="lrh-print-social-media-card-root" data-lrh-card="print-social-media"></div>';
+		return '<div id="lrh-print-social-media-card-root" data-lrh-card="print-social-media" data-wp-interactive="lrh-portal"></div>';
 	}
 
 	/**
@@ -391,62 +431,62 @@ class Shortcode {
 
 	public function render_marketing_overview_page( $atts ) {
 		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_portal_assets_public();
-		return '<div id="lrh-marketing-overview-root" data-lrh-page="marketing-overview"></div>';
+		return '<div id="lrh-marketing-overview-root" data-lrh-page="marketing-overview" data-wp-interactive="lrh-portal"></div>';
 	}
 
 	public function render_my_profile_page( $atts ) {
 		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_portal_assets_public();
-		return '<div id="lrh-my-profile-root" data-lrh-page="my-profile"></div>';
+		return '<div id="lrh-my-profile-root" data-lrh-page="my-profile" data-wp-interactive="lrh-portal"></div>';
 	}
 
 	public function render_lead_tracking_page( $atts ) {
 		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_portal_assets_public();
-		return '<div id="lrh-lead-tracking-root" data-lrh-page="lead-tracking"></div>';
+		return '<div id="lrh-lead-tracking-root" data-lrh-page="lead-tracking" data-wp-interactive="lrh-portal"></div>';
 	}
 
 	public function render_fluent_booking_calendar_page( $atts ) {
 		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_portal_assets_public();
-		return '<div id="lrh-fluent-booking-calendar-root" data-lrh-page="fluent-booking-calendar"></div>';
+		return '<div id="lrh-fluent-booking-calendar-root" data-lrh-page="fluent-booking-calendar" data-wp-interactive="lrh-portal"></div>';
 	}
 
 	public function render_landing_pages_page( $atts ) {
 		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_portal_assets_public();
-		return '<div id="lrh-landing-pages-page-root" data-lrh-page="landing-pages"></div>';
+		return '<div id="lrh-landing-pages-page-root" data-lrh-page="landing-pages" data-wp-interactive="lrh-portal"></div>';
 	}
 
 	public function render_email_campaigns_page( $atts ) {
 		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_portal_assets_public();
-		return '<div id="lrh-email-campaigns-root" data-lrh-page="email-campaigns"></div>';
+		return '<div id="lrh-email-campaigns-root" data-lrh-page="email-campaigns" data-wp-interactive="lrh-portal"></div>';
 	}
 
 	public function render_local_seo_page( $atts ) {
 		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_portal_assets_public();
-		return '<div id="lrh-local-seo-root" data-lrh-page="local-seo"></div>';
+		return '<div id="lrh-local-seo-root" data-lrh-page="local-seo" data-wp-interactive="lrh-portal"></div>';
 	}
 
 	public function render_brand_showcase_page( $atts ) {
 		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_portal_assets_public();
-		return '<div id="lrh-brand-showcase-root" data-lrh-page="brand-showcase"></div>';
+		return '<div id="lrh-brand-showcase-root" data-lrh-page="brand-showcase" data-wp-interactive="lrh-portal"></div>';
 	}
 
 	public function render_marketing_orders_page( $atts ) {
 		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_portal_assets_public();
-		return '<div id="lrh-marketing-orders-root" data-lrh-page="marketing-orders"></div>';
+		return '<div id="lrh-marketing-orders-root" data-lrh-page="marketing-orders" data-wp-interactive="lrh-portal"></div>';
 	}
 
 	public function render_mortgage_calculator_page( $atts ) {
 		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_portal_assets_public();
-		return '<div id="lrh-mortgage-calculator-page-root" data-lrh-page="mortgage-calculator"></div>';
+		return '<div id="lrh-mortgage-calculator-page-root" data-lrh-page="mortgage-calculator" data-wp-interactive="lrh-portal"></div>';
 	}
 
 	public function render_property_valuation_page( $atts ) {
 		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_portal_assets_public();
-		return '<div id="lrh-property-valuation-root" data-lrh-page="property-valuation"></div>';
+		return '<div id="lrh-property-valuation-root" data-lrh-page="property-valuation" data-wp-interactive="lrh-portal"></div>';
 	}
 
 	public function render_settings_page( $atts ) {
 		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_portal_assets_public();
-		return '<div id="lrh-settings-root" data-lrh-page="settings"></div>';
+		return '<div id="lrh-settings-root" data-lrh-page="settings" data-wp-interactive="lrh-portal"></div>';
 	}
 
 	/**
@@ -454,7 +494,105 @@ class Shortcode {
 	 */
 	public function render_marketing_subnav( $atts ) {
 		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_portal_assets_public();
-		return '<div id="lrh-marketing-subnav-root" data-lrh-subnav="marketing"></div>';
+		return '<div id="lrh-marketing-subnav-root" data-lrh-subnav="marketing" data-wp-interactive="lrh-portal"></div>';
+	}
+
+	/**
+	 * Render tools landing page with Mortgage Calculator & Property Valuation bentos.
+	 *
+	 * Public landing page for loan officers to share with leads.
+	 * Shows loan officer profile, two tool cards, and lead capture.
+	 *
+	 * Usage: [frs_tools_landing user_id="123"]
+	 * Or with URL param: page.com/tools/?loan_officer_id=123
+	 *
+	 * @param array $atts Shortcode attributes.
+	 * @return string The rendered HTML.
+	 */
+	public function render_tools_landing_page( $atts ) {
+		$atts = shortcode_atts(
+			array(
+				'user_id'        => '',
+				'webhook_url'    => '',
+				'show_lead_form' => 'true',
+			),
+			$atts,
+			'frs_tools_landing'
+		);
+
+		// Determine user ID: shortcode attr > URL param > current user
+		$user_id = ! empty( $atts['user_id'] ) ? intval( $atts['user_id'] ) : 0;
+		if ( ! $user_id && isset( $_GET['loan_officer_id'] ) ) {
+			$user_id = intval( $_GET['loan_officer_id'] );
+		}
+		if ( ! $user_id ) {
+			$user_id = get_current_user_id();
+		}
+
+		// Get loan officer data
+		$user = get_user_by( 'id', $user_id );
+		$lo_data = array(
+			'id'    => $user_id,
+			'name'  => '',
+			'email' => '',
+			'phone' => '',
+			'nmls'  => '',
+			'title' => '',
+			'avatar' => '',
+		);
+
+		if ( $user ) {
+			// Try REST API for full profile
+			$response = wp_remote_get( rest_url( "frs-users/v1/profiles/user/{$user_id}" ), array( 'timeout' => 5 ) );
+			if ( ! is_wp_error( $response ) ) {
+				$body = json_decode( wp_remote_retrieve_body( $response ), true );
+				if ( isset( $body['success'] ) && $body['success'] && isset( $body['data'] ) ) {
+					$profile = $body['data'];
+					$lo_data['name']   = trim( ( $profile['first_name'] ?? '' ) . ' ' . ( $profile['last_name'] ?? '' ) );
+					$lo_data['email']  = $profile['email'] ?? $user->user_email;
+					$lo_data['phone']  = $profile['mobile_number'] ?? $profile['phone_number'] ?? '';
+					$lo_data['nmls']   = $profile['nmls'] ?? $profile['nmls_number'] ?? '';
+					$lo_data['title']  = $profile['job_title'] ?? '';
+					$lo_data['avatar'] = $profile['profile_photo'] ?? get_avatar_url( $user_id );
+				}
+			}
+
+			// Fallback to user meta
+			if ( empty( $lo_data['name'] ) ) {
+				$lo_data['name'] = trim( get_user_meta( $user_id, 'first_name', true ) . ' ' . get_user_meta( $user_id, 'last_name', true ) );
+			}
+			if ( empty( $lo_data['name'] ) ) {
+				$lo_data['name'] = $user->display_name;
+			}
+			if ( empty( $lo_data['email'] ) ) {
+				$lo_data['email'] = $user->user_email;
+			}
+			if ( empty( $lo_data['avatar'] ) ) {
+				$lo_data['avatar'] = get_avatar_url( $user_id );
+			}
+		}
+
+		// Enqueue widget assets
+		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_widget_assets();
+
+		// Build data attributes
+		$data_attrs = sprintf(
+			'data-loan-officer-id="%d" data-loan-officer-name="%s" data-loan-officer-email="%s" data-loan-officer-phone="%s" data-loan-officer-nmls="%s" data-loan-officer-title="%s" data-loan-officer-avatar="%s" data-show-lead-form="%s"',
+			$user_id,
+			esc_attr( $lo_data['name'] ),
+			esc_attr( $lo_data['email'] ),
+			esc_attr( $lo_data['phone'] ),
+			esc_attr( $lo_data['nmls'] ),
+			esc_attr( $lo_data['title'] ),
+			esc_url( $lo_data['avatar'] ),
+			esc_attr( $atts['show_lead_form'] )
+		);
+
+		if ( ! empty( $atts['webhook_url'] ) ) {
+			$data_attrs .= sprintf( ' data-webhook-url="%s"', esc_url( $atts['webhook_url'] ) );
+		}
+
+		return '<div id="frs-tools-landing-root" ' . $data_attrs . '></div>';
 	}
 
 }

@@ -77,6 +77,10 @@ class Frontend {
 		wp_enqueue_script( 'react' );
 		wp_enqueue_script( 'react-dom' );
 
+		// Enqueue WordPress Interactivity API Router for client-side navigation
+		// This enables data-wp-router-link and data-wp-router-region to work
+		wp_enqueue_script_module( '@wordpress/interactivity-router' );
+
 		// Enqueue the main frontend bundle
 		// This uses @kucrut/vite-for-wp which automatically detects:
 		// - Development: Loads from vite-dev-server.json (localhost:5173)
@@ -298,6 +302,18 @@ class Frontend {
 			error_log( '[LRH] Config data - gradientUrl: ' . $gradient_url );
 		}
 
+		// Get job title from user meta (try multiple sources)
+		$job_title = get_user_meta( $user_id, 'job_title', true );
+		if ( empty( $job_title ) ) {
+			$job_title = get_user_meta( $user_id, 'frs_job_title', true );
+		}
+		if ( empty( $job_title ) ) {
+			$job_title = get_user_meta( $user_id, 'title', true );
+		}
+
+		// Get profile slug from BuddyBoss user meta
+		$profile_slug = get_user_meta( $user_id, 'bb_profile_slug', true );
+
 		return array(
 			// Primary config (used directly by React components)
 			'userId'       => $user_id,
@@ -305,6 +321,8 @@ class Frontend {
 			'userEmail'    => $current_user->user_email,
 			'userAvatar'   => get_avatar_url( $user_id ),
 			'userRole'     => $user_role,
+			'userJobTitle' => $job_title ?: '',
+			'profileSlug'  => $profile_slug ?: '',
 			'restNonce'    => wp_create_nonce( 'wp_rest' ),
 			'apiUrl'       => rest_url( LRH_ROUTE_PREFIX . '/' ),
 			'gradientUrl'  => $gradient_url,

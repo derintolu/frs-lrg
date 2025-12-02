@@ -24,7 +24,7 @@ import {
   Globe,
   Linkedin,
   Facebook,
-  Settings,
+  Settings as SettingsIcon,
   Shield,
   Bell,
   FileText,
@@ -43,7 +43,7 @@ import { BookingCalendarCard, LandingPagesCard, BrandGuideCard, PrintSocialMedia
 import { WelcomeBento } from './loan-officer-portal/WelcomeBento';
 import { LeadTracking } from './loan-officer-portal/LeadTracking';
 import { MortgageCalculator } from './loan-officer-portal/MortgageCalculator';
-import { Settings } from './loan-officer-portal/Settings';
+import { Settings as SettingsPage } from './loan-officer-portal/Settings';
 import { ProfileCompletionSection } from './loan-officer-portal/ProfileCompletionSection';
 
 // Read-only field display component
@@ -427,26 +427,22 @@ export function ProfileSection({ userRole, userId, autoEdit = false, tourAttribu
 
   return (
     <div className="space-y-8 pb-8">
-      {/* 1. EDIT PROFILE BUTTON (sticky at top) */}
-      <div className="sticky top-0 z-20 bg-white/95 backdrop-blur-sm border-b border-gray-200 px-4 py-3 flex justify-end shadow-sm">
+      {/* 1. EDIT PROFILE BUTTON (fixed sidebar on right) */}
+      <div className="fixed right-4 top-24 z-50 flex flex-col gap-2">
         {!isEditing ? (
           <Button
             onClick={() => setIsEditing(true)}
-            className="bg-[var(--brand-electric-blue)] hover:bg-[var(--brand-electric-blue)]/90 text-white shadow-lg"
+            className="bg-[var(--brand-electric-blue)] hover:bg-[var(--brand-electric-blue)]/90 text-white shadow-2xl"
           >
             <Edit className="h-4 w-4 mr-2" />
             Edit Profile
           </Button>
         ) : (
-          <div className="flex gap-2">
-            <Button variant="outline" onClick={() => setIsEditing(false)} disabled={isSaving}>
-              <X className="h-4 w-4 mr-2" />
-              Cancel
-            </Button>
+          <>
             <Button
               onClick={handleSave}
               disabled={isSaving}
-              className="bg-[var(--brand-electric-blue)] hover:bg-[var(--brand-electric-blue)]/90 text-white"
+              className="bg-[var(--brand-electric-blue)] hover:bg-[var(--brand-electric-blue)]/90 text-white shadow-2xl w-full"
             >
               {isSaving ? (
                 <>
@@ -456,11 +452,20 @@ export function ProfileSection({ userRole, userId, autoEdit = false, tourAttribu
               ) : (
                 <>
                   <Save className="h-4 w-4 mr-2" />
-                  Save Changes
+                  Save
                 </>
               )}
             </Button>
-          </div>
+            <Button
+              variant="outline"
+              onClick={() => setIsEditing(false)}
+              disabled={isSaving}
+              className="shadow-2xl w-full bg-white"
+            >
+              <X className="h-4 w-4 mr-2" />
+              Cancel
+            </Button>
+          </>
         )}
       </div>
 
@@ -1191,7 +1196,7 @@ export function ProfileSection({ userRole, userId, autoEdit = false, tourAttribu
 
       {/* 7. SETTINGS (includes Notifications as a tab) */}
       <section id="settings" className="scroll-mt-20 px-4">
-        <Settings userId={userId} />
+        <SettingsPage userId={userId} />
       </section>
 
       {/* 9. PROFILE LINK SECTION */}

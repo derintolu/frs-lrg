@@ -1,10 +1,8 @@
 import { createRoot } from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
 import WelcomePortal from './portal/WelcomePortal';
 import { WelcomeBento } from './portal/components/loan-officer-portal/WelcomeBento';
 import './index.css';
-
-// Mock navigate function for content-only mode (no actual navigation)
-const mockNavigate = () => {};
 
 // Get the config from WordPress
 const wpData = window.frsPortalConfig;
@@ -18,9 +16,13 @@ if (!wpData) {
     const root = createRoot(container);
 
     if (contentOnly) {
-      // Render just the content without layout/sidebar or router
-      // WelcomeBento expects router context, so we need to mock it
-      root.render(<WelcomeBento userId={String(wpData.userId)} />);
+      // Render just the content without layout/sidebar
+      // Wrap in BrowserRouter since WelcomeBento uses useNavigate()
+      root.render(
+        <BrowserRouter>
+          <WelcomeBento userId={String(wpData.userId)} />
+        </BrowserRouter>
+      );
     } else {
       // Render full portal with sidebar
       root.render(

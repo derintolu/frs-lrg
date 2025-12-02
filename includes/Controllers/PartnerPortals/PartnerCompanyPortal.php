@@ -2,7 +2,8 @@
 /**
  * Partner Company Portal
  *
- * Hybrid interface for loan officers to manage partner companies through BuddyPress groups.
+ * Interface for loan officers to manage partner companies.
+ * Note: BuddyPress integration removed - now uses custom post types.
  *
  * @package LendingResourceHub\Controllers\PartnerPortals
  * @since 1.0.0
