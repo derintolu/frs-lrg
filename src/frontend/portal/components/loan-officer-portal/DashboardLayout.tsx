@@ -12,12 +12,13 @@ import {
   Wrench
 } from 'lucide-react';
 import type { User as UserType } from '../../utils/dataService';
-import { CollapsibleSidebar, MenuItem } from '../ui/CollapsibleSidebar';
+import type { MenuItem } from '../ui/CollapsibleSidebar';
 import { ProfileCompletionCard } from './ProfileCompletionCard';
 import { getCurrentPortalBranding } from '../../utils/portalBranding';
 
-// Get MarketingSidebarOverlay from child theme global
+// Get components from child theme global
 const MarketingSidebarOverlay = (window as any).FRSComponents?.MarketingSidebarOverlay;
+const CollapsibleSidebar = (window as any).FRSComponents?.CollapsibleSidebar;
 import { calculateProfileCompletion } from '../../utils/profileCompletion';
 
 interface DashboardLayoutProps {
@@ -397,6 +398,18 @@ export function DashboardLayout({ currentUser }: DashboardLayoutProps) {
   const handleItemClick = (item: MenuItem) => {
     navigate(item.id);
   };
+
+  // Check if CollapsibleSidebar is available
+  if (!CollapsibleSidebar) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-red-600">Component Loading Error</h1>
+          <p className="text-gray-600 mt-2">CollapsibleSidebar component not found. Please ensure the child theme is active and built.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
