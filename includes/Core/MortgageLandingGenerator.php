@@ -126,6 +126,522 @@ class MortgageLandingGenerator {
 	}
 
 	/**
+	 * Generate tools landing page for a loan officer.
+	 *
+	 * Creates a public landing page with mortgage calculator and property valuation tools.
+	 *
+	 * @param int $user_id Loan officer user ID.
+	 * @return array|false Array with page data or false on failure.
+	 */
+	public static function generate_tools_landing_page( $user_id ) {
+		$user = get_user_by( 'id', $user_id );
+
+		if ( ! $user ) {
+			return false;
+		}
+
+		// Check if tools page already exists for this user
+		$existing = self::get_existing_tools_page( $user_id );
+		if ( $existing ) {
+			return array(
+				'id'       => $existing->ID,
+				'url'      => get_permalink( $existing->ID ),
+				'edit_url' => get_edit_post_link( $existing->ID, 'raw' ),
+				'user_id'  => $user_id,
+			);
+		}
+
+		// Get user data for page title
+		$user_data  = self::get_user_data_static( $user_id );
+		$first_name = $user_data['first_name'] ?? $user->display_name;
+
+		// Build page title
+		$page_title = sprintf( '%s - Mortgage Tools', $first_name );
+
+		// Generate unique slug
+		$slug = sanitize_title( $first_name . '-tools' );
+
+		// Check if slug exists
+		$slug_exists = get_page_by_path( $slug, OBJECT, 'frs_mortgage_lp' );
+		if ( $slug_exists ) {
+			$slug = $slug . '-' . wp_rand( 100, 999 );
+		}
+
+		// Page content: just the tools landing shortcode
+		$page_content = '[frs_tools_landing user_id="' . intval( $user_id ) . '"]';
+
+		// Create the page
+		$page_data = array(
+			'post_title'   => $page_title,
+			'post_name'    => $slug,
+			'post_type'    => 'frs_mortgage_lp',
+			'post_status'  => 'publish',
+			'post_author'  => $user_id,
+			'post_content' => $page_content,
+			'meta_input'   => array(
+				'_lrh_lp_template'  => 'tools',
+				'_lrh_lp_owner'     => $user_id,
+				'_lrh_lp_created'   => current_time( 'mysql' ),
+				'_frs_page_views'   => 0,
+				'_frs_page_conversions' => 0,
+				'disable_header'    => 'yes',
+				'disable_footer'    => 'yes',
+			),
+		);
+
+		$page_id = wp_insert_post( $page_data );
+
+		if ( ! $page_id || is_wp_error( $page_id ) ) {
+			error_log( 'LRH Tools Landing: Failed to create page for user ' . $user_id );
+			return false;
+		}
+
+		// Create page assignment record
+		self::create_page_assignment_static( $user_id, $page_id, 'tools' );
+
+		return array(
+			'id'       => $page_id,
+			'url'      => get_permalink( $page_id ),
+			'edit_url' => get_edit_post_link( $page_id, 'raw' ),
+			'user_id'  => $user_id,
+		);
+	}
+
+	/**
+	 * Get existing tools page for a user.
+	 *
+	 * @param int $user_id User ID.
+	 * @return WP_Post|false Post object or false.
+	 */
+	private static function get_existing_tools_page( $user_id ) {
+		$args = array(
+			'post_type'      => 'frs_mortgage_lp',
+			'post_status'    => 'publish',
+			'author'         => $user_id,
+			'meta_query'     => array(
+				array(
+					'key'   => '_lrh_lp_template',
+					'value' => 'tools',
+				),
+			),
+			'posts_per_page' => 1,
+		);
+
+		$posts = get_posts( $args );
+
+		return ! empty( $posts ) ? $posts[0] : false;
+	}
+
+	/**
+	 * Generate mortgage calculator landing page for a loan officer.
+	 *
+	 * Creates a public landing page with just the mortgage calculator for lead generation.
+	 *
+	 * @param int $user_id Loan officer user ID.
+	 * @return array|false Array with page data or false on failure.
+	 */
+	public static function generate_calculator_landing_page( $user_id ) {
+		$user = get_user_by( 'id', $user_id );
+
+		if ( ! $user ) {
+			return false;
+		}
+
+		// Check if calculator page already exists for this user
+		$existing = self::get_existing_page_by_template( $user_id, 'calculator' );
+		if ( $existing ) {
+			return array(
+				'id'       => $existing->ID,
+				'url'      => get_permalink( $existing->ID ),
+				'edit_url' => get_edit_post_link( $existing->ID, 'raw' ),
+				'user_id'  => $user_id,
+			);
+		}
+
+		// Get user data for page title and slug
+		$user_data  = self::get_user_data_static( $user_id );
+		$first_name = $user_data['first_name'] ?? $user->display_name;
+		$last_name  = $user_data['last_name'] ?? '';
+
+		// Build full name slug for parent path
+		$full_name_slug = sanitize_title( trim( $first_name . ' ' . $last_name ) );
+		if ( empty( $full_name_slug ) ) {
+			$full_name_slug = sanitize_title( $user->user_login );
+		}
+
+		// Build page title
+		$page_title = sprintf( '%s - Mortgage Calculator', $first_name );
+
+		// Generate slug as child of user (e.g., /blakecargill/mortgage-calculator)
+		$slug = 'mortgage-calculator';
+
+		// Build full path for checking
+		$full_path = $full_name_slug . '/' . $slug;
+		$slug_exists = get_page_by_path( $full_path, OBJECT, 'frs_mortgage_lp' );
+		if ( $slug_exists ) {
+			$slug = $slug . '-' . wp_rand( 100, 999 );
+		}
+
+		// Get user data for template
+		$lo_data    = self::get_user_data_static( $user_id );
+		$lo_name    = $lo_data['name'] ?? 'Your Loan Officer';
+		$lo_photo   = $lo_data['headshot'] ?? get_avatar_url( $user_id, array( 'size' => 256 ) );
+		$lo_phone   = $lo_data['phone'] ?? '';
+		$lo_email   = $lo_data['email'] ?? '';
+		$lo_nmls    = $lo_data['nmls'] ?? '';
+		$lo_title   = $lo_data['title'] ?? 'Senior Loan Officer';
+		$company    = get_user_meta( $user_id, 'company', true ) ?: '21st Century Lending';
+
+		// Build template with customizable sections + fixed calculator
+		$page_content = '<!-- wp:html -->
+<div class="calculator-landing-page">
+	<!-- Hero Section with LO Info -->
+	<section class="bg-gradient-to-br from-blue-600 to-cyan-400 text-white py-16 px-6">
+		<div class="max-w-6xl mx-auto">
+			<div class="grid md:grid-cols-2 gap-12 items-center">
+				<div>
+					<h1 class="text-5xl font-bold mb-6 leading-tight">Calculate Your Monthly Payment</h1>
+					<p class="text-xl mb-8 opacity-90">Get instant estimates on your mortgage payment with our easy-to-use calculator. No credit check required.</p>
+				</div>
+				<div class="bg-white/10 backdrop-blur-sm rounded-2xl p-8">
+					<div class="text-center">
+						<img src="' . esc_url( $lo_photo ) . '" alt="' . esc_attr( $lo_name ) . '" class="w-32 h-32 rounded-full mx-auto mb-4 border-4 border-white object-cover" />
+						<h3 class="text-2xl font-semibold mb-2">' . esc_html( $lo_name ) . '</h3>
+						<p class="opacity-90 mb-1">' . esc_html( $lo_title ) . '</p>
+						' . ( $lo_nmls ? '<p class="text-sm opacity-80">NMLS #' . esc_html( $lo_nmls ) . '</p>' : '' ) . '
+						' . ( $lo_phone ? '<div class="mt-4"><a href="tel:' . esc_attr( $lo_phone ) . '" class="text-white hover:opacity-80">' . esc_html( $lo_phone ) . '</a></div>' : '' ) . '
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Calculator Section -->
+	<section class="py-16 px-6 bg-gray-50">
+		<div class="max-w-6xl mx-auto">
+			[frs_mortgage_calculator loan_officer_id="' . intval( $user_id ) . '" show_lead_form="true"]
+		</div>
+	</section>
+
+	<!-- Call to Action -->
+	<section class="py-16 px-6 bg-white">
+		<div class="max-w-4xl mx-auto text-center">
+			<h2 class="text-3xl font-bold mb-4">Ready to Get Pre-Qualified?</h2>
+			<p class="text-xl text-gray-600 mb-8">Take the next step toward homeownership. Get pre-qualified today with no impact to your credit score.</p>
+			<a href="tel:' . esc_attr( $lo_phone ) . '" class="inline-block bg-gradient-to-r from-blue-600 to-cyan-400 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:opacity-90 transition">Contact ' . esc_html( $first_name ) . ' Today</a>
+		</div>
+	</section>
+</div>
+<!-- /wp:html -->';
+
+		// Find or create parent page for this user
+		$parent_id = self::get_or_create_user_parent_page( $user_id, $full_name_slug, $first_name );
+
+		// Create the page
+		$page_data = array(
+			'post_title'   => $page_title,
+			'post_name'    => $slug,
+			'post_parent'  => $parent_id,
+			'post_type'    => 'frs_mortgage_lp',
+			'post_status'  => 'publish',
+			'post_author'  => $user_id,
+			'post_content' => $page_content,
+			'meta_input'   => array(
+				'_lrh_lp_template'      => 'calculator',
+				'_lrh_lp_owner'         => $user_id,
+				'_lrh_lp_created'       => current_time( 'mysql' ),
+				'_frs_page_views'       => 0,
+				'_frs_page_conversions' => 0,
+				'disable_header'        => 'yes',
+				'disable_footer'        => 'yes',
+			),
+		);
+
+		$page_id = wp_insert_post( $page_data );
+
+		if ( ! $page_id || is_wp_error( $page_id ) ) {
+			error_log( 'LRH Calculator Landing: Failed to create page for user ' . $user_id );
+			return false;
+		}
+
+		// Lock template so users can only edit block settings, not structure
+		update_post_meta( $page_id, '_wp_page_template', 'default' );
+
+		// Create page assignment record
+		self::create_page_assignment_static( $user_id, $page_id, 'calculator' );
+
+		return array(
+			'id'       => $page_id,
+			'url'      => get_permalink( $page_id ),
+			'edit_url' => get_edit_post_link( $page_id, 'raw' ),
+			'user_id'  => $user_id,
+		);
+	}
+
+	/**
+	 * Generate property valuation landing page for a loan officer.
+	 *
+	 * Creates a public landing page with property valuation tool for lead generation.
+	 *
+	 * @param int $user_id Loan officer user ID.
+	 * @return array|false Array with page data or false on failure.
+	 */
+	public static function generate_valuation_landing_page( $user_id ) {
+		$user = get_user_by( 'id', $user_id );
+
+		if ( ! $user ) {
+			return false;
+		}
+
+		// Check if valuation page already exists for this user
+		$existing = self::get_existing_page_by_template( $user_id, 'valuation' );
+		if ( $existing ) {
+			return array(
+				'id'       => $existing->ID,
+				'url'      => get_permalink( $existing->ID ),
+				'edit_url' => get_edit_post_link( $existing->ID, 'raw' ),
+				'user_id'  => $user_id,
+			);
+		}
+
+		// Get user data for page title and slug
+		$user_data  = self::get_user_data_static( $user_id );
+		$first_name = $user_data['first_name'] ?? $user->display_name;
+		$last_name  = $user_data['last_name'] ?? '';
+
+		// Build full name slug for parent path
+		$full_name_slug = sanitize_title( trim( $first_name . ' ' . $last_name ) );
+		if ( empty( $full_name_slug ) ) {
+			$full_name_slug = sanitize_title( $user->user_login );
+		}
+
+		// Build page title
+		$page_title = sprintf( '%s - Property Valuation', $first_name );
+
+		// Generate slug as child of user (e.g., /blakecargill/property-valuation)
+		$slug = 'property-valuation';
+
+		// Build full path for checking
+		$full_path = $full_name_slug . '/' . $slug;
+		$slug_exists = get_page_by_path( $full_path, OBJECT, 'frs_mortgage_lp' );
+		if ( $slug_exists ) {
+			$slug = $slug . '-' . wp_rand( 100, 999 );
+		}
+
+		// Get user data for template
+		$lo_data    = self::get_user_data_static( $user_id );
+		$lo_name    = $lo_data['name'] ?? 'Your Loan Officer';
+		$lo_photo   = $lo_data['headshot'] ?? get_avatar_url( $user_id, array( 'size' => 256 ) );
+		$lo_phone   = $lo_data['phone'] ?? '';
+		$lo_email   = $lo_data['email'] ?? '';
+		$lo_nmls    = $lo_data['nmls'] ?? '';
+		$lo_title   = $lo_data['title'] ?? 'Senior Loan Officer';
+		$company    = get_user_meta( $user_id, 'company', true ) ?: '21st Century Lending';
+
+		// Build template with customizable sections + fixed valuation tool
+		$page_content = '<!-- wp:html -->
+<style>
+	/* Hide the embed button on public landing pages */
+	#property-valuation > div > main > div.flex.items-center.justify-end.mb-4 {
+		display: none !important;
+	}
+</style>
+<div class="valuation-landing-page">
+	<!-- Hero Section with LO Info -->
+	<section class="bg-gradient-to-br from-emerald-600 to-teal-400 text-white py-16 px-6">
+		<div class="max-w-6xl mx-auto">
+			<div class="grid md:grid-cols-2 gap-12 items-center">
+				<div>
+					<h1 class="text-5xl font-bold mb-6 leading-tight">Know Your Home\'s Value</h1>
+					<p class="text-xl mb-8 opacity-90">Get an instant estimate of your property\'s current market value. Fast, accurate, and completely free.</p>
+				</div>
+				<div class="bg-white/10 backdrop-blur-sm rounded-2xl p-8">
+					<div class="text-center">
+						<img src="' . esc_url( $lo_photo ) . '" alt="' . esc_attr( $lo_name ) . '" class="w-32 h-32 rounded-full mx-auto mb-4 border-4 border-white object-cover" />
+						<h3 class="text-2xl font-semibold mb-2">' . esc_html( $lo_name ) . '</h3>
+						<p class="opacity-90 mb-1">' . esc_html( $lo_title ) . '</p>
+						' . ( $lo_nmls ? '<p class="text-sm opacity-80">NMLS #' . esc_html( $lo_nmls ) . '</p>' : '' ) . '
+						' . ( $lo_phone ? '<div class="mt-4"><a href="tel:' . esc_attr( $lo_phone ) . '" class="text-white hover:opacity-80">' . esc_html( $lo_phone ) . '</a></div>' : '' ) . '
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Property Valuation Section -->
+	<section class="py-16 px-6 bg-gray-50">
+		<div class="max-w-6xl mx-auto">
+			[frs_property_valuation loan_officer_id="' . intval( $user_id ) . '" show_lead_form="true"]
+		</div>
+	</section>
+
+	<!-- Call to Action -->
+	<section class="py-16 px-6 bg-white">
+		<div class="max-w-4xl mx-auto text-center">
+			<h2 class="text-3xl font-bold mb-4">Ready to Explore Your Options?</h2>
+			<p class="text-xl text-gray-600 mb-8">Whether you\'re looking to refinance, tap into your equity, or simply curious about your home\'s value, I\'m here to help.</p>
+			<a href="tel:' . esc_attr( $lo_phone ) . '" class="inline-block bg-gradient-to-r from-emerald-600 to-teal-400 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:opacity-90 transition">Contact ' . esc_html( $first_name ) . ' Today</a>
+		</div>
+	</section>
+</div>
+<!-- /wp:html -->';
+
+		// Find or create parent page for this user
+		$parent_id = self::get_or_create_user_parent_page( $user_id, $full_name_slug, $first_name );
+
+		// Create the page
+		$page_data = array(
+			'post_title'   => $page_title,
+			'post_name'    => $slug,
+			'post_parent'  => $parent_id,
+			'post_type'    => 'frs_mortgage_lp',
+			'post_status'  => 'publish',
+			'post_author'  => $user_id,
+			'post_content' => $page_content,
+			'meta_input'   => array(
+				'_lrh_lp_template'      => 'valuation',
+				'_lrh_lp_owner'         => $user_id,
+				'_lrh_lp_created'       => current_time( 'mysql' ),
+				'_frs_page_views'       => 0,
+				'_frs_page_conversions' => 0,
+				'disable_header'        => 'yes',
+				'disable_footer'        => 'yes',
+			),
+		);
+
+		$page_id = wp_insert_post( $page_data );
+
+		if ( ! $page_id || is_wp_error( $page_id ) ) {
+			error_log( 'LRH Valuation Landing: Failed to create page for user ' . $user_id );
+			return false;
+		}
+
+		// Lock template so users can only edit block settings, not structure
+		update_post_meta( $page_id, '_wp_page_template', 'default' );
+
+		// Create page assignment record
+		self::create_page_assignment_static( $user_id, $page_id, 'valuation' );
+
+		return array(
+			'id'       => $page_id,
+			'url'      => get_permalink( $page_id ),
+			'edit_url' => get_edit_post_link( $page_id, 'raw' ),
+			'user_id'  => $user_id,
+		);
+	}
+
+	/**
+	 * Get existing page by template type for a user.
+	 *
+	 * @param int    $user_id User ID.
+	 * @param string $template Template type.
+	 * @return WP_Post|false Post object or false.
+	 */
+	private static function get_existing_page_by_template( $user_id, $template ) {
+		$args = array(
+			'post_type'      => 'frs_mortgage_lp',
+			'post_status'    => 'publish',
+			'author'         => $user_id,
+			'meta_query'     => array(
+				array(
+					'key'   => '_lrh_lp_template',
+					'value' => $template,
+				),
+			),
+			'posts_per_page' => 1,
+		);
+
+		$posts = get_posts( $args );
+
+		return ! empty( $posts ) ? $posts[0] : false;
+	}
+
+	/**
+	 * Static version of get_user_data for static method context.
+	 *
+	 * @param int $user_id User ID.
+	 * @return array User data.
+	 */
+	private static function get_user_data_static( $user_id ) {
+		$data = array();
+
+		// Try to get from frs-wp-users Profile first
+		if ( class_exists( 'FRSUsers\\Models\\Profile' ) ) {
+			$profile = \FRSUsers\Models\Profile::where( 'user_id', $user_id )->first();
+
+			if ( $profile ) {
+				$data = array(
+					'first_name' => $profile->first_name,
+					'last_name'  => $profile->last_name,
+					'email'      => $profile->email,
+					'name'       => $profile->first_name . ' ' . $profile->last_name,
+					'phone'      => $profile->phone_number ?: $profile->mobile_number,
+					'nmls'       => $profile->nmls ?: $profile->nmls_number,
+					'title'      => $profile->job_title ?: 'Senior Loan Officer',
+					'headshot'   => $profile->headshot_id ? wp_get_attachment_url( $profile->headshot_id ) : '',
+				);
+			}
+		}
+
+		// Fallback to user data
+		if ( empty( $data ) ) {
+			$user = get_user_by( 'id', $user_id );
+			if ( $user ) {
+				$data = array(
+					'first_name' => $user->first_name ?: $user->display_name,
+					'last_name'  => $user->last_name,
+					'email'      => $user->user_email,
+					'name'       => $user->display_name,
+				);
+			}
+		}
+
+		return $data;
+	}
+
+	/**
+	 * Static version of create_page_assignment for static method context.
+	 *
+	 * @param int    $user_id User ID.
+	 * @param int    $page_id Page ID.
+	 * @param string $template Template type.
+	 * @return void
+	 */
+	private static function create_page_assignment_static( $user_id, $page_id, $template ) {
+		if ( class_exists( 'LendingResourceHub\\Models\\PageAssignment' ) ) {
+			// Use Eloquent model
+			PageAssignment::create(
+				array(
+					'user_id'          => $user_id,
+					'template_page_id' => 0,
+					'assigned_page_id' => $page_id,
+					'page_type'        => 'mortgage_' . $template,
+					'slug_pattern'     => get_post_field( 'post_name', $page_id ),
+					'created_date'     => current_time( 'mysql' ),
+				)
+			);
+		} else {
+			// Fallback to direct database insert
+			global $wpdb;
+
+			$table = $wpdb->prefix . 'page_assignments';
+
+			$wpdb->insert(
+				$table,
+				array(
+					'user_id'          => $user_id,
+					'template_page_id' => 0,
+					'assigned_page_id' => $page_id,
+					'page_type'        => 'mortgage_' . $template,
+					'slug_pattern'     => get_post_field( 'post_name', $page_id ),
+					'created_date'     => current_time( 'mysql' ),
+				),
+				array( '%d', '%d', '%d', '%s', '%s', '%s' )
+			);
+		}
+	}
+
+	/**
 	 * Create a single landing page.
 	 *
 	 * @param int    $user_id Loan officer user ID.
@@ -571,5 +1087,45 @@ class MortgageLandingGenerator {
 		);
 
 		return get_posts( $args );
+	}
+
+	/**
+	 * Get or create parent page for user's landing pages.
+	 *
+	 * @param int    $user_id User ID.
+	 * @param string $slug Parent page slug (e.g., 'blakecargill').
+	 * @param string $first_name User's first name for title.
+	 * @return int Parent page ID.
+	 */
+	private static function get_or_create_user_parent_page( $user_id, $slug, $first_name ) {
+		// Check if parent page already exists
+		$existing = get_page_by_path( $slug, OBJECT, 'frs_mortgage_lp' );
+
+		if ( $existing ) {
+			return $existing->ID;
+		}
+
+		// Create parent page
+		$parent_data = array(
+			'post_title'   => $first_name,
+			'post_name'    => $slug,
+			'post_type'    => 'frs_mortgage_lp',
+			'post_status'  => 'publish',
+			'post_author'  => $user_id,
+			'post_content' => '<!-- wp:paragraph --><p>Welcome to ' . esc_html( $first_name ) . '\'s landing pages.</p><!-- /wp:paragraph -->',
+			'meta_input'   => array(
+				'_lrh_lp_template' => 'parent',
+				'_lrh_lp_owner'    => $user_id,
+			),
+		);
+
+		$parent_id = wp_insert_post( $parent_data );
+
+		if ( is_wp_error( $parent_id ) ) {
+			error_log( 'LRH: Failed to create parent page for user ' . $user_id );
+			return 0;
+		}
+
+		return $parent_id;
 	}
 }

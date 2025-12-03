@@ -9,6 +9,16 @@ interface RealtorPortalConfig {
   userEmail: string;
   userAvatar: string;
   restNonce: string;
+  companySlug?: string;
+  companyId?: string;
+  companyName?: string;
+  branding?: {
+    primaryColor: string;
+    secondaryColor: string;
+    customLogo: string;
+    companyName: string;
+    headerBackground: string;
+  };
 }
 
 export default function RealtorPortal(config: RealtorPortalConfig) {
@@ -62,6 +72,7 @@ export default function RealtorPortal(config: RealtorPortalConfig) {
   const routes = getRealtorRoutes({
     currentUser,
     userId: config.userId,
+    branding: config.branding,
   });
 
   const router = createHashRouter(routes);

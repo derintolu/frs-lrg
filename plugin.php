@@ -18,9 +18,12 @@ use LendingResourceHub\Integrations\FluentBooking;
 use LendingResourceHub\Integrations\FluentForms;
 use LendingResourceHub\Integrations\FluentCRMSync;
 use LendingResourceHub\Controllers\Biolinks\Blocks as BiolinkBlocks;
+use LendingResourceHub\Controllers\Prequal\Blocks as PrequalBlocks;
+use LendingResourceHub\Controllers\OpenHouse\Blocks as OpenHouseBlocks;
 use LendingResourceHub\Controllers\PartnerPortals\Blocks as PartnerPortalBlocks;
 use LendingResourceHub\Controllers\PartnerPortals\Api as PartnerPortalApi;
 use LendingResourceHub\Controllers\PartnerPortals\PartnerCompanyPortal;
+use LendingResourceHub\Abilities\AbilitiesRegistry;
 use LendingResourceHub\Traits\Base;
 
 defined( 'ABSPATH' ) || exit;
@@ -77,6 +80,8 @@ final class LendingResourceHub {
 		Redirects::get_instance()->init();
 		CoreBlocks::get_instance()->init();
 		BiolinkBlocks::get_instance()->init();
+		PrequalBlocks::get_instance()->init();
+		OpenHouseBlocks::get_instance()->init();
 		PartnerPortalBlocks::get_instance()->init();
 		PartnerPortalApi::get_instance()->init();
 		PartnerCompanyPortal::get_instance()->init();
@@ -101,6 +106,9 @@ final class LendingResourceHub {
 		if ( function_exists('FluentCrmApi') ) {
 			FluentCRMSync::get_instance()->init();
 		}
+
+		// Initialize WordPress Abilities API integration
+		AbilitiesRegistry::init();
 
 		// Check dependencies and show admin notices
 		add_action( 'admin_notices', array( $this, 'check_dependencies' ) );

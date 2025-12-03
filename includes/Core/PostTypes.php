@@ -58,8 +58,9 @@ class PostTypes {
 				'has_archive'  => false,
 				'hierarchical' => true,
 				'rewrite'      => array(
-					'slug'       => 're',
-					'with_front' => false,
+					'slug'         => 're',
+					'with_front'   => false,
+					'hierarchical' => true,
 				),
 				'menu_icon'    => 'dashicons-admin-home',
 			)
@@ -154,9 +155,14 @@ class PostTypes {
 				'show_ui'       => true,
 				'show_in_menu'  => 'lending-resource-hub',
 				'show_in_rest'  => true,
-				'supports'      => array( 'title', 'editor', 'custom-fields' ),
+				'hierarchical'  => true,
+				'supports'      => array( 'title', 'editor', 'custom-fields', 'page-attributes' ),
 				'has_archive'   => false,
-				'rewrite'       => array( 'slug' => 'apply' ),
+				'rewrite'       => array(
+					'slug'       => 'lo',
+					'with_front' => false,
+					'hierarchical' => true,
+				),
 				'menu_icon'     => 'dashicons-money-alt',
 				'template'      => array(),
 				'template_lock' => 'all',

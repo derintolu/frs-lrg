@@ -14,9 +14,16 @@ import { CollapsibleSidebar, MenuItem } from '../ui/CollapsibleSidebar';
 
 interface RealtorDashboardLayoutProps {
   currentUser: UserType;
+  branding?: {
+    primaryColor: string;
+    secondaryColor: string;
+    customLogo: string;
+    companyName: string;
+    headerBackground: string;
+  };
 }
 
-export function RealtorDashboardLayout({ currentUser }: RealtorDashboardLayoutProps) {
+export function RealtorDashboardLayout({ currentUser, branding }: RealtorDashboardLayoutProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const [headerHeight, setHeaderHeight] = useState<string>('0px');
@@ -109,18 +116,53 @@ export function RealtorDashboardLayout({ currentUser }: RealtorDashboardLayoutPr
     { id: '/resources', label: 'Resources', icon: FileText },
   ];
 
+  // Use company branding or default colors
+  const primaryColor = branding?.primaryColor || '#2563eb';
+  const secondaryColor = branding?.secondaryColor || '#2dd4da';
+  const companyLogo = branding?.customLogo || '';
+  const companyDisplayName = branding?.companyName || 'Real Estate Agent';
+  const customHeaderBg = branding?.headerBackground || '';
+
   const sidebarHeader = (
     <div className="relative w-full overflow-hidden">
       {/* Gradient Banner */}
       <div
         className="relative w-full overflow-visible"
         style={{
-          background: 'linear-gradient(135deg, #2563eb 0%, #2dd4da 100%)',
+          background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
           height: '100px'
         }}
       >
-        {/* Animated Video Background */}
-        {gradientUrl && (
+        {/* Custom Background Image/Video */}
+        {customHeaderBg ? (
+          <>
+            {customHeaderBg.endsWith('.mp4') || customHeaderBg.endsWith('.webm') ? (
+              <video
+                autoPlay
+                muted
+                loop
+                playsInline
+                className="absolute inset-0 w-full h-full object-cover"
+                style={{ zIndex: 0 }}
+              >
+                <source src={customHeaderBg} type="video/mp4" />
+              </video>
+            ) : (
+              <div
+                className="absolute inset-0 w-full h-full bg-cover bg-center"
+                style={{
+                  backgroundImage: `url(${customHeaderBg})`,
+                  zIndex: 0
+                }}
+              />
+            )}
+            {/* Dark overlay for text/logo readability */}
+            <div
+              className="absolute inset-0 bg-black/30"
+              style={{ zIndex: 1 }}
+            />
+          </>
+        ) : gradientUrl && (
           <>
             <video
               autoPlay
@@ -140,41 +182,41 @@ export function RealtorDashboardLayout({ currentUser }: RealtorDashboardLayoutPr
           </>
         )}
 
-        {/* Avatar and Name - Horizontal Layout */}
+        {/* Company Logo and Name - Centered Layout */}
         <div
-          className="relative w-full px-4 py-4 flex items-center gap-3"
+          className="relative w-full px-4 py-4 flex flex-col items-center justify-center gap-2"
           style={{ zIndex: 10 }}
         >
-          {/* Avatar */}
-          <div className="flex-shrink-0">
-            <div
-              className="size-14 rounded-full overflow-hidden shadow-lg"
-              style={{
-                border: '2px solid transparent',
-                backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #2563eb 0%, #2dd4da 100%)',
-                backgroundOrigin: 'padding-box, border-box',
-                backgroundClip: 'padding-box, border-box',
-              }}
-            >
+          {/* Company Logo */}
+          {companyLogo ? (
+            <div className="flex-shrink-0">
               <img
-                src={userAvatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=2DD4DA&color=fff`}
-                alt={userName}
-                className="w-full h-full object-cover"
-                onError={(e) => {
-                  e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=2DD4DA&color=fff`;
-                }}
+                src={companyLogo}
+                alt={companyDisplayName}
+                className="h-12 w-auto max-w-[200px] object-contain drop-shadow-lg"
+                style={{ filter: 'brightness(0) invert(1)' }}
               />
             </div>
-          </div>
+          ) : (
+            <div className="flex-shrink-0">
+              <div
+                className="size-14 rounded-full overflow-hidden shadow-lg bg-white/20 flex items-center justify-center"
+                style={{
+                  border: '2px solid rgba(255, 255, 255, 0.3)',
+                }}
+              >
+                <span className="text-white text-xl font-bold">
+                  {companyDisplayName.charAt(0).toUpperCase()}
+                </span>
+              </div>
+            </div>
+          )}
 
-          {/* Name and Title */}
-          <div className="flex-1 min-w-0">
-            <h3 className="font-bold text-white text-base mb-0.5 drop-shadow-md truncate">
-              {userName}
+          {/* Company Name */}
+          <div className="text-center">
+            <h3 className="font-bold text-white text-base drop-shadow-md">
+              {companyDisplayName}
             </h3>
-            <p className="font-normal text-white text-sm drop-shadow-md truncate">
-              Real Estate Agent
-            </p>
           </div>
         </div>
       </div>

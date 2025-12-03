@@ -18,6 +18,17 @@ if (!wpData) {
 } else {
   const container = document.getElementById('lrh-realtor-portal-root');
   if (container) {
+    // Get branding data from data attributes
+    const brandingData = container.getAttribute('data-branding');
+    let branding = undefined;
+    if (brandingData) {
+      try {
+        branding = JSON.parse(brandingData);
+      } catch (e) {
+        console.error('Failed to parse branding data:', e);
+      }
+    }
+
     const root = createRoot(container);
     root.render(
       <RealtorPortal
@@ -26,6 +37,10 @@ if (!wpData) {
         userEmail={wpData.userEmail}
         userAvatar={wpData.userAvatar}
         restNonce={wpData.restNonce}
+        companySlug={container.getAttribute('data-company-slug') || ''}
+        companyId={container.getAttribute('data-company-id') || ''}
+        companyName={container.getAttribute('data-company-name') || ''}
+        branding={branding}
       />
     );
   } else {

@@ -59,6 +59,16 @@ Route::prefix(
 		// ====== LANDING PAGES ROUTES ======
 		$route->get( '/landing-pages/lo/{id}', '\LendingResourceHub\Controllers\LandingPages\Actions@get_landing_pages_for_lo' );
 		$route->get( '/landing-pages/realtor/{id}', '\LendingResourceHub\Controllers\LandingPages\Actions@get_landing_pages_for_realtor' );
+		$route->get( '/landing-pages/templates', '\LendingResourceHub\Controllers\LandingPages\Actions@get_templates' );
+
+		// Page generation endpoints
+		$route->post( '/pages/generate/biolink', '\LendingResourceHub\Controllers\LandingPages\Actions@generate_biolink' );
+		$route->post( '/pages/generate/prequal', '\LendingResourceHub\Controllers\LandingPages\Actions@generate_prequal' );
+		$route->post( '/pages/generate/openhouse', '\LendingResourceHub\Controllers\LandingPages\Actions@generate_openhouse' );
+		$route->post( '/pages/generate/mortgage', '\LendingResourceHub\Controllers\LandingPages\Actions@generate_mortgage' );
+		$route->post( '/pages/generate/tools', '\LendingResourceHub\Controllers\LandingPages\Actions@generate_tools' );
+		$route->post( '/pages/generate/calculator', '\LendingResourceHub\Controllers\LandingPages\Actions@generate_calculator' );
+		$route->post( '/pages/generate/valuation', '\LendingResourceHub\Controllers\LandingPages\Actions@generate_valuation' );
 
 		// ====== MARKETING ROUTES ======
 		$route->get( '/marketing-materials', '\LendingResourceHub\Controllers\Marketing\Actions@get_marketing_materials' );

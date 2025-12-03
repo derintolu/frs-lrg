@@ -13,6 +13,11 @@ namespace LendingResourceHub\Controllers\LandingPages;
 use WP_REST_Request;
 use WP_REST_Response;
 use WP_Error;
+use LendingResourceHub\Controllers\Biolinks\Blocks as BiolinkBlocks;
+use LendingResourceHub\Controllers\Prequal\Blocks as PrequalBlocks;
+use LendingResourceHub\Controllers\OpenHouse\Blocks as OpenHouseBlocks;
+use LendingResourceHub\Core\MortgageLandingGenerator;
+use LendingResourceHub\Controllers\PartnerPortals\Blocks as PartnerPortalBlocks;
 
 /**
  * Class Actions
@@ -248,5 +253,306 @@ class Actions {
 		}
 
 		return rest_ensure_response( $pages );
+	}
+
+	/**
+	 * Get landing page templates.
+	 *
+	 * @param WP_REST_Request $request The REST request object.
+	 * @return WP_REST_Response The response.
+	 */
+	public function get_templates( WP_REST_Request $request ) {
+		$templates = array();
+
+		// Get all mortgage landing pages marked as templates
+		$template_pages = get_posts(
+			array(
+				'post_type'   => 'frs_mortgage_lp',
+				'meta_query'  => array(
+					array(
+						'key'     => '_lrh_is_template',
+						'value'   => '1',
+						'compare' => '=',
+					),
+				),
+				'post_status' => 'publish',
+				'numberposts' => -1,
+				'orderby'     => 'menu_order',
+				'order'       => 'ASC',
+			)
+		);
+
+		foreach ( $template_pages as $template ) {
+			$template_type = get_post_meta( $template->ID, '_lrh_lp_template', true );
+
+			$templates[] = array(
+				'id'           => $template->ID,
+				'title'        => $template->post_title,
+				'type'         => $template_type ?: 'unknown',
+				'template'     => $template_type,
+				'status'       => $template->post_status,
+				'url'          => get_permalink( $template->ID ),
+				'thumbnail'    => get_the_post_thumbnail_url( $template->ID, 'medium' ) ?: '',
+				'isTemplate'   => true,
+				'createdAt'    => $template->post_date,
+				'lastModified' => $template->post_modified,
+			);
+		}
+
+		return rest_ensure_response( $templates );
+	}
+
+	/**
+	 * Generate biolink page.
+	 *
+	 * @param WP_REST_Request $request The REST request object.
+	 * @return WP_REST_Response|WP_Error The response.
+	 */
+	public function generate_biolink( WP_REST_Request $request ) {
+		$user_id = $request->get_param( 'user_id' ) ?? get_current_user_id();
+
+		// Check permissions
+		if ( ! current_user_can( 'edit_posts' ) ) {
+			return new WP_Error( 'rest_forbidden', __( 'You do not have permission to create pages.', 'lending-resource-hub' ), array( 'status' => 403 ) );
+		}
+
+		// Check if biolink already exists for this user
+		$existing = get_posts(
+			array(
+				'post_type'   => 'frs_biolink',
+				'meta_query'  => array(
+					array(
+						'key'     => '_frs_loan_officer_id',
+						'value'   => $user_id,
+						'compare' => '=',
+					),
+				),
+				'numberposts' => 1,
+			)
+		);
+
+		if ( ! empty( $existing ) ) {
+			return new WP_Error( 'biolink_exists', __( 'Biolink page already exists for this user.', 'lending-resource-hub' ), array( 'status' => 400 ) );
+		}
+
+		// Generate the page
+		$result = BiolinkBlocks::generate_biolink_page( $user_id );
+
+		if ( ! $result ) {
+			return new WP_Error( 'generation_failed', __( 'Failed to generate biolink page.', 'lending-resource-hub' ), array( 'status' => 500 ) );
+		}
+
+		return rest_ensure_response(
+			array(
+				'success' => true,
+				'page'    => $result,
+			)
+		);
+	}
+
+	/**
+	 * Generate prequal page.
+	 *
+	 * @param WP_REST_Request $request The REST request object.
+	 * @return WP_REST_Response|WP_Error The response.
+	 */
+	public function generate_prequal( WP_REST_Request $request ) {
+		$loan_officer_id = $request->get_param( 'loan_officer_id' ) ?? get_current_user_id();
+		$realtor_id      = $request->get_param( 'realtor_id' );
+		$partnership_id  = $request->get_param( 'partnership_id' );
+
+		// Validate required params
+		if ( empty( $realtor_id ) ) {
+			return new WP_Error( 'missing_param', __( 'Realtor ID is required.', 'lending-resource-hub' ), array( 'status' => 400 ) );
+		}
+
+		// Check permissions
+		if ( ! current_user_can( 'edit_posts' ) ) {
+			return new WP_Error( 'rest_forbidden', __( 'You do not have permission to create pages.', 'lending-resource-hub' ), array( 'status' => 403 ) );
+		}
+
+		// Generate the page
+		$result = PrequalBlocks::generate_prequal_page( $loan_officer_id, $realtor_id, $partnership_id );
+
+		if ( ! $result ) {
+			return new WP_Error( 'generation_failed', __( 'Failed to generate prequal page.', 'lending-resource-hub' ), array( 'status' => 500 ) );
+		}
+
+		return rest_ensure_response(
+			array(
+				'success' => true,
+				'page'    => $result,
+			)
+		);
+	}
+
+	/**
+	 * Generate open house page.
+	 *
+	 * @param WP_REST_Request $request The REST request object.
+	 * @return WP_REST_Response|WP_Error The response.
+	 */
+	public function generate_openhouse( WP_REST_Request $request ) {
+		$loan_officer_id = $request->get_param( 'loan_officer_id' ) ?? get_current_user_id();
+		$realtor_id      = $request->get_param( 'realtor_id' );
+		$property_address = $request->get_param( 'property_address' );
+		$property_data   = $request->get_param( 'property_data' ) ?? array();
+
+		// Validate required params
+		if ( empty( $realtor_id ) ) {
+			return new WP_Error( 'missing_param', __( 'Realtor ID is required.', 'lending-resource-hub' ), array( 'status' => 400 ) );
+		}
+
+		if ( empty( $property_address ) ) {
+			return new WP_Error( 'missing_param', __( 'Property address is required.', 'lending-resource-hub' ), array( 'status' => 400 ) );
+		}
+
+		// Check permissions
+		if ( ! current_user_can( 'edit_posts' ) ) {
+			return new WP_Error( 'rest_forbidden', __( 'You do not have permission to create pages.', 'lending-resource-hub' ), array( 'status' => 403 ) );
+		}
+
+		// Generate the page
+		$result = OpenHouseBlocks::generate_openhouse_page( $loan_officer_id, $realtor_id, $property_address, $property_data );
+
+		if ( ! $result ) {
+			return new WP_Error( 'generation_failed', __( 'Failed to generate open house page.', 'lending-resource-hub' ), array( 'status' => 500 ) );
+		}
+
+		return rest_ensure_response(
+			array(
+				'success' => true,
+				'page'    => $result,
+			)
+		);
+	}
+
+	/**
+	 * Generate mortgage landing pages.
+	 *
+	 * @param WP_REST_Request $request The REST request object.
+	 * @return WP_REST_Response|WP_Error The response.
+	 */
+	public function generate_mortgage( WP_REST_Request $request ) {
+		$user_id = $request->get_param( 'user_id' ) ?? get_current_user_id();
+
+		// Check permissions
+		if ( ! current_user_can( 'edit_posts' ) ) {
+			return new WP_Error( 'rest_forbidden', __( 'You do not have permission to create pages.', 'lending-resource-hub' ), array( 'status' => 403 ) );
+		}
+
+		// Check if mortgage pages already exist for this user
+		$existing = get_posts(
+			array(
+				'post_type'   => 'frs_mortgage_lp',
+				'author'      => $user_id,
+				'numberposts' => 1,
+			)
+		);
+
+		if ( ! empty( $existing ) ) {
+			return new WP_Error( 'mortgage_exists', __( 'Mortgage landing pages already exist for this user.', 'lending-resource-hub' ), array( 'status' => 400 ) );
+		}
+
+		// Generate the pages (creates 2 pages: loan-app and rate-quote)
+		$result = MortgageLandingGenerator::generate_pages_for_user( $user_id );
+
+		if ( ! $result ) {
+			return new WP_Error( 'generation_failed', __( 'Failed to generate mortgage pages.', 'lending-resource-hub' ), array( 'status' => 500 ) );
+		}
+
+		return rest_ensure_response(
+			array(
+				'success' => true,
+				'pages'   => $result,
+			)
+		);
+	}
+
+	/**
+	 * Generate tools landing page (calculator + property valuation).
+	 *
+	 * @param WP_REST_Request $request The REST request object.
+	 * @return WP_REST_Response|WP_Error The response.
+	 */
+	public function generate_tools( WP_REST_Request $request ) {
+		$user_id = $request->get_param( 'user_id' ) ?? get_current_user_id();
+
+		// Check permissions
+		if ( ! current_user_can( 'edit_posts' ) ) {
+			return new WP_Error( 'rest_forbidden', __( 'You do not have permission to create pages.', 'lending-resource-hub' ), array( 'status' => 403 ) );
+		}
+
+		// Generate the tools landing page
+		$result = MortgageLandingGenerator::generate_tools_landing_page( $user_id );
+
+		if ( ! $result ) {
+			return new WP_Error( 'generation_failed', __( 'Failed to generate tools landing page.', 'lending-resource-hub' ), array( 'status' => 500 ) );
+		}
+
+		return rest_ensure_response(
+			array(
+				'success' => true,
+				'page'    => $result,
+			)
+		);
+	}
+
+	/**
+	 * Generate calculator landing page.
+	 *
+	 * @param WP_REST_Request $request The REST request object.
+	 * @return WP_REST_Response|WP_Error The response.
+	 */
+	public function generate_calculator( WP_REST_Request $request ) {
+		$user_id = $request->get_param( 'user_id' ) ?? get_current_user_id();
+
+		// Check permissions
+		if ( ! current_user_can( 'edit_posts' ) ) {
+			return new WP_Error( 'rest_forbidden', __( 'You do not have permission to create pages.', 'lending-resource-hub' ), array( 'status' => 403 ) );
+		}
+
+		// Generate the calculator landing page
+		$result = MortgageLandingGenerator::generate_calculator_landing_page( $user_id );
+
+		if ( ! $result ) {
+			return new WP_Error( 'generation_failed', __( 'Failed to generate calculator landing page.', 'lending-resource-hub' ), array( 'status' => 500 ) );
+		}
+
+		return rest_ensure_response(
+			array(
+				'success' => true,
+				'page'    => $result,
+			)
+		);
+	}
+
+	/**
+	 * Generate property valuation landing page.
+	 *
+	 * @param WP_REST_Request $request The REST request object.
+	 * @return WP_REST_Response|WP_Error The response.
+	 */
+	public function generate_valuation( WP_REST_Request $request ) {
+		$user_id = $request->get_param( 'user_id' ) ?? get_current_user_id();
+
+		// Check permissions
+		if ( ! current_user_can( 'edit_posts' ) ) {
+			return new WP_Error( 'rest_forbidden', __( 'You do not have permission to create pages.', 'lending-resource-hub' ), array( 'status' => 403 ) );
+		}
+
+		// Generate the valuation landing page
+		$result = MortgageLandingGenerator::generate_valuation_landing_page( $user_id );
+
+		if ( ! $result ) {
+			return new WP_Error( 'generation_failed', __( 'Failed to generate valuation landing page.', 'lending-resource-hub' ), array( 'status' => 500 ) );
+		}
+
+		return rest_ensure_response(
+			array(
+				'success' => true,
+				'page'    => $result,
+			)
+		);
 	}
 }

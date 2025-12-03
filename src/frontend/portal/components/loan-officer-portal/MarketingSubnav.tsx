@@ -56,10 +56,16 @@ export function MarketingSubnav({ currentPath = '' }: MarketingSubnavProps) {
 
   return (
     <div
-      className="fixed left-0 top-0 h-full w-64 z-50 p-4"
-      style={{ backgroundColor: '#0B102C' }}
+      className="fixed left-0 h-full w-80 z-50"
+      style={{
+        backgroundColor: '#0B102C',
+        top: 'var(--header-height, 60px)',
+        transition: 'transform 0.3s ease-in-out',
+        transform: 'translateX(0)',
+        boxShadow: '2px 0 8px rgba(0, 0, 0, 0.1)'
+      }}
     >
-      <div className="rounded-lg shadow-sm p-4">
+      <div className="p-4 h-full overflow-y-auto">
         <button
           onClick={() => setIsOpen(!isOpen)}
           className="w-full flex items-center justify-between text-lg font-semibold text-white mb-3 hover:text-blue-300 transition-colors"

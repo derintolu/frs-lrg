@@ -29,10 +29,10 @@ import {
   Zap,
   Link as LinkIcon,
   CheckCircle,
+  ChevronRight,
 } from 'lucide-react';
 import { useProfileEdit } from '../contexts/ProfileEditContext';
 import { Button } from './ui/button';
-import { MarketingSubnav } from './loan-officer-portal/MarketingSubnav';
 
 interface PortalSidebarLayoutProps {
   currentUser: {
@@ -94,6 +94,7 @@ export function PortalSidebarLayout({ currentUser, viewedUser, isOwnProfile, chi
   const [isEditMode, setIsEditMode] = useState(false);
   const [viewport, setViewport] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
   const [isSaving, setIsSaving] = useState(false);
+  const [expandedMenuItems, setExpandedMenuItems] = useState<Set<string>>(new Set(['marketing']));
 
   // Get gradient URL from WordPress data (check both config names)
   const gradientUrl = (window as any).frsPortalConfig?.gradientUrl || (window as any).frsBPConfig?.gradientUrl || '';
@@ -414,7 +415,25 @@ export function PortalSidebarLayout({ currentUser, viewedUser, isOwnProfile, chi
     </div>
   );
 
+  const toggleMenuItem = (itemId: string) => {
+    setExpandedMenuItems(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(itemId)) {
+        newSet.delete(itemId);
+      } else {
+        newSet.add(itemId);
+      }
+      return newSet;
+    });
+  };
+
   const handleItemClick = (item: MenuItem) => {
+    // If item has children, toggle expansion instead of navigating
+    if (item.children && item.children.length > 0) {
+      toggleMenuItem(item.id);
+      return;
+    }
+
     // In edit mode, handle edit menu items
     if (isEditMode && item.id.startsWith('edit-')) {
       const sectionMap = {
@@ -996,37 +1015,53 @@ export function PortalSidebarLayout({ currentUser, viewedUser, isOwnProfile, chi
 
             {/* Normal menu or edit mode menu */}
             <div className="flex flex-col">
-              {menuItems.map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => handleItemClick(item)}
-                  className={`flex items-center gap-3 px-4 py-3 transition-colors ${
-                    activeTab === item.id || sidebarView === item.id
-                      ? 'bg-gradient-to-r from-blue-500/10 to-cyan-500/10 text-gray-900'
-                      : 'text-gray-700 hover:bg-gray-50'
-                  }`}
-                >
-                  <item.icon className="h-5 w-5" />
-                  <span className="font-medium">{item.label}</span>
-                </button>
-              ))}
+              {menuItems.map((item) => {
+                const isExpanded = expandedMenuItems.has(item.id);
+                const hasChildren = item.children && item.children.length > 0;
+
+                return (
+                  <div key={item.id}>
+                    <button
+                      onClick={() => handleItemClick(item)}
+                      className={`flex items-center gap-3 px-4 py-3 transition-colors w-full text-left ${
+                        activeTab === item.id || sidebarView === item.id
+                          ? 'bg-gradient-to-r from-blue-500/10 to-cyan-500/10 text-gray-900'
+                          : 'text-gray-700 hover:bg-gray-50'
+                      }`}
+                    >
+                      <item.icon className="h-5 w-5" />
+                      <span className="font-medium flex-1">{item.label}</span>
+                      {hasChildren && (
+                        <ChevronRight className={`h-4 w-4 transition-transform ${isExpanded ? 'rotate-90' : ''}`} />
+                      )}
+                    </button>
+
+                    {/* Child menu items */}
+                    {hasChildren && isExpanded && (
+                      <div className="bg-gray-50">
+                        {item.children?.map((child) => (
+                          <a
+                            key={child.id}
+                            href={child.page ? `/${getPortalBase()}/${child.page}/` : '#'}
+                            data-wp-router-link
+                            className={`flex items-center gap-3 pl-12 pr-4 py-2.5 transition-colors text-sm ${
+                              window.location.pathname.includes(child.page || '')
+                                ? 'bg-blue-500/10 text-blue-700 font-medium'
+                                : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                            }`}
+                          >
+                            {child.label}
+                          </a>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </div>
 
-          {/* Marketing Subnav Overlay - slides in when on marketing pages */}
-          {true && (
-            <div
-              className="absolute inset-0 overflow-y-auto scrollbar-hide p-4"
-              style={{
-                msOverflowStyle: 'none',
-                scrollbarWidth: 'none',
-                zIndex: 50,
-                backgroundColor: '#0B102C'
-              }}
-            >
-              <MarketingSubnav currentPath={window.location.pathname} />
-            </div>
-          )}
+          {/* Marketing Subnav - rendered independently, handles own visibility */}
 
           {/* Edit section - slides in from right */}
           <div

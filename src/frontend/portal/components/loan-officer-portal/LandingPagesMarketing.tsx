@@ -18,7 +18,8 @@ import {
   Edit,
   Share2,
   Calendar,
-  Search
+  Search,
+  Plus
 } from 'lucide-react';
 import { DataService } from '../../utils/dataService';
 import type { LandingPage } from '../../utils/dataService';
@@ -31,6 +32,7 @@ interface LandingPagesMarketingProps {
 
 export function LandingPagesMarketing({ userId, currentUser }: LandingPagesMarketingProps) {
   const [landingPages, setLandingPages] = useState<LandingPage[]>([]);
+  const [templates, setTemplates] = useState<LandingPage[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [editorOpen, setEditorOpen] = useState(false);
@@ -39,16 +41,22 @@ export function LandingPagesMarketing({ userId, currentUser }: LandingPagesMarke
   const [previewPageId, setPreviewPageId] = useState<string | null>(null);
   const [personalSearchQuery, setPersonalSearchQuery] = useState('');
   const [cobrandedSearchQuery, setCobrandedSearchQuery] = useState('');
+  const [generatingTemplate, setGeneratingTemplate] = useState<string | null>(null);
 
-  // Load landing pages from API
+  // Load landing pages and templates from API
   useEffect(() => {
     const loadLandingPages = async () => {
       try {
         setIsLoading(true);
-        const pages = await DataService.getLandingPagesForLO(userId);
+        const [pages, templatePages] = await Promise.all([
+          DataService.getLandingPagesForLO(userId),
+          fetch('/wp-json/lrh/v1/landing-pages/templates').then(res => res.json())
+        ]);
+
         // Filter out biolink pages - they have their own section
         const filteredPages = pages.filter(page => page.type !== 'biolink');
         setLandingPages(filteredPages);
+        setTemplates(templatePages);
         setError(null);
       } catch (err) {
         console.error('Failed to load landing pages:', err);
@@ -89,6 +97,39 @@ export function LandingPagesMarketing({ userId, currentUser }: LandingPagesMarke
   const openEditor = (pageId: string) => {
     setEditorPageId(pageId);
     setEditorOpen(true);
+  };
+
+  // Generate a landing page from template
+  const generateFromTemplate = async (templateType: string) => {
+    try {
+      setGeneratingTemplate(templateType);
+
+      const response = await fetch(`/wp-json/lrh/v1/pages/generate/${templateType}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-WP-Nonce': (window as any).wpApiSettings?.nonce || '',
+        },
+        body: JSON.stringify({ user_id: userId }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate page');
+      }
+
+      const data = await response.json();
+
+      // Reload landing pages to show the new page
+      const pages = await DataService.getLandingPagesForLO(userId);
+      const filteredPages = pages.filter(page => page.type !== 'biolink');
+      setLandingPages(filteredPages);
+
+    } catch (err) {
+      console.error('Failed to generate landing page:', err);
+      alert('Failed to generate landing page. Please try again.');
+    } finally {
+      setGeneratingTemplate(null);
+    }
   };
 
   // Filter function for search
@@ -146,7 +187,18 @@ export function LandingPagesMarketing({ userId, currentUser }: LandingPagesMarke
     );
   }
 
+  // Get list of template types that user has already generated
+  const existingTemplateTypes = allPersonalPages.map(page => {
+    return (page as any).template || page.type;
+  });
+
+  // Filter templates to only show ones user hasn't generated yet
+  const availableTemplates = templates.filter(
+    template => !existingTemplateTypes.includes(template.template || template.type)
+  );
+
   const renderLandingPageCard = (page: LandingPage) => {
+    const isTemplate = (page as any).isTemplate === true;
     const pageConversionRate = page.views > 0
       ? ((page.conversions / page.views) * 100).toFixed(1)
       : '0.0';
@@ -157,24 +209,20 @@ export function LandingPagesMarketing({ userId, currentUser }: LandingPagesMarke
         className="brand-card group hover:shadow-2xl transition-all duration-500 cursor-pointer relative overflow-hidden"
       >
         <CardContent className="p-0 relative">
-          {/* Landing Page Preview - Live Iframe */}
+          {/* Landing Page Preview - Scaled Iframe */}
           <div className="relative aspect-[16/9] overflow-hidden bg-gradient-to-br from-[var(--brand-dark-navy)] to-[var(--brand-royal-blue)]">
             {page.url ? (
-              <div className="absolute inset-0 overflow-hidden">
-                <iframe
-                  src={page.url}
-                  title={`Preview of ${page.title}`}
-                  className="absolute w-full border-0"
-                  style={{
-                    height: '200vh',
-                    top: '-35vh',
-                    left: 0,
-                    margin: 0,
-                    padding: 0
-                  }}
-                  scrolling="no"
-                />
-              </div>
+              <iframe
+                src={page.url}
+                title={`Preview of ${page.title}`}
+                className="absolute top-0 left-0 border-0"
+                style={{
+                  width: '100%',
+                  height: '200%',
+                  pointerEvents: 'none'
+                }}
+                scrolling="no"
+              />
             ) : (
               <div className="w-full h-full flex items-center justify-center">
                 <div className="flex flex-col items-center justify-center space-y-3 text-white/60">
@@ -192,7 +240,7 @@ export function LandingPagesMarketing({ userId, currentUser }: LandingPagesMarke
               {/* Top Section - Type and Status */}
               <div className="flex justify-between items-start">
                 <Badge variant="secondary" className="text-xs bg-white/90 text-[var(--brand-dark-navy)] backdrop-blur-sm shadow-lg">
-                  {PAGE_TYPE_LABELS[(page.type as any) || 'loan_officer'] || page.type}
+                  {isTemplate ? 'Template' : (PAGE_TYPE_LABELS[(page.type as any) || 'loan_officer'] || page.type)}
                 </Badge>
                 {page.isCoBranded && (
                   <Badge className="text-xs bg-[var(--brand-rich-teal)] text-white backdrop-blur-sm shadow-lg">
@@ -229,23 +277,66 @@ export function LandingPagesMarketing({ userId, currentUser }: LandingPagesMarke
             {/* Hover Action Buttons */}
             <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
               <div className="flex space-x-3 transform translate-y-8 group-hover:translate-y-0 transition-transform duration-300">
-                <Button
-                  size="lg"
-                  className="brand-button brand-button-primary shadow-xl border-0 backdrop-blur-sm"
-                  onClick={(e) => { e.stopPropagation(); openEditor(page.id); }}
-                >
-                  <Edit className="h-5 w-5 mr-2" />
-                  Edit Page
-                </Button>
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="brand-button brand-button-hover bg-white/95 shadow-xl backdrop-blur-sm"
-                  onClick={(e) => { e.stopPropagation(); setPreviewPageId(page.id); setPreviewOpen(true); }}
-                >
-                  <Eye className="h-5 w-5 mr-2" />
-                  Preview
-                </Button>
+                {isTemplate ? (
+                  <>
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      className="brand-button brand-button-hover bg-white/95 shadow-xl backdrop-blur-sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (page.url) {
+                          window.open(page.url, '_blank');
+                        }
+                      }}
+                    >
+                      <Eye className="h-5 w-5 mr-2" />
+                      Preview
+                    </Button>
+                    <Button
+                      size="lg"
+                      className="brand-button brand-button-primary shadow-xl border-0 backdrop-blur-sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        const templateType = (page as any).template || page.type;
+                        generateFromTemplate(templateType);
+                      }}
+                      disabled={generatingTemplate === ((page as any).template || page.type)}
+                    >
+                      {generatingTemplate === ((page as any).template || page.type) ? (
+                        <>
+                          <LoadingSpinner className="h-5 w-5 mr-2" />
+                          Generating...
+                        </>
+                      ) : (
+                        <>
+                          <Plus className="h-5 w-5 mr-2" />
+                          Generate
+                        </>
+                      )}
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button
+                      size="lg"
+                      className="brand-button brand-button-primary shadow-xl border-0 backdrop-blur-sm"
+                      onClick={(e) => { e.stopPropagation(); openEditor(page.id); }}
+                    >
+                      <Edit className="h-5 w-5 mr-2" />
+                      Edit Page
+                    </Button>
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      className="brand-button brand-button-hover bg-white/95 shadow-xl backdrop-blur-sm"
+                      onClick={(e) => { e.stopPropagation(); setPreviewPageId(page.id); setPreviewOpen(true); }}
+                    >
+                      <Eye className="h-5 w-5 mr-2" />
+                      Preview
+                    </Button>
+                  </>
+                )}
               </div>
             </div>
           </div>
@@ -345,41 +436,40 @@ export function LandingPagesMarketing({ userId, currentUser }: LandingPagesMarke
           </div>
 
           {/* Personal Pages Grid */}
-          {personalPages.length === 0 ? (
+          {personalPages.length === 0 && availableTemplates.length === 0 && !personalSearchQuery ? (
+            // No pages and no templates available
             <Card className="brand-card">
               <CardContent className="text-center py-12">
-                {personalSearchQuery ? (
-                  <>
-                    <Search className="h-12 w-12 text-[var(--brand-pale-blue)] mx-auto mb-4" />
-                    <h3 className="text-lg font-medium text-[var(--brand-dark-navy)] mb-2">No pages found</h3>
-                    <p className="text-[var(--brand-slate)] mb-4">
-                      Try adjusting your search terms
-                    </p>
-                    <Button
-                      variant="outline"
-                      className="brand-button"
-                      onClick={() => setPersonalSearchQuery('')}
-                    >
-                      Clear Search
-                    </Button>
-                  </>
-                ) : (
-                  <>
-                    <Globe className="h-12 w-12 text-[var(--brand-pale-blue)] mx-auto mb-4" />
-                    <h3 className="text-lg font-medium text-[var(--brand-dark-navy)] mb-2">No Personal Landing Pages Yet</h3>
-                    <p className="text-[var(--brand-slate)] mb-4">
-                      Create your first landing page to start generating leads
-                    </p>
-                    <Button className="brand-button">
-                      Create Landing Page
-                    </Button>
-                  </>
-                )}
+                <Globe className="h-12 w-12 text-[var(--brand-pale-blue)] mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-[var(--brand-dark-navy)] mb-2">No Personal Landing Pages Yet</h3>
+                <p className="text-[var(--brand-slate)] mb-4">
+                  You've generated all available templates. Contact support to add more templates.
+                </p>
+              </CardContent>
+            </Card>
+          ) : personalPages.length === 0 && personalSearchQuery ? (
+            // Show search empty state
+            <Card className="brand-card">
+              <CardContent className="text-center py-12">
+                <Search className="h-12 w-12 text-[var(--brand-pale-blue)] mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-[var(--brand-dark-navy)] mb-2">No pages found</h3>
+                <p className="text-[var(--brand-slate)] mb-4">
+                  Try adjusting your search terms
+                </p>
+                <Button
+                  variant="outline"
+                  className="brand-button"
+                  onClick={() => setPersonalSearchQuery('')}
+                >
+                  Clear Search
+                </Button>
               </CardContent>
             </Card>
           ) : (
+            // Show existing pages and available templates
             <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
               {personalPages.map(renderLandingPageCard)}
+              {!personalSearchQuery && availableTemplates.map(renderLandingPageCard)}
             </div>
           )}
         </TabsContent>

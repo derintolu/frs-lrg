@@ -6,12 +6,19 @@ import type { User } from '../../utils/dataService';
 interface RoutesConfig {
   currentUser: User;
   userId: string;
+  branding?: {
+    primaryColor: string;
+    secondaryColor: string;
+    customLogo: string;
+    companyName: string;
+    headerBackground: string;
+  };
 }
 
-export const getRealtorRoutes = ({ currentUser, userId }: RoutesConfig) => [
+export const getRealtorRoutes = ({ currentUser, userId, branding }: RoutesConfig) => [
   {
     path: '/',
-    element: <RealtorDashboardLayout currentUser={currentUser} />,
+    element: <RealtorDashboardLayout currentUser={currentUser} branding={branding} />,
     children: [
       {
         path: '/',
