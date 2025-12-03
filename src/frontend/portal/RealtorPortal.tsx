@@ -12,6 +12,7 @@ interface RealtorPortalConfig {
   companySlug?: string;
   companyId?: string;
   companyName?: string;
+  loanOfficerIds?: number[];
   branding?: {
     primaryColor: string;
     secondaryColor: string;
@@ -72,6 +73,9 @@ export default function RealtorPortal(config: RealtorPortalConfig) {
   const routes = getRealtorRoutes({
     currentUser,
     userId: config.userId,
+    companyId: config.companyId,
+    companyName: config.companyName,
+    loanOfficerIds: config.loanOfficerIds || [],
     branding: config.branding,
   });
 

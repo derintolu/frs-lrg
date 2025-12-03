@@ -92,27 +92,8 @@ export function RealtorDashboardLayout({ currentUser, branding }: RealtorDashboa
 
   const menuItems: MenuItem[] = [
     { id: '/', label: 'Overview', icon: Home },
-    {
-      id: '/marketing',
-      label: 'Marketing',
-      icon: Briefcase,
-      children: [
-        { id: '/marketing/landing-pages', label: 'Landing Pages' },
-        { id: '/marketing/cobranded', label: 'Co-branded Materials' },
-        { id: '/marketing/social-media', label: 'Social Media Assets' },
-      ]
-    },
-    { id: '/loan-officers', label: 'My Loan Officers', icon: Users },
-    { id: '/leads', label: 'Lead Tracking', icon: TrendingUp },
-    {
-      id: '/tools',
-      label: 'Tools',
-      icon: Wrench,
-      children: [
-        { id: '/tools/mortgage-calculator', label: 'Mortgage Calculator' },
-        { id: '/tools/property-valuation', label: 'Property Valuation' },
-      ]
-    },
+    { id: '/marketing', label: 'Marketing Tools', icon: Briefcase },
+    { id: '/tools', label: 'Calculator & Tools', icon: Calculator },
     { id: '/resources', label: 'Resources', icon: FileText },
   ];
 
@@ -124,100 +105,38 @@ export function RealtorDashboardLayout({ currentUser, branding }: RealtorDashboa
   const customHeaderBg = branding?.headerBackground || '';
 
   const sidebarHeader = (
-    <div className="relative w-full overflow-hidden">
-      {/* Gradient Banner */}
+    <div className="relative w-full overflow-hidden" style={{ backgroundColor: '#000000' }}>
+      {/* Gold Yard Sign Accent - Top Left Corner */}
       <div
-        className="relative w-full overflow-visible"
+        className="absolute top-0 left-0 h-full w-4"
         style={{
-          background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
-          height: '100px'
+          backgroundImage: 'url(https://hub21.local/wp-content/uploads/2025/12/C21-Brand-Kit-Yard-Sign-2.png)',
+          backgroundSize: 'contain',
+          backgroundPosition: 'top left',
+          backgroundRepeat: 'no-repeat',
+          opacity: 0.8,
+          zIndex: 1
         }}
-      >
-        {/* Custom Background Image/Video */}
-        {customHeaderBg ? (
-          <>
-            {customHeaderBg.endsWith('.mp4') || customHeaderBg.endsWith('.webm') ? (
-              <video
-                autoPlay
-                muted
-                loop
-                playsInline
-                className="absolute inset-0 w-full h-full object-cover"
-                style={{ zIndex: 0 }}
-              >
-                <source src={customHeaderBg} type="video/mp4" />
-              </video>
-            ) : (
-              <div
-                className="absolute inset-0 w-full h-full bg-cover bg-center"
-                style={{
-                  backgroundImage: `url(${customHeaderBg})`,
-                  zIndex: 0
-                }}
-              />
-            )}
-            {/* Dark overlay for text/logo readability */}
-            <div
-              className="absolute inset-0 bg-black/30"
-              style={{ zIndex: 1 }}
+      />
+
+      {/* Partner Company Logo */}
+      <div className="relative w-full px-6 py-8 flex flex-col items-center justify-center gap-3" style={{ zIndex: 10 }}>
+        {/* Partner Company Logo (Century 21, etc.) */}
+        {companyLogo && (
+          <div className="flex-shrink-0">
+            <img
+              src={companyLogo}
+              alt={companyDisplayName}
+              className="h-20 w-auto max-w-[240px] object-contain"
             />
-          </>
-        ) : gradientUrl && (
-          <>
-            <video
-              autoPlay
-              muted
-              loop
-              playsInline
-              className="absolute inset-0 w-full h-full object-cover"
-              style={{ zIndex: 0 }}
-            >
-              <source src={gradientUrl} type="video/mp4" />
-            </video>
-            {/* Dark overlay for text readability */}
-            <div
-              className="absolute inset-0 bg-black/20"
-              style={{ zIndex: 1 }}
-            />
-          </>
+          </div>
         )}
 
-        {/* Company Logo and Name - Centered Layout */}
-        <div
-          className="relative w-full px-4 py-4 flex flex-col items-center justify-center gap-2"
-          style={{ zIndex: 10 }}
-        >
-          {/* Company Logo */}
-          {companyLogo ? (
-            <div className="flex-shrink-0">
-              <img
-                src={companyLogo}
-                alt={companyDisplayName}
-                className="h-12 w-auto max-w-[200px] object-contain drop-shadow-lg"
-                style={{ filter: 'brightness(0) invert(1)' }}
-              />
-            </div>
-          ) : (
-            <div className="flex-shrink-0">
-              <div
-                className="size-14 rounded-full overflow-hidden shadow-lg bg-white/20 flex items-center justify-center"
-                style={{
-                  border: '2px solid rgba(255, 255, 255, 0.3)',
-                }}
-              >
-                <span className="text-white text-xl font-bold">
-                  {companyDisplayName.charAt(0).toUpperCase()}
-                </span>
-              </div>
-            </div>
-          )}
-
-          {/* Company Name */}
-          <div className="text-center">
-            <h3 className="font-bold text-white text-base drop-shadow-md">
-              {companyDisplayName}
-            </h3>
-          </div>
+        {/* Company Name */}
+        <div className="text-center">
+          <h3 className="font-bold text-base" style={{ color: '#D4AF37' }}>
+            {companyDisplayName}
+          </h3>
         </div>
       </div>
     </div>
@@ -248,10 +167,10 @@ export function RealtorDashboardLayout({ currentUser, branding }: RealtorDashboa
         footer={sidebarFooter}
         width="320px"
         collapsedWidth="4rem"
-        backgroundColor="hsl(var(--sidebar-background))"
-        textColor="hsl(var(--sidebar-foreground))"
-        activeItemColor="hsl(var(--sidebar-foreground))"
-        activeItemBackground="linear-gradient(to right, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1))"
+        backgroundColor="#000000"
+        textColor="#FFFFFF"
+        activeItemColor="#D4AF37"
+        activeItemBackground="rgba(212, 175, 55, 0.1)"
         position="left"
         topOffset={headerHeight}
         defaultCollapsed={sidebarCollapsed}
@@ -259,7 +178,7 @@ export function RealtorDashboardLayout({ currentUser, branding }: RealtorDashboa
       />
 
       {/* Main Content */}
-      <main className="max-md:p-0 max-md:m-0 md:pt-8 md:pb-6 md:pl-0 md:pr-0 md:ml-[320px] md:mr-0">
+      <main className="max-md:p-0 max-md:m-0 md:pt-8 md:pb-6 md:pl-0 md:pr-0">
         <Outlet />
       </main>
     </div>

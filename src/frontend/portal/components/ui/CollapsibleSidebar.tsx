@@ -202,8 +202,8 @@ export function CollapsibleSidebar({
         <Element
           {...elementProps}
           className={cn(
-            'w-full inline-flex items-center gap-2 text-sm font-medium transition-all rounded-md h-9 px-4 py-2',
-            isChild && 'h-8 px-3 ml-6',
+            'w-full inline-flex items-center gap-3 text-base font-medium transition-all rounded-md h-12 px-4 py-3',
+            isChild && 'h-10 px-3 ml-6',
             shouldShowCollapsed && !isChild && 'justify-center px-2',
             !isActive && 'hover:bg-accent hover:text-accent-foreground',
             isActive && 'shadow-sm',
@@ -219,7 +219,7 @@ export function CollapsibleSidebar({
           }}
           title={shouldShowCollapsed ? item.label : undefined}
         >
-          {Icon && <Icon className="size-4 flex-shrink-0" />}
+          {Icon && <Icon className="size-5 flex-shrink-0" />}
           {!shouldShowCollapsed && (
             <>
               <span className="flex-1 text-left">{item.label}</span>
@@ -358,10 +358,14 @@ export function CollapsibleSidebar({
         className={cn(
           'frs-portal-sidebar-toggle',
           'frs-sidebar-toggle-btn',
-          'absolute top-[30px] z-50 h-8 w-8 rounded-full border bg-white shadow-md hover:bg-gray-50',
+          'absolute top-[30px] z-50 h-8 w-8 rounded-full border shadow-md',
           'flex items-center justify-center transition-colors cursor-pointer no-underline',
           '-right-4'
         )}
+        style={{
+          backgroundColor: '#D4AF37',
+          borderColor: '#D4AF37'
+        }}
         onClick={(e) => {
           e.preventDefault();
           const newCollapsedState = !isCollapsed;
@@ -372,16 +376,16 @@ export function CollapsibleSidebar({
         data-frs-component="sidebar-toggle"
       >
         {isCollapsed ? (
-          <ChevronRight className="h-4 w-4" />
+          <ChevronRight className="h-4 w-4" style={{ color: '#000000' }} />
         ) : (
-          <ChevronLeft className="h-4 w-4" />
+          <ChevronLeft className="h-4 w-4" style={{ color: '#000000' }} />
         )}
       </a>
 
-      <div className="h-full flex flex-col overflow-hidden">
+      <div className="h-full flex flex-col overflow-hidden" style={{ backgroundColor }}>
         {/* Header Section */}
         {header && (
-          <div className={cn(isCollapsed && 'hidden')}>
+          <div className={cn(isCollapsed && 'hidden')} style={{ backgroundColor }}>
             {header}
           </div>
         )}
@@ -392,13 +396,14 @@ export function CollapsibleSidebar({
             'flex-1 overflow-y-auto p-4 space-y-2',
             isCollapsed && 'px-2'
           )}
+          style={{ backgroundColor }}
         >
           {menuItems.map((item) => renderMenuItem(item))}
         </nav>
 
         {/* Footer Section */}
         {footer && (
-          <div className={cn(isCollapsed && 'hidden')}>
+          <div className={cn(isCollapsed && 'hidden')} style={{ backgroundColor }}>
             {footer}
           </div>
         )}

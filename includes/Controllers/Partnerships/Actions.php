@@ -303,10 +303,28 @@ class Actions {
 	public function get_loan_officers( WP_REST_Request $request ) {
 		$loan_officers = get_users( array( 'role' => 'loan_officer' ) );
 
+		// Format loan officer data with contact details
+		$formatted_officers = array();
+		foreach ( $loan_officers as $officer ) {
+			$formatted_officers[] = array(
+				'ID'          => $officer->ID,
+				'data'        => array(
+					'ID'           => $officer->ID,
+					'user_login'   => $officer->user_login,
+					'user_email'   => $officer->user_email,
+					'display_name' => $officer->display_name,
+				),
+				'avatar_url'  => get_avatar_url( $officer->ID, array( 'size' => 200 ) ),
+				'phone'       => get_user_meta( $officer->ID, 'phone_number', true ),
+				'title'       => get_user_meta( $officer->ID, 'title', true ),
+				'nmls_id'     => get_user_meta( $officer->ID, 'nmls_id', true ),
+			);
+		}
+
 		return new WP_REST_Response(
 			array(
 				'success' => true,
-				'data'    => $loan_officers,
+				'data'    => $formatted_officers,
 			),
 			200
 		);

@@ -131,6 +131,12 @@ class PartnerCompanyPortal {
 			'companyName'      => carbon_get_post_meta( $branding_post_id, 're_company_name' ) ?: $company_name,
 		);
 
+		// Get assigned loan officers from _partner_org_members
+		$loan_officer_ids = get_post_meta( $branding_post_id, '_partner_org_members', true );
+		if ( ! is_array( $loan_officer_ids ) ) {
+			$loan_officer_ids = array();
+		}
+
 		// Return React mount point
 		ob_start();
 		?>
@@ -142,6 +148,7 @@ class PartnerCompanyPortal {
 			data-company-id="<?php echo esc_attr( $company_id ); ?>"
 			data-company-name="<?php echo esc_attr( $branding['companyName'] ); ?>"
 			data-branding="<?php echo esc_attr( wp_json_encode( $branding ) ); ?>"
+			data-loan-officer-ids="<?php echo esc_attr( wp_json_encode( $loan_officer_ids ) ); ?>"
 		></div>
 		<?php
 		return ob_get_clean();

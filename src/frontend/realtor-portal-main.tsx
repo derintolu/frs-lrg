@@ -29,6 +29,18 @@ if (!wpData) {
       }
     }
 
+    // Get loan officer IDs
+    const loanOfficerIdsData = container.getAttribute('data-loan-officer-ids');
+    let loanOfficerIds: number[] = [];
+    if (loanOfficerIdsData) {
+      try {
+        const parsed = JSON.parse(loanOfficerIdsData);
+        loanOfficerIds = Array.isArray(parsed) ? parsed : [];
+      } catch (e) {
+        console.error('Failed to parse loan officer IDs:', e);
+      }
+    }
+
     const root = createRoot(container);
     root.render(
       <RealtorPortal
@@ -41,6 +53,7 @@ if (!wpData) {
         companyId={container.getAttribute('data-company-id') || ''}
         companyName={container.getAttribute('data-company-name') || ''}
         branding={branding}
+        loanOfficerIds={loanOfficerIds}
       />
     );
   } else {

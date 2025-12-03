@@ -1,11 +1,17 @@
 import { Navigate } from 'react-router-dom';
 import { RealtorDashboardLayout } from './RealtorDashboardLayout';
-import { RealtorOverview } from './RealtorOverview';
+import { CompanyOverview } from './CompanyOverview';
+import { MarketingTools } from './MarketingTools';
+import { CalculatorTools } from './CalculatorTools';
+import { Resources } from './Resources';
 import type { User } from '../../utils/dataService';
 
 interface RoutesConfig {
   currentUser: User;
   userId: string;
+  companyId?: string;
+  companyName?: string;
+  loanOfficerIds?: number[];
   branding?: {
     primaryColor: string;
     secondaryColor: string;
@@ -15,34 +21,26 @@ interface RoutesConfig {
   };
 }
 
-export const getRealtorRoutes = ({ currentUser, userId, branding }: RoutesConfig) => [
+export const getRealtorRoutes = ({ currentUser, userId, companyId, companyName, loanOfficerIds, branding }: RoutesConfig) => [
   {
     path: '/',
     element: <RealtorDashboardLayout currentUser={currentUser} branding={branding} />,
     children: [
       {
         path: '/',
-        element: <RealtorOverview userId={userId} />,
+        element: <CompanyOverview userId={userId} companyId={companyId || ''} companyName={companyName || branding?.companyName || 'Company'} loanOfficerIds={loanOfficerIds || []} />,
       },
       {
         path: '/marketing/*',
-        element: <div className="p-8">Marketing section coming soon...</div>,
-      },
-      {
-        path: '/loan-officers',
-        element: <div className="p-8">Loan Officers section coming soon...</div>,
-      },
-      {
-        path: '/leads',
-        element: <div className="p-8">Lead Tracking coming soon...</div>,
+        element: <MarketingTools companyName={companyName || branding?.companyName || 'Company'} />,
       },
       {
         path: '/tools/*',
-        element: <div className="p-8">Tools section coming soon...</div>,
+        element: <CalculatorTools />,
       },
       {
         path: '/resources',
-        element: <div className="p-8">Resources section coming soon...</div>,
+        element: <Resources />,
       },
     ],
   },
