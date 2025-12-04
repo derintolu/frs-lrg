@@ -1,0 +1,69 @@
+{
+    "packages": [
+        {
+            "name": "prappo/wp-eloquent",
+            "version": "v3.0.5",
+            "version_normalized": "3.0.5.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/prappo/wp-eloquent.git",
+                "reference": "394e285a573248b176f93dffd85f9d7256a2475b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/prappo/wp-eloquent/zipball/394e285a573248b176f93dffd85f9d7256a2475b",
+                "reference": "394e285a573248b176f93dffd85f9d7256a2475b",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "ext-pdo": "*",
+                "php": "^7.3|^8.0"
+            },
+            "suggest": {
+                "doctrine/dbal": "Required to rename columns and drop SQLite columns (^2.6).",
+                "fzaninotto/faker": "Required to use the eloquent factory builder (^1.9.1).",
+                "symfony/finder": "Required to use Eloquent model factories (^5.1)."
+            },
+            "time": "2024-08-25T08:30:07+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "files": [
+                    "src/Support/helpers.php"
+                ],
+                "psr-4": {
+                    "Prappo\\WpEloquent\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "prappo",
+                    "email": "prappo.prince@gmail.com"
+                }
+            ],
+            "description": "Eloquent ORM for wordpress.",
+            "homepage": "https://github.com/prappo/wp-eloquent",
+            "keywords": [
+                "database",
+                "laravel",
+                "orm",
+                "prappo",
+                "sql",
+                "wordpress",
+                "wp-eloquent"
+            ],
+            "support": {
+                "issues": "https://github.com/prappo/wp-eloquent/issues",
+                "source": "https://github.com/prappo/wp-eloquent"
+            },
+            "install-path": "../prappo/wp-eloquent"
+        }
+    ],
+    "dev": false,
+    "dev-package-names": []
+}
