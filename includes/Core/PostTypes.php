@@ -31,6 +31,7 @@ class PostTypes {
 	public function init() {
 		add_action( 'init', array( $this, 'register_post_types' ) );
 		add_action( 'init', array( $this, 'register_taxonomies' ) );
+		add_filter( 'user_has_cap', array( $this, 'allow_author_frontend_editing' ), 10, 4 );
 	}
 
 	/**
@@ -159,13 +160,15 @@ class PostTypes {
 				'supports'      => array( 'title', 'editor', 'custom-fields', 'page-attributes' ),
 				'has_archive'   => false,
 				'rewrite'       => array(
-					'slug'       => 'lo',
+					'slug'       => 'apply',
 					'with_front' => false,
 					'hierarchical' => true,
 				),
 				'menu_icon'     => 'dashicons-money-alt',
 				'template'      => array(),
-				'template_lock' => 'all',
+				'template_lock' => false, // Allow editing - bound blocks stay locked to profile
+				'capability_type' => 'post',
+				'map_meta_cap'    => true,
 			)
 		);
 
@@ -274,5 +277,49 @@ class PostTypes {
 	 */
 	public function register_taxonomies() {
 		// Add taxonomies if needed
+	}
+
+	/**
+	 * Allow authors to edit their own mortgage landing pages from frontend.
+	 *
+	 * @param array   $allcaps All capabilities.
+	 * @param array   $caps    Required capabilities.
+	 * @param array   $args    Arguments.
+	 * @param WP_User $user    User object.
+	 * @return array Modified capabilities.
+	 */
+	public function allow_author_frontend_editing( $allcaps, $caps, $args, $user ) {
+		// Only for mortgage landing pages
+		if ( ! isset( $args[0] ) ) {
+			return $allcaps;
+		}
+
+		$capability = $args[0];
+
+		// Check if this is an edit capability
+		if ( ! in_array( $capability, array( 'edit_post', 'delete_post', 'edit_posts' ), true ) ) {
+			return $allcaps;
+		}
+
+		// If there's a post ID, check ownership
+		if ( isset( $args[2] ) && $args[2] ) {
+			$post = get_post( $args[2] );
+
+			// Only for mortgage landing pages
+			if ( $post && 'frs_mortgage_lp' === $post->post_type ) {
+				// Authors can edit their own posts
+				if ( (int) $post->post_author === (int) $user->ID ) {
+					$allcaps['edit_post'] = true;
+					$allcaps['delete_post'] = true;
+				}
+			}
+		}
+
+		// Grant edit_posts capability to loan officers for creating/viewing
+		if ( 'edit_posts' === $capability && in_array( 'loan_officer', $user->roles, true ) ) {
+			$allcaps['edit_posts'] = true;
+		}
+
+		return $allcaps;
 	}
 }

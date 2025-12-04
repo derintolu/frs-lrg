@@ -10,12 +10,19 @@ import {
 interface ProfileCompletionCardProps {
   userData: Record<string, any>;
   onDismiss?: () => void;
+  gradientStart?: string;
+  gradientEnd?: string;
 }
 
 /**
  * Profile completion card with half-circle gauge and accordion checklist
  */
-export function ProfileCompletionCard({ userData, onDismiss }: ProfileCompletionCardProps) {
+export function ProfileCompletionCard({
+  userData,
+  onDismiss,
+  gradientStart = '#2563eb',
+  gradientEnd = '#2dd4da'
+}: ProfileCompletionCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const completion: CompletionResult = calculateProfileCompletion(userData);
   const { percentage, incompleteSections } = completion;
@@ -78,8 +85,8 @@ export function ProfileCompletionCard({ userData, onDismiss }: ProfileCompletion
             {/* Brand gradient definition */}
             <defs>
               <linearGradient id="brandGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#2563eb" />
-                <stop offset="100%" stopColor="#2dd4da" />
+                <stop offset="0%" stopColor={gradientStart} />
+                <stop offset="100%" stopColor={gradientEnd} />
               </linearGradient>
             </defs>
           </svg>
@@ -89,7 +96,7 @@ export function ProfileCompletionCard({ userData, onDismiss }: ProfileCompletion
             <div
               className="text-4xl font-bold"
               style={{
-                background: 'linear-gradient(135deg, #2563eb 0%, #2dd4da 100%)',
+                background: `linear-gradient(135deg, ${gradientStart} 0%, ${gradientEnd} 100%)`,
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 backgroundClip: 'text',
@@ -137,7 +144,7 @@ export function ProfileCompletionCard({ userData, onDismiss }: ProfileCompletion
                       style={
                         section.isComplete
                           ? {
-                              background: 'linear-gradient(135deg, #2563eb 0%, #2dd4da 100%)',
+                              background: `linear-gradient(135deg, ${gradientStart} 0%, ${gradientEnd} 100%)`,
                             }
                           : {}
                       }

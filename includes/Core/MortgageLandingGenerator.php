@@ -235,7 +235,7 @@ class MortgageLandingGenerator {
 	/**
 	 * Generate mortgage calculator landing page for a loan officer.
 	 *
-	 * Creates a public landing page with just the mortgage calculator for lead generation.
+	 * Creates a public landing page using template from post 69888 with block bindings.
 	 *
 	 * @param int $user_id Loan officer user ID.
 	 * @return array|false Array with page data or false on failure.
@@ -258,83 +258,48 @@ class MortgageLandingGenerator {
 			);
 		}
 
-		// Get user data for page title and slug
+		// Get template content from plugin file
+		$template_file = LRH_DIR . 'templates/landing-pages/mortgage-calculator.html';
+		if ( ! file_exists( $template_file ) ) {
+			error_log( 'LRH Calculator Landing: Template file not found at ' . $template_file );
+			return false;
+		}
+
+		$template_content = file_get_contents( $template_file );
+		if ( false === $template_content ) {
+			error_log( 'LRH Calculator Landing: Failed to read template file' );
+			return false;
+		}
+
+		// Parse blocks from template
+		$blocks = parse_blocks( $template_content );
+
+		// Apply block bindings to dynamic content
+		$blocks = self::apply_block_bindings( $blocks );
+
+		// Serialize blocks back to HTML
+		$page_content = serialize_blocks( $blocks );
+
+		// Get user data for title/slug
 		$user_data  = self::get_user_data_static( $user_id );
 		$first_name = $user_data['first_name'] ?? $user->display_name;
-		$last_name  = $user_data['last_name'] ?? '';
+		$full_name  = trim( ( $user_data['first_name'] ?? '' ) . ' ' . ( $user_data['last_name'] ?? '' ) );
 
-		// Build full name slug for parent path
-		$full_name_slug = sanitize_title( trim( $first_name . ' ' . $last_name ) );
+		// Build page title and slug
+		$page_title = sprintf( '%s - Mortgage Calculator', $first_name );
+		$full_name_slug = sanitize_title( $full_name );
 		if ( empty( $full_name_slug ) ) {
 			$full_name_slug = sanitize_title( $user->user_login );
 		}
 
-		// Build page title
-		$page_title = sprintf( '%s - Mortgage Calculator', $first_name );
-
-		// Generate slug as child of user (e.g., /blakecargill/mortgage-calculator)
 		$slug = 'mortgage-calculator';
-
-		// Build full path for checking
 		$full_path = $full_name_slug . '/' . $slug;
 		$slug_exists = get_page_by_path( $full_path, OBJECT, 'frs_mortgage_lp' );
 		if ( $slug_exists ) {
 			$slug = $slug . '-' . wp_rand( 100, 999 );
 		}
 
-		// Get user data for template
-		$lo_data    = self::get_user_data_static( $user_id );
-		$lo_name    = $lo_data['name'] ?? 'Your Loan Officer';
-		$lo_photo   = $lo_data['headshot'] ?? get_avatar_url( $user_id, array( 'size' => 256 ) );
-		$lo_phone   = $lo_data['phone'] ?? '';
-		$lo_email   = $lo_data['email'] ?? '';
-		$lo_nmls    = $lo_data['nmls'] ?? '';
-		$lo_title   = $lo_data['title'] ?? 'Senior Loan Officer';
-		$company    = get_user_meta( $user_id, 'company', true ) ?: '21st Century Lending';
-
-		// Build template with customizable sections + fixed calculator
-		$page_content = '<!-- wp:html -->
-<div class="calculator-landing-page">
-	<!-- Hero Section with LO Info -->
-	<section class="bg-gradient-to-br from-blue-600 to-cyan-400 text-white py-16 px-6">
-		<div class="max-w-6xl mx-auto">
-			<div class="grid md:grid-cols-2 gap-12 items-center">
-				<div>
-					<h1 class="text-5xl font-bold mb-6 leading-tight">Calculate Your Monthly Payment</h1>
-					<p class="text-xl mb-8 opacity-90">Get instant estimates on your mortgage payment with our easy-to-use calculator. No credit check required.</p>
-				</div>
-				<div class="bg-white/10 backdrop-blur-sm rounded-2xl p-8">
-					<div class="text-center">
-						<img src="' . esc_url( $lo_photo ) . '" alt="' . esc_attr( $lo_name ) . '" class="w-32 h-32 rounded-full mx-auto mb-4 border-4 border-white object-cover" />
-						<h3 class="text-2xl font-semibold mb-2">' . esc_html( $lo_name ) . '</h3>
-						<p class="opacity-90 mb-1">' . esc_html( $lo_title ) . '</p>
-						' . ( $lo_nmls ? '<p class="text-sm opacity-80">NMLS #' . esc_html( $lo_nmls ) . '</p>' : '' ) . '
-						' . ( $lo_phone ? '<div class="mt-4"><a href="tel:' . esc_attr( $lo_phone ) . '" class="text-white hover:opacity-80">' . esc_html( $lo_phone ) . '</a></div>' : '' ) . '
-					</div>
-				</div>
-			</div>
-		</div>
-	</section>
-
-	<!-- Calculator Section -->
-	<section class="py-16 px-6 bg-gray-50">
-		<div class="max-w-6xl mx-auto">
-			[frs_mortgage_calculator loan_officer_id="' . intval( $user_id ) . '" show_lead_form="true"]
-		</div>
-	</section>
-
-	<!-- Call to Action -->
-	<section class="py-16 px-6 bg-white">
-		<div class="max-w-4xl mx-auto text-center">
-			<h2 class="text-3xl font-bold mb-4">Ready to Get Pre-Qualified?</h2>
-			<p class="text-xl text-gray-600 mb-8">Take the next step toward homeownership. Get pre-qualified today with no impact to your credit score.</p>
-			<a href="tel:' . esc_attr( $lo_phone ) . '" class="inline-block bg-gradient-to-r from-blue-600 to-cyan-400 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:opacity-90 transition">Contact ' . esc_html( $first_name ) . ' Today</a>
-		</div>
-	</section>
-</div>
-<!-- /wp:html -->';
-
-		// Find or create parent page for this user
+		// Find or create parent page
 		$parent_id = self::get_or_create_user_parent_page( $user_id, $full_name_slug, $first_name );
 
 		// Create the page
@@ -364,9 +329,6 @@ class MortgageLandingGenerator {
 			return false;
 		}
 
-		// Lock template so users can only edit block settings, not structure
-		update_post_meta( $page_id, '_wp_page_template', 'default' );
-
 		// Create page assignment record
 		self::create_page_assignment_static( $user_id, $page_id, 'calculator' );
 
@@ -376,6 +338,151 @@ class MortgageLandingGenerator {
 			'edit_url' => get_edit_post_link( $page_id, 'raw' ),
 			'user_id'  => $user_id,
 		);
+	}
+
+	/**
+	 * Apply block bindings to dynamic content in blocks.
+	 *
+	 * Recursively walks block tree and adds bindings metadata to blocks that contain
+	 * user-specific data that should be dynamically pulled from profile.
+	 *
+	 * @param array $blocks Parsed blocks array.
+	 * @return array Modified blocks with bindings.
+	 */
+	private static function apply_block_bindings( $blocks ) {
+		foreach ( $blocks as &$block ) {
+			// Apply bindings to specific block types
+			switch ( $block['blockName'] ) {
+				// GreenShift image block - replace with core/image and bind
+				case 'greenshift-blocks/image':
+					if ( isset( $block['attrs']['mediaid'] ) && 68911 === $block['attrs']['mediaid'] ) {
+						// Convert to core/image block which supports bindings
+						$block['blockName'] = 'core/image';
+						$block['attrs'] = array(
+							'id'       => 68911, // Will be bound
+							'sizeSlug' => 'full',
+							'linkDestination' => 'none',
+							'align'    => 'center',
+							'width'    => '140px',
+							'height'   => '140px',
+							'style'    => array(
+								'border' => array(
+									'radius' => '100%',
+								),
+							),
+							'className' => 'is-style-rounded',
+							'lock'     => array(
+								'move'   => true,
+								'remove' => true,
+							),
+							'metadata' => array(
+								'bindings' => array(
+									'url' => array(
+										'source' => 'frs-lrg/user-profile',
+										'args'   => array( 'key' => 'headshot_url' ),
+									),
+									'id' => array(
+										'source' => 'frs-lrg/user-profile',
+										'args'   => array( 'key' => 'headshot_id' ),
+									),
+								),
+							),
+						);
+						// Update innerHTML to be a simple image tag
+						$block['innerHTML'] = '<figure class="wp-block-image aligncenter size-full is-resized is-style-rounded" style="width:140px;height:140px"><img src="" alt="" class="wp-image-68911" style="border-radius:100%;width:140px;height:140px;object-fit:cover"/></figure>';
+						$block['innerContent'] = array( $block['innerHTML'] );
+					}
+					break;
+
+				// Heading blocks - bind name
+				case 'core/heading':
+					// Check if this is the name heading by looking for blake-anthony-corkill in innerHTML
+					$inner_html = $block['innerHTML'] ?? '';
+					if ( strpos( $inner_html, 'blake-anthony-corkill' ) !== false ||
+					     strpos( $inner_html, 'Blake Anthony Corkill' ) !== false ) {
+						$block['attrs']['metadata']['bindings']['content'] = array(
+							'source' => 'frs-lrg/user-profile',
+							'args'   => array( 'key' => 'full_name' ),
+						);
+						// Lock block to prevent removing binding
+						$block['attrs']['lock'] = array(
+							'move'   => true,
+							'remove' => true,
+						);
+					}
+					break;
+
+				// Paragraph blocks - bind job title, NMLS, phone
+				case 'core/paragraph':
+					$inner_html = $block['innerHTML'] ?? '';
+
+					// Job title paragraph
+					if ( strpos( $inner_html, 'Loan Originator' ) !== false ) {
+						$block['attrs']['metadata']['bindings']['content'] = array(
+							'source' => 'frs-lrg/user-profile',
+							'args'   => array( 'key' => 'job_title' ),
+						);
+						$block['attrs']['lock'] = array(
+							'move'   => true,
+							'remove' => true,
+						);
+					}
+
+					// NMLS paragraph
+					if ( strpos( $inner_html, 'NMLS #' ) !== false ) {
+						$block['attrs']['metadata']['bindings']['content'] = array(
+							'source' => 'frs-lrg/user-profile',
+							'args'   => array( 'key' => 'nmls_display' ),
+						);
+						$block['attrs']['lock'] = array(
+							'move'   => true,
+							'remove' => true,
+						);
+					}
+
+					// Phone paragraph (contains tel: link)
+					if ( strpos( $inner_html, 'tel:' ) !== false && strpos( $inner_html, '(858)' ) !== false ) {
+						// For phone, we need to bind both the link and text
+						// This is more complex - we'll handle it with innerHTML replacement
+						$block['attrs']['metadata']['bindings']['content'] = array(
+							'source' => 'frs-lrg/user-profile',
+							'args'   => array( 'key' => 'phone_formatted' ),
+						);
+						$block['attrs']['lock'] = array(
+							'move'   => true,
+							'remove' => true,
+						);
+					}
+					break;
+
+				// Button blocks - bind button text with first name
+				case 'core/button':
+					$inner_html = $block['innerHTML'] ?? '';
+					if ( strpos( $inner_html, 'Contact Blake Today' ) !== false ) {
+						$block['attrs']['metadata']['bindings']['text'] = array(
+							'source' => 'frs-lrg/user-profile',
+							'args'   => array( 'key' => 'contact_button_text' ),
+						);
+						$block['attrs']['metadata']['bindings']['url'] = array(
+							'source' => 'frs-lrg/user-profile',
+							'args'   => array( 'key' => 'phone_link' ),
+						);
+						// Lock button to prevent removing bindings
+						$block['attrs']['lock'] = array(
+							'move'   => true,
+							'remove' => true,
+						);
+					}
+					break;
+			}
+
+			// Recursively apply bindings to inner blocks
+			if ( ! empty( $block['innerBlocks'] ) ) {
+				$block['innerBlocks'] = self::apply_block_bindings( $block['innerBlocks'] );
+			}
+		}
+
+		return $blocks;
 	}
 
 	/**

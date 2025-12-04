@@ -7,10 +7,14 @@ import {
   FileText,
   Calculator,
   TrendingUp,
-  Wrench
+  Wrench,
+  Copy,
+  ExternalLink
 } from 'lucide-react';
 import type { User as UserType } from '../../utils/dataService';
 import { CollapsibleSidebar, MenuItem } from '../ui/CollapsibleSidebar';
+import { ProfileCompletionCard } from '../loan-officer-portal/ProfileCompletionCard';
+import { Button } from '../ui/button';
 
 interface RealtorDashboardLayoutProps {
   currentUser: UserType;
@@ -105,44 +109,128 @@ export function RealtorDashboardLayout({ currentUser, branding }: RealtorDashboa
   const customHeaderBg = branding?.headerBackground || '';
 
   const sidebarHeader = (
-    <div className="relative w-full overflow-hidden" style={{ backgroundColor: '#000000' }}>
-      {/* Gold Yard Sign Accent - Top Left Corner */}
-      <div
-        className="absolute top-0 left-0 h-full w-4"
-        style={{
-          backgroundImage: 'url(https://hub21.local/wp-content/uploads/2025/12/C21-Brand-Kit-Yard-Sign-2.png)',
-          backgroundSize: 'contain',
-          backgroundPosition: 'top left',
-          backgroundRepeat: 'no-repeat',
-          opacity: 0.8,
-          zIndex: 1
-        }}
-      />
+    <div
+      className="relative p-6 flex flex-col items-center justify-center text-center w-full overflow-hidden"
+      style={{
+        background: `linear-gradient(135deg, #252526 0%, #252526 100%)`,
+        minHeight: '200px',
+      }}
+    >
+      {/* Animated Video Background with Gold Shimmer */}
+      {gradientUrl && (
+        <>
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover"
+            style={{
+              zIndex: 0,
+              filter: 'sepia(100%) saturate(150%) hue-rotate(10deg) brightness(0.9)',
+            }}
+          >
+            <source src={gradientUrl} type="video/mp4" />
+          </video>
+          {/* Gold shimmer overlay */}
+          <div
+            className="absolute inset-0 bg-[#beaf87]/40"
+            style={{
+              zIndex: 1,
+              mixBlendMode: 'overlay',
+            }}
+          />
+          {/* Additional gold shimmer layer for depth */}
+          <div
+            className="absolute inset-0"
+            style={{
+              zIndex: 2,
+              background: 'linear-gradient(135deg, rgba(190, 175, 135, 0.3) 0%, rgba(255, 215, 0, 0.2) 50%, rgba(190, 175, 135, 0.3) 100%)',
+              mixBlendMode: 'screen',
+            }}
+          />
+        </>
+      )}
 
-      {/* Partner Company Logo */}
-      <div className="relative w-full px-6 py-8 flex flex-col items-center justify-center gap-3" style={{ zIndex: 10 }}>
-        {/* Partner Company Logo (Century 21, etc.) */}
-        {companyLogo && (
-          <div className="flex-shrink-0">
-            <img
-              src={companyLogo}
-              alt={companyDisplayName}
-              className="h-20 w-auto max-w-[240px] object-contain"
-            />
+      {/* User Avatar */}
+      <div className="relative mb-3 z-10 flex items-center justify-center">
+        <img
+          src={userAvatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=beaf87&color=fff`}
+          alt={userName}
+          className="w-[104px] h-[104px] rounded-full border-4 border-white shadow-lg"
+          onError={(e) => {
+            e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=beaf87&color=fff`;
+          }}
+        />
+      </div>
+
+      {/* User Info */}
+      <h3 className="font-semibold text-white text-2xl mb-1 z-10 relative">{userName}</h3>
+      <p className="text-white/80 text-base mb-3 z-10 relative">{currentUser.email || 'User'}</p>
+
+      {/* Company Logo */}
+      {companyLogo && (
+        <div className="relative z-10 mb-3">
+          <img
+            src={companyLogo}
+            alt={companyDisplayName}
+            className="h-12 w-auto max-w-[180px] object-contain"
+          />
+        </div>
+      )}
+    </div>
+  );
+
+  // Profile link copy handler
+  const handleCopyProfileLink = () => {
+    const profileUrl = currentUser.profile_url || window.location.origin;
+    navigator.clipboard.writeText(profileUrl).then(() => {
+      // Could add a toast notification here
+      alert('Profile link copied to clipboard!');
+    });
+  };
+
+  const sidebarFooter = (
+    <div className="w-full space-y-4 pb-4">
+      {/* Profile Link Widget */}
+      <div className="px-4">
+        <div className="bg-white/10 backdrop-blur-md rounded-lg p-4 border border-white/20">
+          <p className="text-white/80 text-xs mb-2">Your Profile Link</p>
+          <div className="flex gap-2">
+            <Button
+              onClick={handleCopyProfileLink}
+              variant="ghost"
+              size="sm"
+              className="flex-1 bg-white/10 hover:bg-white/20 text-white border border-white/30"
+            >
+              <Copy className="h-4 w-4 mr-2" />
+              Copy
+            </Button>
+            <Button
+              onClick={() => window.open(currentUser.profile_url || window.location.origin, '_blank')}
+              variant="ghost"
+              size="sm"
+              className="flex-1 bg-white/10 hover:bg-white/20 text-white border border-white/30"
+            >
+              <ExternalLink className="h-4 w-4 mr-2" />
+              Open
+            </Button>
           </div>
-        )}
+        </div>
+      </div>
 
-        {/* Company Name */}
-        <div className="text-center">
-          <h3 className="font-bold text-base" style={{ color: '#D4AF37' }}>
-            {companyDisplayName}
-          </h3>
+      {/* Profile Completion Card */}
+      <div className="px-4">
+        <div className="bg-white rounded-lg shadow-lg">
+          <ProfileCompletionCard
+            userData={currentUser}
+            gradientStart="#beaf87"
+            gradientEnd="#d4af37"
+          />
         </div>
       </div>
     </div>
   );
-
-  const sidebarFooter = null;
 
   const handleItemClick = (item: MenuItem) => {
     navigate(item.id);
@@ -167,10 +255,10 @@ export function RealtorDashboardLayout({ currentUser, branding }: RealtorDashboa
         footer={sidebarFooter}
         width="320px"
         collapsedWidth="4rem"
-        backgroundColor="#000000"
+        backgroundColor="#252526"
         textColor="#FFFFFF"
-        activeItemColor="#D4AF37"
-        activeItemBackground="rgba(212, 175, 55, 0.1)"
+        activeItemColor="#beaf87"
+        activeItemBackground="rgba(190, 175, 135, 0.15)"
         position="left"
         topOffset={headerHeight}
         defaultCollapsed={sidebarCollapsed}
