@@ -77,6 +77,9 @@ class Frontend {
 		wp_enqueue_script( 'react' );
 		wp_enqueue_script( 'react-dom' );
 
+		// Enqueue WordPress Interactivity API Core (required for router)
+		wp_enqueue_script_module( '@wordpress/interactivity' );
+
 		// Enqueue WordPress Interactivity API Router for client-side navigation
 		// This enables data-wp-router-link and data-wp-router-region to work
 		wp_enqueue_script_module( '@wordpress/interactivity-router' );
