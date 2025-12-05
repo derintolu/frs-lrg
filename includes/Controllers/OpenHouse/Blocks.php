@@ -106,11 +106,19 @@ class Blocks {
 			return false;
 		}
 
-		// Get both profiles from Eloquent
-		$lo_profile      = Profile::where( 'user_id', $loan_officer_id )->first();
-		$realtor_profile = Profile::where( 'user_id', $realtor_id )->first();
+		// Try to get profiles from frs-wp-users Eloquent model
+		$lo_profile = null;
+		$realtor_profile = null;
+		if ( class_exists( 'FRSUsers\Models\Profile' ) ) {
+			$lo_profile      = Profile::where( 'user_id', $loan_officer_id )->first();
+			$realtor_profile = Profile::where( 'user_id', $realtor_id )->first();
+		}
 
-		if ( ! $lo_profile || ! $realtor_profile ) {
+		// Get WordPress users
+		$lo_user = get_user_by( 'id', $loan_officer_id );
+		$realtor_user = get_user_by( 'id', $realtor_id );
+
+		if ( ! $lo_user || ! $realtor_user ) {
 			return false;
 		}
 

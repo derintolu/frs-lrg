@@ -97,6 +97,7 @@ export function DSCRCalculator({
               value={purchasePrice}
               onChange={(val) => setPurchasePrice(val)}
               defaultValue={400000}
+              brandColor={brandColor}
             />
 
             <MortgageInput
@@ -105,6 +106,7 @@ export function DSCRCalculator({
               value={downPayment}
               onChange={(val) => setDownPayment(val)}
               defaultValue={100000}
+              brandColor={brandColor}
             />
 
             <MortgageSelect
@@ -112,6 +114,7 @@ export function DSCRCalculator({
               value={String(propertyStateIndex)}
               onChange={(val) => setPropertyStateIndex(val)}
               options={US_STATES.map((state, idx) => ({ value: String(idx), label: state }))}
+              brandColor={brandColor}
             />
 
             <MortgageSelect
@@ -119,6 +122,7 @@ export function DSCRCalculator({
               value={String(creditScoreIndex)}
               onChange={(val) => setCreditScoreIndex(val)}
               options={CREDIT_SCORES.map((score, idx) => ({ value: String(idx), label: score.label }))}
+              brandColor={brandColor}
             />
 
             <MortgageInput
@@ -128,6 +132,7 @@ export function DSCRCalculator({
               onChange={(val) => setInterestRate(val)}
               step="0.1"
               defaultValue={7.5}
+              brandColor={brandColor}
             />
 
             <MortgageSelect
@@ -139,6 +144,7 @@ export function DSCRCalculator({
                 { value: '20', label: '20 years' },
                 { value: '30', label: '30 years' }
               ]}
+              brandColor={brandColor}
             />
 
             <MortgageInput
@@ -147,6 +153,7 @@ export function DSCRCalculator({
               value={monthlyRent}
               onChange={(val) => setMonthlyRent(val)}
               defaultValue={3000}
+              brandColor={brandColor}
             />
 
             <MortgageInput
@@ -156,6 +163,7 @@ export function DSCRCalculator({
               onChange={(val) => setVacancyRate(val)}
               step="1"
               defaultValue={5}
+              brandColor={brandColor}
             />
 
             <MortgageInput
@@ -164,6 +172,7 @@ export function DSCRCalculator({
               value={propertyTax}
               onChange={(val) => setPropertyTax(val)}
               defaultValue={4000}
+              brandColor={brandColor}
             />
 
             <MortgageInput
@@ -172,6 +181,7 @@ export function DSCRCalculator({
               value={insurance}
               onChange={(val) => setInsurance(val)}
               defaultValue={1500}
+              brandColor={brandColor}
             />
 
             <MortgageInput
@@ -180,6 +190,7 @@ export function DSCRCalculator({
               value={hoa}
               onChange={(val) => setHOA(val)}
               defaultValue={0}
+              brandColor={brandColor}
             />
 
             <MortgageInput
@@ -188,6 +199,7 @@ export function DSCRCalculator({
               value={maintenance}
               onChange={(val) => setMaintenance(val)}
               defaultValue={200}
+              brandColor={brandColor}
             />
           </CardContent>
         </Card>

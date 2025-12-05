@@ -57,6 +57,7 @@ export function AffordabilityCalculator({
               value={String(propertyStateIndex)}
               onChange={(val) => setPropertyStateIndex(val)}
               options={US_STATES.map((state, idx) => ({ value: String(idx), label: state }))}
+              brandColor={brandColor}
             />
 
             <MortgageSelect
@@ -64,6 +65,7 @@ export function AffordabilityCalculator({
               value={String(creditScoreIndex)}
               onChange={(val) => setCreditScoreIndex(val)}
               options={CREDIT_SCORES.map((score, idx) => ({ value: String(idx), label: score.label }))}
+              brandColor={brandColor}
             />
 
             <MortgageInput
@@ -72,6 +74,7 @@ export function AffordabilityCalculator({
               value={inputs.monthlyIncome}
               onChange={(val) => setInputs({...inputs, monthlyIncome: val})}
               defaultValue={6000}
+              brandColor={brandColor}
             />
 
             <MortgageInput
@@ -80,6 +83,7 @@ export function AffordabilityCalculator({
               value={inputs.monthlyDebts}
               onChange={(val) => setInputs({...inputs, monthlyDebts: val})}
               defaultValue={500}
+              brandColor={brandColor}
             />
 
             <MortgageInput
@@ -88,6 +92,7 @@ export function AffordabilityCalculator({
               value={inputs.downPayment}
               onChange={(val) => setInputs({...inputs, downPayment: val})}
               defaultValue={50000}
+              brandColor={brandColor}
             />
 
             <MortgageInput
@@ -97,6 +102,7 @@ export function AffordabilityCalculator({
               onChange={(val) => setInputs({...inputs, interestRate: val})}
               step="0.1"
               defaultValue={6.5}
+              brandColor={brandColor}
             />
 
             <MortgageSelect
@@ -108,6 +114,7 @@ export function AffordabilityCalculator({
                 { value: '20', label: '20 years' },
                 { value: '30', label: '30 years' }
               ]}
+              brandColor={brandColor}
             />
 
             <MortgageInput
@@ -116,6 +123,7 @@ export function AffordabilityCalculator({
               value={inputs.propertyTax}
               onChange={(val) => setInputs({...inputs, propertyTax: val})}
               defaultValue={3000}
+              brandColor={brandColor}
             />
 
             <div className="md:col-span-2">
@@ -125,6 +133,7 @@ export function AffordabilityCalculator({
                 value={inputs.insurance}
                 onChange={(val) => setInputs({...inputs, insurance: val})}
                 defaultValue={1200}
+                brandColor={brandColor}
               />
             </div>
           </CardContent>

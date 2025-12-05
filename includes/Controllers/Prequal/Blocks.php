@@ -101,16 +101,32 @@ class Blocks {
 	 * @return array|false Array with page data or false on failure.
 	 */
 	public static function generate_prequal_page( $loan_officer_id, $realtor_id, $partnership_id = null ) {
-		// Get both profiles from Eloquent
-		$lo_profile      = Profile::where( 'user_id', $loan_officer_id )->first();
-		$realtor_profile = Profile::where( 'user_id', $realtor_id )->first();
+		// Try to get profiles from frs-wp-users Eloquent model
+		$lo_profile = null;
+		$realtor_profile = null;
+		if ( class_exists( 'FRSUsers\Models\Profile' ) ) {
+			$lo_profile      = Profile::where( 'user_id', $loan_officer_id )->first();
+			$realtor_profile = Profile::where( 'user_id', $realtor_id )->first();
+		}
 
-		if ( ! $lo_profile || ! $realtor_profile ) {
+		// Get WordPress users
+		$lo_user = get_user_by( 'id', $loan_officer_id );
+		$realtor_user = get_user_by( 'id', $realtor_id );
+
+		if ( ! $lo_user || ! $realtor_user ) {
 			return false;
 		}
 
+		// Get names from profile or WordPress user meta
+		$lo_first_name = $lo_profile ? $lo_profile->first_name : ( get_user_meta( $loan_officer_id, 'first_name', true ) ?: $lo_user->user_login );
+		$lo_last_name = $lo_profile ? $lo_profile->last_name : ( get_user_meta( $loan_officer_id, 'last_name', true ) ?: '' );
+		$lo_headshot = $lo_profile->headshot_id ?? null;
+
+		$realtor_first_name = $realtor_profile ? $realtor_profile->first_name : ( get_user_meta( $realtor_id, 'first_name', true ) ?: $realtor_user->user_login );
+		$realtor_last_name = $realtor_profile ? $realtor_profile->last_name : ( get_user_meta( $realtor_id, 'last_name', true ) ?: '' );
+
 		// Generate unique slug combining both names
-		$slug = self::generate_unique_prequal_slug( $lo_profile, $realtor_profile );
+		$slug = sanitize_title( $lo_first_name . '-' . $realtor_first_name . '-prequal-' . wp_generate_password( 4, false ) );
 
 		// Create page content with template blocks
 		// Template is already defined in post type registration: prequal-heading + prequal-subheading
@@ -120,8 +136,8 @@ class Blocks {
 		// Build page title from both names
 		$page_title = sprintf(
 			'%s & %s - Pre-Qualification',
-			$lo_profile->first_name,
-			$realtor_profile->first_name
+			$lo_first_name,
+			$realtor_first_name
 		);
 
 		// Create the page
@@ -152,8 +168,8 @@ class Blocks {
 		}
 
 		// Set featured image from loan officer's headshot
-		if ( $lo_profile->headshot_id ) {
-			set_post_thumbnail( $page_id, $lo_profile->headshot_id );
+		if ( $lo_headshot ) {
+			set_post_thumbnail( $page_id, $lo_headshot );
 		}
 
 		// Set default meta values for heading blocks

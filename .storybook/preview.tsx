@@ -1,5 +1,6 @@
-/** @type { import('@storybook/react').Preview } */
+/** @type { import('@storybook/react-vite').Preview } */
 import "../src/admin/index.css";
+import "../src/frontend/index.css";
 
 const preview = {
   parameters: {
@@ -10,6 +11,7 @@ const preview = {
         date: /Date$/,
       },
     },
+    layout: 'fullscreen',
   },
 };
 

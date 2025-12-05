@@ -123,6 +123,7 @@ export function RentVsBuyCalculator({
                   value={homePrice}
                   onChange={(val) => setHomePrice(val)}
                   defaultValue={400000}
+                  brandColor={brandColor}
                 />
                 <MortgageInput
                   label="Down Payment"
@@ -130,6 +131,7 @@ export function RentVsBuyCalculator({
                   value={downPayment}
                   onChange={(val) => setDownPayment(val)}
                   defaultValue={80000}
+                  brandColor={brandColor}
                 />
                 <MortgageInput
                   label="Interest Rate"
@@ -138,6 +140,7 @@ export function RentVsBuyCalculator({
                   onChange={(val) => setInterestRate(val)}
                   step="0.1"
                   defaultValue={7.0}
+                  brandColor={brandColor}
                 />
                 <MortgageSelect
                   label="Loan Term"
@@ -148,6 +151,7 @@ export function RentVsBuyCalculator({
                     { value: '20', label: '20 years' },
                     { value: '30', label: '30 years' }
                   ]}
+                  brandColor={brandColor}
                 />
                 <MortgageInput
                   label="Property Tax (Annual)"
@@ -155,6 +159,7 @@ export function RentVsBuyCalculator({
                   value={propertyTax}
                   onChange={(val) => setPropertyTax(val)}
                   defaultValue={4000}
+                  brandColor={brandColor}
                 />
                 <MortgageInput
                   label="Insurance (Annual)"
@@ -162,6 +167,7 @@ export function RentVsBuyCalculator({
                   value={insurance}
                   onChange={(val) => setInsurance(val)}
                   defaultValue={1500}
+                  brandColor={brandColor}
                 />
                 <MortgageInput
                   label="HOA Fees (Monthly)"
@@ -169,6 +175,7 @@ export function RentVsBuyCalculator({
                   value={hoa}
                   onChange={(val) => setHOA(val)}
                   defaultValue={0}
+                  brandColor={brandColor}
                 />
                 <MortgageInput
                   label="Maintenance (Monthly)"
@@ -176,6 +183,7 @@ export function RentVsBuyCalculator({
                   value={maintenance}
                   onChange={(val) => setMaintenance(val)}
                   defaultValue={200}
+                  brandColor={brandColor}
                 />
                 <MortgageInput
                   label="Home Appreciation"
@@ -184,6 +192,7 @@ export function RentVsBuyCalculator({
                   onChange={(val) => setHomeAppreciation(val)}
                   step="0.5"
                   defaultValue={3}
+                  brandColor={brandColor}
                 />
               </div>
             </div>
@@ -198,6 +207,7 @@ export function RentVsBuyCalculator({
                   value={monthlyRent}
                   onChange={(val) => setMonthlyRent(val)}
                   defaultValue={2500}
+                  brandColor={brandColor}
                 />
                 <MortgageInput
                   label="Renter's Insurance (Annual)"
@@ -205,6 +215,7 @@ export function RentVsBuyCalculator({
                   value={renterInsurance}
                   onChange={(val) => setRenterInsurance(val)}
                   defaultValue={200}
+                  brandColor={brandColor}
                 />
                 <MortgageInput
                   label="Annual Rent Increase"
@@ -213,6 +224,7 @@ export function RentVsBuyCalculator({
                   onChange={(val) => setRentIncrease(val)}
                   step="0.5"
                   defaultValue={3}
+                  brandColor={brandColor}
                 />
                 <MortgageInput
                   label="Investment Return"
@@ -221,6 +233,7 @@ export function RentVsBuyCalculator({
                   onChange={(val) => setInvestmentReturn(val)}
                   step="0.5"
                   defaultValue={7}
+                  brandColor={brandColor}
                 />
               </div>
             </div>
@@ -234,12 +247,14 @@ export function RentVsBuyCalculator({
                   value={String(propertyStateIndex)}
                   onChange={(val) => setPropertyStateIndex(val)}
                   options={US_STATES.map((state, idx) => ({ value: String(idx), label: state }))}
+                  brandColor={brandColor}
                 />
                 <MortgageSelect
                   label="Credit Score"
                   value={String(creditScoreIndex)}
                   onChange={(val) => setCreditScoreIndex(val)}
                   options={CREDIT_SCORES.map((score, idx) => ({ value: String(idx), label: score.label }))}
+                  brandColor={brandColor}
                 />
                 <MortgageSelect
                   label="Years to Compare"
@@ -252,6 +267,7 @@ export function RentVsBuyCalculator({
                     { value: '20', label: '20 years' },
                     { value: '30', label: '30 years' }
                   ]}
+                  brandColor={brandColor}
                 />
               </div>
             </div>

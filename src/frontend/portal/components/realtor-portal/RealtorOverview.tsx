@@ -95,7 +95,7 @@ export function RealtorOverview({ userId }: RealtorOverviewProps) {
                   <p className="text-sm text-gray-600 mb-1">Loan Officer Partners</p>
                   <p className="text-3xl font-bold text-gray-900">{stats.partnerships}</p>
                 </div>
-                <Users className="h-10 w-10 text-blue-500" />
+                <Users className="h-10 w-10 text-black" />
               </div>
             </CardContent>
           </Card>
@@ -107,7 +107,7 @@ export function RealtorOverview({ userId }: RealtorOverviewProps) {
                   <p className="text-sm text-gray-600 mb-1">Leads This Month</p>
                   <p className="text-3xl font-bold text-gray-900">{stats.leads}</p>
                 </div>
-                <TrendingUp className="h-10 w-10 text-green-500" />
+                <TrendingUp className="h-10 w-10 text-black" />
               </div>
             </CardContent>
           </Card>
@@ -119,7 +119,7 @@ export function RealtorOverview({ userId }: RealtorOverviewProps) {
                   <p className="text-sm text-gray-600 mb-1">Landing Pages</p>
                   <p className="text-3xl font-bold text-gray-900">{stats.landingPages}</p>
                 </div>
-                <FileText className="h-10 w-10 text-purple-500" />
+                <FileText className="h-10 w-10 text-black" />
               </div>
             </CardContent>
           </Card>
@@ -192,14 +192,14 @@ export function RealtorOverview({ userId }: RealtorOverviewProps) {
           <Card className="hover:shadow-lg transition-shadow cursor-pointer">
             <CardContent className="pt-6">
               <div className="text-center">
-                <div className="inline-flex items-center justify-center w-12 h-12 bg-blue-100 rounded-full mb-4">
-                  <FileText className="h-6 w-6 text-blue-600" />
+                <div className="inline-flex items-center justify-center w-12 h-12 bg-black/10 rounded-full mb-4">
+                  <FileText className="h-6 w-6 text-black" />
                 </div>
                 <h3 className="font-semibold text-gray-900 mb-2">Marketing Materials</h3>
                 <p className="text-sm text-gray-600 mb-4">
                   Access co-branded flyers, social media posts, and more
                 </p>
-                <Button variant="outline" size="sm">
+                <Button variant="default" className="bg-black hover:bg-black/90 text-white" size="sm">
                   View Materials
                   <ExternalLink className="h-4 w-4 ml-2" />
                 </Button>
@@ -210,14 +210,14 @@ export function RealtorOverview({ userId }: RealtorOverviewProps) {
           <Card className="hover:shadow-lg transition-shadow cursor-pointer">
             <CardContent className="pt-6">
               <div className="text-center">
-                <div className="inline-flex items-center justify-center w-12 h-12 bg-green-100 rounded-full mb-4">
-                  <TrendingUp className="h-6 w-6 text-green-600" />
+                <div className="inline-flex items-center justify-center w-12 h-12 bg-black/10 rounded-full mb-4">
+                  <TrendingUp className="h-6 w-6 text-black" />
                 </div>
                 <h3 className="font-semibold text-gray-900 mb-2">Lead Tracking</h3>
                 <p className="text-sm text-gray-600 mb-4">
                   Track and manage your mortgage leads
                 </p>
-                <Button variant="outline" size="sm">
+                <Button variant="default" className="bg-black hover:bg-black/90 text-white" size="sm">
                   View Leads
                   <ExternalLink className="h-4 w-4 ml-2" />
                 </Button>
@@ -228,14 +228,14 @@ export function RealtorOverview({ userId }: RealtorOverviewProps) {
           <Card className="hover:shadow-lg transition-shadow cursor-pointer">
             <CardContent className="pt-6">
               <div className="text-center">
-                <div className="inline-flex items-center justify-center w-12 h-12 bg-purple-100 rounded-full mb-4">
-                  <FileText className="h-6 w-6 text-purple-600" />
+                <div className="inline-flex items-center justify-center w-12 h-12 bg-black/10 rounded-full mb-4">
+                  <FileText className="h-6 w-6 text-black" />
                 </div>
                 <h3 className="font-semibold text-gray-900 mb-2">Resources</h3>
                 <p className="text-sm text-gray-600 mb-4">
                   Access mortgage guides, checklists, and tools
                 </p>
-                <Button variant="outline" size="sm">
+                <Button variant="default" className="bg-black hover:bg-black/90 text-white" size="sm">
                   View Resources
                   <ExternalLink className="h-4 w-4 ml-2" />
                 </Button>

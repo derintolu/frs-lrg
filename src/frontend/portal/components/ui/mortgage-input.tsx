@@ -11,6 +11,7 @@ export interface MortgageInputProps {
   min?: number
   defaultValue?: number
   rightElement?: React.ReactNode
+  brandColor?: string
 }
 
 export function MortgageInput({
@@ -21,7 +22,8 @@ export function MortgageInput({
   step,
   min,
   defaultValue = 0,
-  rightElement
+  rightElement,
+  brandColor
 }: MortgageInputProps) {
   const handleFocus = () => {
     if (value === '' || value === 0) {
@@ -50,6 +52,7 @@ export function MortgageInput({
       step={step}
       min={min}
       rightElement={rightElement}
+      brandColor={brandColor}
     />
   );
 }

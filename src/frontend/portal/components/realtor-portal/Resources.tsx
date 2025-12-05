@@ -47,11 +47,8 @@ export function Resources() {
               <Card key={category.title} className="hover:shadow-lg transition-shadow">
                 <CardHeader>
                   <div className="flex items-start gap-4">
-                    <div
-                      className="flex-shrink-0 w-12 h-12 rounded-lg flex items-center justify-center"
-                      style={{ backgroundColor: 'rgba(212, 175, 55, 0.1)' }}
-                    >
-                      <Icon className="h-6 w-6" style={{ color: '#D4AF37' }} />
+                    <div className="flex-shrink-0 w-12 h-12 rounded-lg flex items-center justify-center bg-black/10">
+                      <Icon className="h-6 w-6 text-black" />
                     </div>
                     <div className="flex-1">
                       <CardTitle className="text-xl mb-2">{category.title}</CardTitle>
@@ -63,12 +60,12 @@ export function Resources() {
                   <ul className="space-y-2 mb-4">
                     {category.items.map((item) => (
                       <li key={item} className="flex items-center gap-2 text-sm text-gray-700">
-                        <Download className="h-4 w-4" style={{ color: '#D4AF37' }} />
+                        <Download className="h-4 w-4 text-black" />
                         {item}
                       </li>
                     ))}
                   </ul>
-                  <Button className="w-full" variant="outline">
+                  <Button className="w-full bg-black hover:bg-black/90 text-white" variant="default">
                     View All {category.title}
                   </Button>
                 </CardContent>
@@ -77,7 +74,7 @@ export function Resources() {
           })}
         </div>
 
-        <Card style={{ borderColor: '#D4AF37', borderWidth: '2px' }}>
+        <Card className="border-2 border-black/20">
           <CardHeader>
             <CardTitle>Need Additional Resources?</CardTitle>
           </CardHeader>
@@ -86,7 +83,7 @@ export function Resources() {
               Can't find what you're looking for? Contact your 21st Century Lending loan officer for additional
               resources, custom materials, or educational content specific to your needs.
             </p>
-            <Button style={{ backgroundColor: '#D4AF37', color: '#000000' }}>
+            <Button className="bg-black hover:bg-black/90 text-white">
               Request Resources
             </Button>
           </CardContent>

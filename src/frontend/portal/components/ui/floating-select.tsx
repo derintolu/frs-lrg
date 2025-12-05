@@ -12,6 +12,7 @@ export interface FloatingSelectProps {
   children: React.ReactNode;
   icon?: React.ReactNode;
   placeholder?: string;
+  brandColor?: string;
 }
 
 export function FloatingSelect({
@@ -21,6 +22,7 @@ export function FloatingSelect({
   children,
   icon,
   placeholder,
+  brandColor = '#2563eb',
 }: FloatingSelectProps) {
   const [isFocused, setIsFocused] = React.useState(false);
   const [isOpen, setIsOpen] = React.useState(false);
@@ -35,7 +37,7 @@ export function FloatingSelect({
           border: '2px solid transparent',
           borderColor: shouldFloat ? 'transparent' : '#d1d5db',
           backgroundImage: shouldFloat
-            ? 'linear-gradient(white, white), linear-gradient(135deg, #2563eb 0%, #2dd4da 100%)'
+            ? `linear-gradient(white, white), linear-gradient(135deg, ${brandColor} 0%, ${brandColor} 100%)`
             : 'none',
           backgroundOrigin: 'padding-box, border-box',
           backgroundClip: 'padding-box, border-box'
@@ -45,7 +47,7 @@ export function FloatingSelect({
           <span
             className="flex-shrink-0 transition-all duration-200"
             style={{
-              color: shouldFloat ? '#2563eb' : '#9ca3af'
+              color: shouldFloat ? brandColor : '#9ca3af'
             }}
           >
             {icon}
@@ -111,11 +113,7 @@ export function FloatingSelect({
           >
             <span
               style={{
-                backgroundImage: 'linear-gradient(135deg, #2563eb 0%, #2dd4da 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-                color: 'transparent'
+                color: brandColor
               }}
             >
               {label}

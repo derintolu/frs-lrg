@@ -14,6 +14,15 @@
     ]
   },
   "require": {
-    "prappo/wp-eloquent": "^3.0"
+    "prappo/wp-eloquent": "^3.0",
+    "wordpress/abilities-api": "^0.5",
+    "wordpress/mcp-adapter": "^0.4",
+    "automattic/jetpack-autoloader": "^3.0"
+  },
+  "minimum-stability": "RC",
+  "config": {
+    "allow-plugins": {
+      "automattic/jetpack-autoloader": true
+    }
   }
 }

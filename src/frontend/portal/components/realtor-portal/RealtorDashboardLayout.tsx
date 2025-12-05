@@ -9,12 +9,16 @@ import {
   TrendingUp,
   Wrench,
   Copy,
-  ExternalLink
+  ExternalLink,
+  Sparkles,
+  GraduationCap
 } from 'lucide-react';
 import type { User as UserType } from '../../utils/dataService';
 import { CollapsibleSidebar, MenuItem } from '../ui/CollapsibleSidebar';
 import { ProfileCompletionCard } from '../loan-officer-portal/ProfileCompletionCard';
 import { Button } from '../ui/button';
+import { Century21WelcomeOnboarding } from './Century21WelcomeOnboarding';
+import { ContentGenerationWizard } from '../shared/ContentGenerationWizard';
 
 interface RealtorDashboardLayoutProps {
   currentUser: UserType;
@@ -34,6 +38,20 @@ export function RealtorDashboardLayout({ currentUser, branding }: RealtorDashboa
   const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
     return typeof window !== 'undefined' && window.innerWidth < 768;
   });
+
+  // Onboarding state
+  const [onboardingOpen, setOnboardingOpen] = useState(false);
+  const [wizardOpen, setWizardOpen] = useState(false);
+
+  // Check for first login on mount
+  useEffect(() => {
+    const hasSeenOnboarding = localStorage.getItem(`c21_onboarding_seen_${currentUser.id}`);
+    if (!hasSeenOnboarding) {
+      // Show onboarding on first login
+      setOnboardingOpen(true);
+      localStorage.setItem(`c21_onboarding_seen_${currentUser.id}`, 'true');
+    }
+  }, [currentUser.id]);
 
   // Safety check
   if (!currentUser) {
@@ -99,6 +117,7 @@ export function RealtorDashboardLayout({ currentUser, branding }: RealtorDashboa
     { id: '/marketing', label: 'Marketing Tools', icon: Briefcase },
     { id: '/tools', label: 'Calculator & Tools', icon: Calculator },
     { id: '/resources', label: 'Resources', icon: FileText },
+    { id: '/profile', label: 'Profile', icon: Users },
   ];
 
   // Use company branding or default colors
@@ -112,11 +131,11 @@ export function RealtorDashboardLayout({ currentUser, branding }: RealtorDashboa
     <div
       className="relative p-6 flex flex-col items-center justify-center text-center w-full overflow-hidden"
       style={{
-        background: `linear-gradient(135deg, #252526 0%, #252526 100%)`,
+        background: 'linear-gradient(135deg, #000000 0%, #1a1a1a 100%)',
         minHeight: '200px',
       }}
     >
-      {/* Animated Video Background with Gold Shimmer */}
+      {/* Animated Video Background with Black overlay */}
       {gradientUrl && (
         <>
           <video
@@ -127,54 +146,32 @@ export function RealtorDashboardLayout({ currentUser, branding }: RealtorDashboa
             className="absolute inset-0 w-full h-full object-cover"
             style={{
               zIndex: 0,
-              filter: 'sepia(100%) saturate(150%) hue-rotate(10deg) brightness(0.9)',
+              filter: 'saturate(0) brightness(0.4)',
             }}
           >
             <source src={gradientUrl} type="video/mp4" />
           </video>
-          {/* Gold shimmer overlay */}
-          <div
-            className="absolute inset-0 bg-[#beaf87]/40"
-            style={{
-              zIndex: 1,
-              mixBlendMode: 'overlay',
-            }}
-          />
-          {/* Additional gold shimmer layer for depth */}
+          {/* Black overlay gradient */}
           <div
             className="absolute inset-0"
             style={{
-              zIndex: 2,
-              background: 'linear-gradient(135deg, rgba(190, 175, 135, 0.3) 0%, rgba(255, 215, 0, 0.2) 50%, rgba(190, 175, 135, 0.3) 100%)',
-              mixBlendMode: 'screen',
+              zIndex: 1,
+              background: 'linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.6) 100%)',
             }}
           />
         </>
       )}
 
-      {/* User Avatar */}
-      <div className="relative mb-3 z-10 flex items-center justify-center">
-        <img
-          src={userAvatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=beaf87&color=fff`}
-          alt={userName}
-          className="w-[104px] h-[104px] rounded-full border-4 border-white shadow-lg"
-          onError={(e) => {
-            e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=beaf87&color=fff`;
-          }}
-        />
-      </div>
-
-      {/* User Info */}
-      <h3 className="font-semibold text-white text-2xl mb-1 z-10 relative">{userName}</h3>
-      <p className="text-white/80 text-base mb-3 z-10 relative">{currentUser.email || 'User'}</p>
-
       {/* Company Logo */}
       {companyLogo && (
-        <div className="relative z-10 mb-3">
+        <div className="relative z-10">
           <img
             src={companyLogo}
             alt={companyDisplayName}
-            className="h-12 w-auto max-w-[180px] object-contain"
+            className="h-24 w-auto max-w-[280px] object-contain"
+            style={{
+              filter: 'brightness(0) saturate(100%) invert(69%) sepia(15%) saturate(815%) hue-rotate(8deg) brightness(93%) contrast(87%)',
+            }}
           />
         </div>
       )}
@@ -192,31 +189,16 @@ export function RealtorDashboardLayout({ currentUser, branding }: RealtorDashboa
 
   const sidebarFooter = (
     <div className="w-full space-y-4 pb-4">
-      {/* Profile Link Widget */}
+      {/* Get Started Button */}
       <div className="px-4">
-        <div className="bg-white/10 backdrop-blur-md rounded-lg p-4 border border-white/20">
-          <p className="text-white/80 text-xs mb-2">Your Profile Link</p>
-          <div className="flex gap-2">
-            <Button
-              onClick={handleCopyProfileLink}
-              variant="ghost"
-              size="sm"
-              className="flex-1 bg-white/10 hover:bg-white/20 text-white border border-white/30"
-            >
-              <Copy className="h-4 w-4 mr-2" />
-              Copy
-            </Button>
-            <Button
-              onClick={() => window.open(currentUser.profile_url || window.location.origin, '_blank')}
-              variant="ghost"
-              size="sm"
-              className="flex-1 bg-white/10 hover:bg-white/20 text-white border border-white/30"
-            >
-              <ExternalLink className="h-4 w-4 mr-2" />
-              Open
-            </Button>
-          </div>
-        </div>
+        <Button
+          onClick={() => setOnboardingOpen(true)}
+          className="w-full bg-[#beaf87] hover:bg-[#a89b75] text-white shadow-lg py-4 h-auto"
+          size="lg"
+        >
+          <GraduationCap className="h-4 w-4 mr-2" />
+          Get Started Guide
+        </Button>
       </div>
 
       {/* Profile Completion Card */}
@@ -224,8 +206,8 @@ export function RealtorDashboardLayout({ currentUser, branding }: RealtorDashboa
         <div className="bg-white rounded-lg shadow-lg">
           <ProfileCompletionCard
             userData={currentUser}
-            gradientStart="#beaf87"
-            gradientEnd="#d4af37"
+            gradientStart="#000000"
+            gradientEnd="#333333"
           />
         </div>
       </div>
@@ -255,10 +237,10 @@ export function RealtorDashboardLayout({ currentUser, branding }: RealtorDashboa
         footer={sidebarFooter}
         width="320px"
         collapsedWidth="4rem"
-        backgroundColor="#252526"
-        textColor="#FFFFFF"
-        activeItemColor="#beaf87"
-        activeItemBackground="rgba(190, 175, 135, 0.15)"
+        backgroundColor="#ffffff"
+        textColor="#000000"
+        activeItemColor="#000000"
+        activeItemBackground="rgba(0, 0, 0, 0.05)"
         position="left"
         topOffset={headerHeight}
         defaultCollapsed={sidebarCollapsed}
@@ -266,9 +248,38 @@ export function RealtorDashboardLayout({ currentUser, branding }: RealtorDashboa
       />
 
       {/* Main Content */}
-      <main className="max-md:p-0 max-md:m-0 md:pt-8 md:pb-6 md:pl-0 md:pr-0">
+      <main className="max-md:p-0 max-md:m-0 md:pt-8 md:pb-6 md:pr-0" style={{ marginLeft: '100px' }}>
         <Outlet />
       </main>
+
+      {/* Century 21 Welcome Onboarding */}
+      <Century21WelcomeOnboarding
+        isOpen={onboardingOpen}
+        onClose={() => setOnboardingOpen(false)}
+        currentUser={currentUser}
+        companyName={companyDisplayName}
+        onCreateLandingPage={() => {
+          setOnboardingOpen(false);
+          setWizardOpen(true);
+        }}
+        onCompleteProfile={() => {
+          setOnboardingOpen(false);
+          navigate('/profile');
+        }}
+        onNavigate={(path) => navigate(path)}
+      />
+
+      {/* Content Generation Wizard */}
+      <ContentGenerationWizard
+        isOpen={wizardOpen}
+        onClose={() => setWizardOpen(false)}
+        onSuccess={(pageId) => {
+          setWizardOpen(false);
+          alert(`Landing page created successfully! Page ID: ${pageId}`);
+        }}
+        userRole="realtor_partner"
+        currentUserId={currentUser.id}
+      />
     </div>
   );
 }

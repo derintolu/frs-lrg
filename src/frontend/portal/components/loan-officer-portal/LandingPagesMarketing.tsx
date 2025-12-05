@@ -25,6 +25,7 @@ import { DataService } from '../../utils/dataService';
 import type { LandingPage } from '../../utils/dataService';
 import { PAGE_TYPE_LABELS, buildLandingEditorUrl } from '../../constants/landing';
 import { WordPressEditorIframe } from './WordPressEditorIframe';
+import { ContentGenerationWizard } from '../shared/ContentGenerationWizard';
 
 interface LandingPagesMarketingProps {
   userId: string;
@@ -43,6 +44,7 @@ export function LandingPagesMarketing({ userId, currentUser }: LandingPagesMarke
   const [personalSearchQuery, setPersonalSearchQuery] = useState('');
   const [cobrandedSearchQuery, setCobrandedSearchQuery] = useState('');
   const [generatingTemplate, setGeneratingTemplate] = useState<string | null>(null);
+  const [wizardOpen, setWizardOpen] = useState(false);
 
   // Load landing pages and templates from API
   useEffect(() => {
@@ -397,6 +399,37 @@ export function LandingPagesMarketing({ userId, currentUser }: LandingPagesMarke
 
   return (
     <div className="space-y-6">
+      {/* Header with Create Button */}
+      <div className="flex justify-between items-center">
+        <div>
+          <h2 className="text-2xl font-bold text-[var(--brand-dark-navy)]">Landing Pages</h2>
+          <p className="text-[var(--brand-slate)]">Create and manage your marketing pages</p>
+        </div>
+        <Button
+          onClick={() => setWizardOpen(true)}
+          className="brand-button brand-button-primary"
+        >
+          <Plus className="h-4 w-4 mr-2" />
+          Create New Page
+        </Button>
+      </div>
+
+      {/* Content Generation Wizard */}
+      <ContentGenerationWizard
+        isOpen={wizardOpen}
+        onClose={() => setWizardOpen(false)}
+        onSuccess={(pageId) => {
+          // Reload landing pages and open editor
+          DataService.getLandingPagesForLO(userId).then(pages => {
+            const filteredPages = pages.filter(page => page.type !== 'biolink');
+            setLandingPages(filteredPages);
+            openEditor(pageId);
+          });
+        }}
+        userRole="loan_officer"
+        currentUserId={userId}
+      />
+
       <Tabs defaultValue="personal" className="w-full">
         <TabsList className="grid w-full grid-cols-2 max-w-md">
           <TabsTrigger value="personal" className="flex items-center gap-2">

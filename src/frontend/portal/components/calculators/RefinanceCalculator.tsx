@@ -57,6 +57,7 @@ export function RefinanceCalculator({
               value={String(propertyStateIndex)}
               onChange={(val) => setPropertyStateIndex(val)}
               options={US_STATES.map((state, idx) => ({ value: String(idx), label: state }))}
+              brandColor={brandColor}
             />
 
             <MortgageSelect
@@ -64,6 +65,7 @@ export function RefinanceCalculator({
               value={String(creditScoreIndex)}
               onChange={(val) => setCreditScoreIndex(val)}
               options={CREDIT_SCORES.map((score, idx) => ({ value: String(idx), label: score.label }))}
+              brandColor={brandColor}
             />
 
             <MortgageInput
@@ -72,6 +74,7 @@ export function RefinanceCalculator({
               value={inputs.currentLoanBalance}
               onChange={(val) => setInputs({...inputs, currentLoanBalance: val})}
               defaultValue={250000}
+              brandColor={brandColor}
             />
 
             <MortgageInput
@@ -81,6 +84,7 @@ export function RefinanceCalculator({
               onChange={(val) => setInputs({...inputs, currentInterestRate: val})}
               step="0.1"
               defaultValue={7.5}
+              brandColor={brandColor}
             />
 
             <div className="md:col-span-2">
@@ -90,6 +94,7 @@ export function RefinanceCalculator({
                 value={inputs.currentPayment}
                 onChange={(val) => setInputs({...inputs, currentPayment: val})}
                 defaultValue={1748}
+                brandColor={brandColor}
               />
             </div>
 
@@ -101,6 +106,7 @@ export function RefinanceCalculator({
               onChange={(val) => setInputs({...inputs, newInterestRate: val})}
               step="0.1"
               defaultValue={6.0}
+              brandColor={brandColor}
             />
 
             <MortgageSelect
@@ -112,6 +118,7 @@ export function RefinanceCalculator({
                 { value: '20', label: '20 years' },
                 { value: '30', label: '30 years' }
               ]}
+              brandColor={brandColor}
             />
 
             <div className="md:col-span-2">
@@ -121,6 +128,7 @@ export function RefinanceCalculator({
                 value={inputs.closingCosts}
                 onChange={(val) => setInputs({...inputs, closingCosts: val})}
                 defaultValue={5000}
+                brandColor={brandColor}
               />
             </div>
           </CardContent>

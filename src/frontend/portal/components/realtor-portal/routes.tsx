@@ -4,6 +4,7 @@ import { CompanyOverview } from './CompanyOverview';
 import { MarketingTools } from './MarketingTools';
 import { CalculatorTools } from './CalculatorTools';
 import { Resources } from './Resources';
+import { Profile } from './Profile';
 import type { User } from '../../utils/dataService';
 
 interface RoutesConfig {
@@ -32,7 +33,7 @@ export const getRealtorRoutes = ({ currentUser, userId, companyId, companyName, 
       },
       {
         path: '/marketing/*',
-        element: <MarketingTools companyName={companyName || branding?.companyName || 'Company'} />,
+        element: <MarketingTools companyName={companyName || branding?.companyName || 'Company'} userId={userId} />,
       },
       {
         path: '/tools/*',
@@ -41,6 +42,10 @@ export const getRealtorRoutes = ({ currentUser, userId, companyId, companyName, 
       {
         path: '/resources',
         element: <Resources />,
+      },
+      {
+        path: '/profile',
+        element: <Profile userId={userId} currentUser={currentUser} companyName={companyName || branding?.companyName} />,
       },
     ],
   },

@@ -78,6 +78,7 @@ export function ConventionalCalculator({
                 value={inputs.homePrice}
                 onChange={(val) => setInputs({...inputs, homePrice: val})}
                 defaultValue={300000}
+                brandColor={brandColor}
               />
 
               <MortgageInput
@@ -86,6 +87,7 @@ export function ConventionalCalculator({
                 value={getDownPaymentDisplayValue()}
                 onChange={handleDownPaymentChange}
                 defaultValue={downPaymentMode === '$' ? 60000 : 20}
+                brandColor={brandColor}
                 rightElement={
                   <ToggleButton
                     options={['$', '%']}
@@ -100,6 +102,7 @@ export function ConventionalCalculator({
                 value={String(propertyStateIndex)}
                 onChange={(val) => setPropertyStateIndex(val)}
                 options={US_STATES.map((state, idx) => ({ value: String(idx), label: state }))}
+                brandColor={brandColor}
               />
 
               <MortgageSelect
@@ -107,6 +110,7 @@ export function ConventionalCalculator({
                 value={String(creditScoreIndex)}
                 onChange={(val) => setCreditScoreIndex(val)}
                 options={CREDIT_SCORES.map((score, idx) => ({ value: String(idx), label: score.label }))}
+                brandColor={brandColor}
               />
 
               <MortgageInput
@@ -116,6 +120,7 @@ export function ConventionalCalculator({
                 onChange={(val) => setInputs({...inputs, interestRate: val})}
                 step="0.1"
                 defaultValue={6.5}
+                brandColor={brandColor}
               />
 
               <MortgageSelect
@@ -127,6 +132,7 @@ export function ConventionalCalculator({
                   { value: '20', label: '20 years' },
                   { value: '30', label: '30 years' }
                 ]}
+                brandColor={brandColor}
               />
 
               <MortgageInput
@@ -135,6 +141,7 @@ export function ConventionalCalculator({
                 value={inputs.propertyTax}
                 onChange={(val) => setInputs({...inputs, propertyTax: val})}
                 defaultValue={2000}
+                brandColor={brandColor}
               />
 
               <MortgageInput
@@ -143,6 +150,7 @@ export function ConventionalCalculator({
                 value={inputs.insurance}
                 onChange={(val) => setInputs({...inputs, insurance: val})}
                 defaultValue={1000}
+                brandColor={brandColor}
               />
 
               <div className="md:col-span-2">
@@ -152,6 +160,7 @@ export function ConventionalCalculator({
                   value={inputs.hoa}
                   onChange={(val) => setInputs({...inputs, hoa: val})}
                   defaultValue={0}
+                  brandColor={brandColor}
                 />
               </div>
             </div>

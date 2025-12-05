@@ -6,10 +6,11 @@ export interface FloatingInputProps
   label: string
   icon?: React.ReactNode
   rightElement?: React.ReactNode
+  brandColor?: string
 }
 
 const FloatingInput = React.forwardRef<HTMLInputElement, FloatingInputProps>(
-  ({ className, type, label, icon, value, rightElement, ...props }, ref) => {
+  ({ className, type, label, icon, value, rightElement, brandColor = '#2563eb', ...props }, ref) => {
     const [isFocused, setIsFocused] = React.useState(false);
     const hasValue = value !== undefined && value !== null && value !== '';
     const shouldFloat = isFocused || hasValue;
@@ -22,7 +23,7 @@ const FloatingInput = React.forwardRef<HTMLInputElement, FloatingInputProps>(
             border: '2px solid transparent',
             borderColor: shouldFloat ? 'transparent' : '#d1d5db',
             backgroundImage: shouldFloat
-              ? 'linear-gradient(white, white), linear-gradient(135deg, #2563eb 0%, #2dd4da 100%)'
+              ? `linear-gradient(white, white), linear-gradient(135deg, ${brandColor} 0%, ${brandColor} 100%)`
               : 'none',
             backgroundOrigin: 'padding-box, border-box',
             backgroundClip: 'padding-box, border-box'
@@ -32,7 +33,7 @@ const FloatingInput = React.forwardRef<HTMLInputElement, FloatingInputProps>(
             <span
               className="flex-shrink-0 transition-all duration-200"
               style={{
-                color: shouldFloat ? '#2563eb' : '#9ca3af'
+                color: shouldFloat ? brandColor : '#9ca3af'
               }}
             >
               {icon}
@@ -85,13 +86,7 @@ const FloatingInput = React.forwardRef<HTMLInputElement, FloatingInputProps>(
           >
             <span
               style={{
-                backgroundImage: shouldFloat
-                  ? 'linear-gradient(135deg, #2563eb 0%, #2dd4da 100%)'
-                  : 'none',
-                WebkitBackgroundClip: shouldFloat ? 'text' : 'border-box',
-                WebkitTextFillColor: shouldFloat ? 'transparent' : '#9ca3af',
-                backgroundClip: shouldFloat ? 'text' : 'border-box',
-                color: shouldFloat ? 'transparent' : '#9ca3af'
+                color: shouldFloat ? brandColor : '#9ca3af'
               }}
             >
               {label}

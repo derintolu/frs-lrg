@@ -19,6 +19,13 @@ import { MarketingSubnav } from './portal/components/loan-officer-portal/Marketi
 import { DataService } from './portal/utils/dataService';
 import { BrowserRouter } from 'react-router-dom';
 
+// Realtor Portal Components
+import { RealtorOverview } from './portal/components/realtor-portal/RealtorOverview';
+import { MarketingTools } from './portal/components/realtor-portal/MarketingTools';
+import { CalculatorTools } from './portal/components/realtor-portal/CalculatorTools';
+import { CompanyOverview } from './portal/components/realtor-portal/CompanyOverview';
+import { Resources } from './portal/components/realtor-portal/Resources';
+
 /**
  * Consolidated Frontend Entry Point
  *
@@ -199,6 +206,83 @@ document.addEventListener('DOMContentLoaded', async () => {
       createRoot(root).render(component);
     }
   });
+
+  // Mount generic components (uses [lrh_component] shortcode)
+  // Component Registry - maps component names to actual imports
+  const componentRegistry = {
+    // Loan Officer Portal Components
+    'MyProfile': MyProfile,
+    'MarketingOverview': MarketingOverview,
+    'LeadTracking': LeadTracking,
+    'FluentBookingCalendar': FluentBookingCalendar,
+    'LandingPagesMarketing': LandingPagesMarketing,
+    'EmailCampaignsMarketing': EmailCampaignsMarketing,
+    'LocalSEOMarketing': LocalSEOMarketing,
+    'BrandShowcase': BrandShowcase,
+    'MarketingOrders': MarketingOrders,
+    'MortgageCalculator': MortgageCalculator,
+    'PropertyValuation': PropertyValuation,
+    'Settings': Settings,
+    'MarketingSubnav': MarketingSubnav,
+
+    // Realtor Partner Components
+    'RealtorOverview': RealtorOverview,
+    'MarketingTools': MarketingTools,
+    'CalculatorTools': CalculatorTools,
+    'CompanyOverview': CompanyOverview,
+    'Resources': Resources,
+  };
+
+  const componentRoots = document.querySelectorAll('[data-lrh-component]');
+
+  if (componentRoots.length > 0) {
+    console.log(`[LRH] Found ${componentRoots.length} generic component(s)`);
+
+    componentRoots.forEach((root) => {
+      const componentName = root.getAttribute('data-lrh-component');
+      const propsJson = root.getAttribute('data-lrh-props');
+
+      // Parse props
+      let props = {};
+      try {
+        props = JSON.parse(propsJson || '{}');
+      } catch (err) {
+        console.error(`[LRH] Failed to parse props for ${componentName}:`, err);
+        return;
+      }
+
+      // Get component from registry
+      const Component = componentRegistry[componentName];
+
+      if (!Component) {
+        console.error(`[LRH] Component not found in registry: ${componentName}`);
+        root.innerHTML = `<div style="padding: 1rem; background: #fee; border: 1px solid #fcc; border-radius: 4px;">Component "${componentName}" not found in registry.</div>`;
+        return;
+      }
+
+      // Auto-inject common props if not provided
+      if (!props.userId && currentUser?.id) {
+        props.userId = currentUser.id;
+      }
+      if (!props.currentUser && currentUser) {
+        props.currentUser = currentUser;
+      }
+
+      console.log(`[LRH] Mounting component: ${componentName}`, props);
+
+      try {
+        createRoot(root).render(
+          <BrowserRouter>
+            <Component {...props} />
+          </BrowserRouter>
+        );
+        console.log(`[LRH] Successfully mounted: ${componentName}`);
+      } catch (error) {
+        console.error(`[LRH] Failed to mount ${componentName}:`, error);
+        root.innerHTML = `<div style="padding: 1rem; background: #fee; border: 1px solid #fcc; border-radius: 4px;">Error rendering component "${componentName}": ${error.message}</div>`;
+      }
+    });
+  }
 });
 
 // Log if no root elements found

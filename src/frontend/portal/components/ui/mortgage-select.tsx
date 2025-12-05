@@ -7,13 +7,15 @@ export interface MortgageSelectProps {
   value: string
   onChange: (value: number) => void
   options: { value: string; label: string }[]
+  brandColor?: string
 }
 
 export function MortgageSelect({
   label,
   value,
   onChange,
-  options
+  options,
+  brandColor
 }: MortgageSelectProps) {
   const handleChange = (val: string) => {
     onChange(Number(val));
@@ -26,6 +28,7 @@ export function MortgageSelect({
       onValueChange={handleChange}
       icon={<Calendar className="h-4 w-4" />}
       placeholder={label}
+      brandColor={brandColor}
     >
       {options.map((option) => (
         <FloatingSelectItem key={option.value} value={option.value}>

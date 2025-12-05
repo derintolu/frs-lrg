@@ -29,4 +29,5 @@ composer.lock
 *.sln
 *.sw?
 
-# vendor/ - MUST be committed for deployment (no composer on production)
+vendor/
+composer.lock

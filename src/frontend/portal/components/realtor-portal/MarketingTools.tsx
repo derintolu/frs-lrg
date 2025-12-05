@@ -1,12 +1,17 @@
+import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
-import { FileText, Image, Share2, Download } from 'lucide-react';
+import { FileText, Image, Share2, Download, Plus, Globe } from 'lucide-react';
+import { ContentGenerationWizard } from '../shared/ContentGenerationWizard';
 
 interface MarketingToolsProps {
   companyName: string;
+  userId?: string;
 }
 
-export function MarketingTools({ companyName }: MarketingToolsProps) {
+export function MarketingTools({ companyName, userId }: MarketingToolsProps) {
+  const [wizardOpen, setWizardOpen] = useState(false);
+
   const marketingAssets = [
     {
       title: 'Co-Branded Flyers',
@@ -38,11 +43,67 @@ export function MarketingTools({ companyName }: MarketingToolsProps) {
     <div className="w-full min-h-screen p-4 md:p-8 bg-gray-50/50">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">Marketing Tools</h1>
-          <p className="text-gray-600 text-lg">
-            Co-branded marketing materials to promote your partnership with 21st Century Lending
-          </p>
+          <div className="flex justify-between items-start">
+            <div>
+              <h1 className="text-4xl font-bold text-gray-900 mb-2">Marketing Tools</h1>
+              <p className="text-gray-600 text-lg">
+                Co-branded marketing materials to promote your partnership with 21st Century Lending
+              </p>
+            </div>
+            {userId && (
+              <Button
+                onClick={() => setWizardOpen(true)}
+                className="bg-black hover:bg-black/90 text-white"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Create Landing Page
+              </Button>
+            )}
+          </div>
         </div>
+
+        {/* Content Generation Wizard */}
+        {userId && (
+          <ContentGenerationWizard
+            isOpen={wizardOpen}
+            onClose={() => setWizardOpen(false)}
+            onSuccess={(pageId) => {
+              setWizardOpen(false);
+              // Optionally navigate to the page or show success message
+              alert(`Landing page created successfully! Page ID: ${pageId}`);
+            }}
+            userRole="realtor_partner"
+            currentUserId={userId}
+          />
+        )}
+
+        {/* Co-branded Landing Pages Section */}
+        {userId && (
+          <Card className="mb-8 border-2 border-black/10">
+            <CardHeader>
+              <div className="flex items-start gap-4">
+                <div className="flex-shrink-0 w-12 h-12 rounded-lg flex items-center justify-center bg-black/10">
+                  <Globe className="h-6 w-6 text-black" />
+                </div>
+                <div className="flex-1">
+                  <CardTitle className="text-xl mb-2">Co-Branded Landing Pages</CardTitle>
+                  <p className="text-sm text-gray-600">
+                    Create professional landing pages co-branded with your loan officer partners for pre-qualification, open houses, and more.
+                  </p>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <Button
+                onClick={() => setWizardOpen(true)}
+                className="w-full bg-black hover:bg-black/90 text-white"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Create Co-Branded Page
+              </Button>
+            </CardContent>
+          </Card>
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {marketingAssets.map((asset) => {
@@ -51,11 +112,8 @@ export function MarketingTools({ companyName }: MarketingToolsProps) {
               <Card key={asset.title} className="hover:shadow-lg transition-shadow">
                 <CardHeader>
                   <div className="flex items-start gap-4">
-                    <div
-                      className="flex-shrink-0 w-12 h-12 rounded-lg flex items-center justify-center"
-                      style={{ backgroundColor: 'rgba(212, 175, 55, 0.1)' }}
-                    >
-                      <Icon className="h-6 w-6" style={{ color: '#D4AF37' }} />
+                    <div className="flex-shrink-0 w-12 h-12 rounded-lg flex items-center justify-center bg-black/10">
+                      <Icon className="h-6 w-6 text-black" />
                     </div>
                     <div className="flex-1">
                       <CardTitle className="text-xl mb-2">{asset.title}</CardTitle>
@@ -64,7 +122,7 @@ export function MarketingTools({ companyName }: MarketingToolsProps) {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <Button className="w-full" variant="outline">
+                  <Button className="w-full bg-black hover:bg-black/90 text-white" variant="default">
                     {asset.action}
                   </Button>
                 </CardContent>
@@ -82,7 +140,7 @@ export function MarketingTools({ companyName }: MarketingToolsProps) {
               Our marketing team can create custom co-branded materials tailored specifically for {companyName}.
               Contact your loan officer to discuss custom marketing solutions.
             </p>
-            <Button style={{ backgroundColor: '#D4AF37', color: '#000000' }}>
+            <Button className="bg-black hover:bg-black/90 text-white">
               Request Custom Materials
             </Button>
           </CardContent>

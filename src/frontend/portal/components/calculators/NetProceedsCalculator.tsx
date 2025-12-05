@@ -72,6 +72,7 @@ export function NetProceedsCalculator({
               value={salePrice}
               onChange={(val) => setSalePrice(val)}
               defaultValue={500000}
+              brandColor={brandColor}
             />
 
             <MortgageInput
@@ -80,6 +81,7 @@ export function NetProceedsCalculator({
               value={mortgageBalance}
               onChange={(val) => setMortgageBalance(val)}
               defaultValue={300000}
+              brandColor={brandColor}
             />
 
             <MortgageSelect
@@ -87,6 +89,7 @@ export function NetProceedsCalculator({
               value={String(propertyStateIndex)}
               onChange={(val) => setPropertyStateIndex(val)}
               options={US_STATES.map((state, idx) => ({ value: String(idx), label: state }))}
+              brandColor={brandColor}
             />
 
             <MortgageInput
@@ -96,6 +99,7 @@ export function NetProceedsCalculator({
               onChange={(val) => setAgentCommission(val)}
               step="0.5"
               defaultValue={6}
+              brandColor={brandColor}
             />
 
             <MortgageInput
@@ -105,6 +109,7 @@ export function NetProceedsCalculator({
               onChange={(val) => setClosingCosts(val)}
               step="0.5"
               defaultValue={3}
+              brandColor={brandColor}
             />
 
             <MortgageInput
@@ -113,6 +118,7 @@ export function NetProceedsCalculator({
               value={homeWarranty}
               onChange={(val) => setHomeWarranty(val)}
               defaultValue={500}
+              brandColor={brandColor}
             />
 
             <MortgageInput
@@ -121,6 +127,7 @@ export function NetProceedsCalculator({
               value={repairs}
               onChange={(val) => setRepairs(val)}
               defaultValue={2000}
+              brandColor={brandColor}
             />
 
             <MortgageInput
@@ -129,6 +136,7 @@ export function NetProceedsCalculator({
               value={propertytax}
               onChange={(val) => setPropertyTax(val)}
               defaultValue={0}
+              brandColor={brandColor}
             />
           </CardContent>
         </Card>

@@ -26,10 +26,10 @@ export function CalculatorTools() {
           </p>
         </div>
 
-        <Card style={{ borderColor: '#D4AF37', borderWidth: '2px' }}>
-          <CardHeader style={{ backgroundColor: 'rgba(212, 175, 55, 0.1)' }}>
+        <Card className="border-2 border-black/20">
+          <CardHeader className="bg-black/5">
             <CardTitle className="flex items-center gap-2">
-              <Calculator className="h-6 w-6" style={{ color: '#D4AF37' }} />
+              <Calculator className="h-6 w-6 text-black" />
               Mortgage Calculators
             </CardTitle>
           </CardHeader>
@@ -37,8 +37,8 @@ export function CalculatorTools() {
             <div
               className="w-full"
               style={{
-                '--brand-primary-blue': '#beaf87',
-                '--brand-rich-teal': '#D4AF37',
+                '--brand-primary-blue': '#000000',
+                '--brand-rich-teal': '#000000',
               } as React.CSSProperties}
             >
               <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
@@ -72,31 +72,31 @@ export function CalculatorTools() {
                 </TabsList>
 
                 <TabsContent value="conventional">
-                  <ConventionalCalculator brandColor="#D4AF37" />
+                  <ConventionalCalculator brandColor="#000000" />
                 </TabsContent>
 
                 <TabsContent value="affordability">
-                  <AffordabilityCalculator brandColor="#D4AF37" />
+                  <AffordabilityCalculator brandColor="#000000" />
                 </TabsContent>
 
                 <TabsContent value="buydown">
-                  <BuydownCalculator brandColor="#D4AF37" />
+                  <BuydownCalculator brandColor="#000000" />
                 </TabsContent>
 
                 <TabsContent value="dscr">
-                  <DSCRCalculator brandColor="#D4AF37" />
+                  <DSCRCalculator brandColor="#000000" />
                 </TabsContent>
 
                 <TabsContent value="refinance">
-                  <RefinanceCalculator brandColor="#D4AF37" />
+                  <RefinanceCalculator brandColor="#000000" />
                 </TabsContent>
 
                 <TabsContent value="netproceeds">
-                  <NetProceedsCalculator brandColor="#D4AF37" />
+                  <NetProceedsCalculator brandColor="#000000" />
                 </TabsContent>
 
                 <TabsContent value="rentvsbuy">
-                  <RentVsBuyCalculator brandColor="#D4AF37" />
+                  <RentVsBuyCalculator brandColor="#000000" />
                 </TabsContent>
               </Tabs>
             </div>

@@ -565,22 +565,38 @@ class Blocks {
 	 * @return array|false Page data or false on failure.
 	 */
 	public static function generate_biolink_page( $user_id ) {
-		// Get profile from Eloquent
-		$profile = Profile::where( 'user_id', $user_id )->first();
+		// Try to get profile from frs-wp-users Eloquent model
+		$profile = null;
+		if ( class_exists( 'FRSUsers\Models\Profile' ) ) {
+			$profile = Profile::where( 'user_id', $user_id )->first();
+		}
 
-		if ( ! $profile ) {
+		// Fallback to WordPress user data if no profile exists
+		$wp_user = get_user_by( 'id', $user_id );
+		if ( ! $wp_user ) {
 			return false;
 		}
 
+		// Get name from profile or WordPress user meta
+		if ( $profile ) {
+			$first_name = $profile->first_name;
+			$last_name  = $profile->last_name;
+			$headshot_id = $profile->headshot_id ?? null;
+		} else {
+			$first_name = get_user_meta( $user_id, 'first_name', true ) ?: $wp_user->user_login;
+			$last_name  = get_user_meta( $user_id, 'last_name', true ) ?: '';
+			$headshot_id = null;
+		}
+
 		// Generate unique slug
-		$slug = self::generate_unique_biolink_slug( $profile->first_name, $user_id );
+		$slug = self::generate_unique_biolink_slug( $first_name, $user_id );
 
 		// Create page with single dynamic block
 		$page_content = '<!-- wp:lrh/biolink-page {"user_id":' . intval( $user_id ) . '} /-->';
 
 		// Create the page
 		$page_data = array(
-			'post_title'   => trim( $profile->first_name . ' ' . $profile->last_name ),
+			'post_title'   => trim( $first_name . ' ' . $last_name ),
 			'post_name'    => $slug,
 			'post_content' => $page_content,
 			'post_status'  => 'publish',
@@ -602,8 +618,8 @@ class Blocks {
 		}
 
 		// Set featured image if headshot exists
-		if ( $profile->headshot_id ) {
-			set_post_thumbnail( $page_id, $profile->headshot_id );
+		if ( $headshot_id ) {
+			set_post_thumbnail( $page_id, $headshot_id );
 		}
 
 		return array(

@@ -30,6 +30,9 @@ class Shortcode {
 	 * @return void
 	 */
 	public function init() {
+		// Generic component shortcode (for embedding any React component)
+		add_shortcode( 'lrh_component', array( $this, 'render_component' ) );
+
 		// New shortcodes
 		add_shortcode( 'lrh_portal', array( $this, 'render_portal' ) );
 		add_shortcode( 'lrh_portal_sidebar', array( $this, 'render_portal_sidebar' ) );
@@ -83,6 +86,78 @@ class Shortcode {
 
 		// Legacy welcome shortcode alias
 		add_shortcode( 'frs_lo_welcome', array( $this, 'render_content_welcome' ) );
+	}
+
+	/**
+	 * Render a generic React component.
+	 *
+	 * Allows embedding any React component from your component library.
+	 *
+	 * Shortcode attributes:
+	 * - name: Component name (required) - e.g., "MyProfile", "MarketingOverview"
+	 * - props: JSON string of props to pass to component (optional)
+	 * - wrapper_class: CSS classes for wrapper div (optional)
+	 * - wrapper_style: Inline styles for wrapper div (optional)
+	 *
+	 * Example: [lrh_component name="MyProfile" props='{"userId":"123","autoEdit":true}']
+	 * Example: [lrh_component name="LeadTracking" wrapper_class="p-4 bg-white"]
+	 *
+	 * @param array $atts Shortcode attributes.
+	 * @return string The rendered shortcode HTML.
+	 */
+	public function render_component( $atts ) {
+		// Parse attributes
+		$atts = shortcode_atts(
+			array(
+				'name'          => '',
+				'props'         => '{}',
+				'wrapper_class' => '',
+				'wrapper_style' => '',
+			),
+			$atts,
+			'lrh_component'
+		);
+
+		// Component name is required
+		if ( empty( $atts['name'] ) ) {
+			return '<!-- [lrh_component] Error: component name is required -->';
+		}
+
+		// Validate JSON props
+		$props = json_decode( $atts['props'], true );
+		if ( json_last_error() !== JSON_ERROR_NONE ) {
+			return '<!-- [lrh_component] Error: invalid JSON in props attribute -->';
+		}
+
+		// Enqueue portal assets
+		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_portal_assets_public();
+
+		// Generate unique ID for this component instance
+		$component_id = 'lrh-component-' . sanitize_title( $atts['name'] ) . '-' . wp_rand( 1000, 9999 );
+
+		// Build wrapper attributes
+		$wrapper_attrs = array(
+			'id'                 => $component_id,
+			'data-lrh-component' => esc_attr( $atts['name'] ),
+			'data-lrh-props'     => esc_attr( wp_json_encode( $props ) ),
+		);
+
+		if ( ! empty( $atts['wrapper_class'] ) ) {
+			$wrapper_attrs['class'] = esc_attr( $atts['wrapper_class'] );
+		}
+
+		if ( ! empty( $atts['wrapper_style'] ) ) {
+			$wrapper_attrs['style'] = esc_attr( $atts['wrapper_style'] );
+		}
+
+		// Build HTML
+		$html = '<div';
+		foreach ( $wrapper_attrs as $key => $value ) {
+			$html .= sprintf( ' %s="%s"', $key, $value );
+		}
+		$html .= '></div>';
+
+		return $html;
 	}
 
 	/**

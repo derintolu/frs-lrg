@@ -118,6 +118,7 @@ export function BuydownCalculator({
               value={homePrice}
               onChange={(val) => setHomePrice(val)}
               defaultValue={300000}
+              brandColor={brandColor}
             />
 
             <MortgageInput
@@ -126,6 +127,7 @@ export function BuydownCalculator({
               value={downPayment}
               onChange={(val) => setDownPayment(val)}
               defaultValue={60000}
+              brandColor={brandColor}
             />
 
             <MortgageSelect
@@ -133,6 +135,7 @@ export function BuydownCalculator({
               value={String(propertyStateIndex)}
               onChange={(val) => setPropertyStateIndex(val)}
               options={US_STATES.map((state, idx) => ({ value: String(idx), label: state }))}
+              brandColor={brandColor}
             />
 
             <MortgageSelect
@@ -140,6 +143,7 @@ export function BuydownCalculator({
               value={String(creditScoreIndex)}
               onChange={(val) => setCreditScoreIndex(val)}
               options={CREDIT_SCORES.map((score, idx) => ({ value: String(idx), label: score.label }))}
+              brandColor={brandColor}
             />
 
             <MortgageInput
@@ -149,6 +153,7 @@ export function BuydownCalculator({
               onChange={(val) => setInterestRate(val)}
               step="0.1"
               defaultValue={7.0}
+              brandColor={brandColor}
             />
 
             <MortgageSelect
@@ -160,6 +165,7 @@ export function BuydownCalculator({
                 { value: '20', label: '20 years' },
                 { value: '30', label: '30 years' }
               ]}
+              brandColor={brandColor}
             />
 
             <div className="md:col-span-2">
@@ -173,6 +179,7 @@ export function BuydownCalculator({
                   { value: '3-2-1', label: '3-2-1 Buydown' },
                   { value: '1-0', label: '1-0 Buydown' }
                 ]}
+                brandColor={brandColor}
               />
             </div>
           </CardContent>
