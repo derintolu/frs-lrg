@@ -283,6 +283,11 @@ class Frontend {
 			}
 		}
 
+		// Check for SureDash portal custom post type
+		if ( is_singular( 'portal' ) || ( $post && $post->post_type === 'portal' ) ) {
+			return true;
+		}
+
 		// Check specific page slugs where portal should load
 		$portal_pages = array(
 			'portal',
