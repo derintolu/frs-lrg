@@ -4,26 +4,43 @@
 
 Your production server at `beta.frs.works` needs Composer installed.
 
-## Deployment Steps
+## Deployment Methods
 
-### 1. Push Code (Excludes vendor/)
+### Method 1: Automated Script (Recommended)
+
+SSH into your server and run the deployment script:
 
 ```bash
-git add .
-git commit -m "your commit message"
-git push origin main
+# SSH into server
+ssh -p 222 derin@my.frs.works
+
+# Navigate to plugin directory
+cd ~/public_html/wp-content/plugins/frs-lrg
+
+# Run deployment script
+bash deploy-production.sh
 ```
 
-### 2. Deploy to Production
+The script will:
+- Pull latest code from GitHub
+- Install Composer dependencies
+- Clear WordPress caches
+- Show current deployment status
 
-SSH into your server and run:
+### Method 2: Manual Deployment
+
+If you prefer manual control:
 
 ```bash
+# SSH into server
+ssh -p 222 derin@my.frs.works
+
 # Navigate to plugin directory
-cd /path/to/wp-content/plugins/frs-lrg
+cd ~/public_html/wp-content/plugins/frs-lrg
 
 # Pull latest code
-git pull origin main
+git fetch origin main
+git reset --hard origin/main
 
 # Install production dependencies (no dev packages, optimized)
 composer install --no-dev -o
@@ -32,6 +49,21 @@ composer install --no-dev -o
 wp cache flush
 wp rewrite flush
 ```
+
+### Method 3: GitHub Actions (Auto-Deploy)
+
+Automatically deploy on every push to `main` branch:
+
+1. Add secrets to your GitHub repository:
+   - Go to Settings → Secrets and variables → Actions
+   - Add `SSH_USERNAME` (value: `derin`)
+   - Add `SSH_PASSWORD` (your SSH password)
+
+2. Push to `main` branch - deployment happens automatically!
+
+3. Monitor deployment: Go to Actions tab in GitHub
+
+**To disable auto-deploy:** Delete `.github/workflows/deploy.yml`
 
 ## One-Time Setup on Production
 

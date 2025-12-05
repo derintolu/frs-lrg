@@ -31,3 +31,6 @@ composer.lock
 
 vendor/
 composer.lock
+
+# SFTP credentials
+.sftp-credentials
