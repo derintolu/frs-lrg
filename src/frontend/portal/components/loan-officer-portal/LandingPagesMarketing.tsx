@@ -24,6 +24,7 @@ import {
 import { DataService } from '../../utils/dataService';
 import type { LandingPage } from '../../utils/dataService';
 import { PAGE_TYPE_LABELS, buildLandingEditorUrl } from '../../constants/landing';
+import { WordPressEditorIframe } from './WordPressEditorIframe';
 
 interface LandingPagesMarketingProps {
   userId: string;
@@ -108,7 +109,7 @@ export function LandingPagesMarketing({ userId, currentUser }: LandingPagesMarke
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-WP-Nonce': (window as any).wpApiSettings?.nonce || '',
+          'X-WP-Nonce': (window as any).frsPortalConfig?.restNonce || '',
         },
         body: JSON.stringify({ user_id: userId }),
       });
@@ -119,14 +120,27 @@ export function LandingPagesMarketing({ userId, currentUser }: LandingPagesMarke
 
       const data = await response.json();
 
-      // Reload landing pages to show the new page
-      const pages = await DataService.getLandingPagesForLO(userId);
-      const filteredPages = pages.filter(page => page.type !== 'biolink');
-      setLandingPages(filteredPages);
+      // Get the generated page ID
+      const newPageId = data.page?.id || data.page?.page_id;
+
+      if (newPageId) {
+        // Reload landing pages
+        const pages = await DataService.getLandingPagesForLO(userId);
+        const filteredPages = pages.filter(page => page.type !== 'biolink');
+        setLandingPages(filteredPages);
+
+        // Automatically open the new page in the editor
+        console.log('Opening newly generated page in editor:', newPageId);
+        setEditorPageId(newPageId.toString());
+        setEditorOpen(true);
+      } else {
+        throw new Error('No page ID returned from generation');
+      }
 
     } catch (err) {
       console.error('Failed to generate landing page:', err);
-      alert('Failed to generate landing page. Please try again.');
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+      alert(`Failed to generate landing page: ${errorMessage}`);
     } finally {
       setGeneratingTemplate(null);
     }
@@ -359,6 +373,27 @@ export function LandingPagesMarketing({ userId, currentUser }: LandingPagesMarke
       </Card>
     );
   };
+
+  // If editor is open, show only the editor (replaces entire section)
+  if (editorOpen && editorPageId) {
+    return (
+      <WordPressEditorIframe
+        pageId={editorPageId}
+        onClose={() => {
+          setEditorOpen(false);
+          setEditorPageId(null);
+          // Reload pages after editing
+          DataService.getLandingPagesForLO(userId).then(pages => {
+            const filteredPages = pages.filter(page => page.type !== 'biolink');
+            setLandingPages(filteredPages);
+          });
+        }}
+        onSave={() => {
+          console.log('Page saved');
+        }}
+      />
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -639,38 +674,6 @@ export function LandingPagesMarketing({ userId, currentUser }: LandingPagesMarke
               onError={(e) => {
                 console.error('❌ Iframe failed to load:', e);
               }}
-            />
-          </div>
-        </div>
-      )}
-
-      {/* Frontend Block Editor Modal (iframe) */}
-      {editorOpen && editorPageId && (
-        <div className="fixed inset-0 z-[9999] bg-black/70 flex items-center justify-center pt-16">
-          <div className="relative w-[95vw] h-[80vh] bg-white rounded-lg overflow-hidden shadow-2xl">
-            {/* Modal Header */}
-            <div className="absolute top-0 left-0 right-0 z-10 bg-[var(--brand-dark-navy)] border-b border-gray-600 px-6 py-4 flex justify-between items-center">
-              <h3 className="text-lg font-semibold text-white">Page Editor</h3>
-              <div className="flex items-center space-x-3">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => { setEditorOpen(false); setEditorPageId(null); }}
-                  className="text-gray-300 hover:text-white"
-                >
-                  ✕
-                </Button>
-              </div>
-            </div>
-
-            <iframe
-              title="Landing Page Editor"
-              src={(() => {
-                const currentPage = landingPages.find(p => p.id === editorPageId);
-                return buildLandingEditorUrl(editorPageId, true, currentPage?.type);
-              })()}
-              className="w-full h-full border-0"
-              allow="fullscreen"
             />
           </div>
         </div>

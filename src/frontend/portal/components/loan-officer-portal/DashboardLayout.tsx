@@ -15,6 +15,7 @@ import type { User as UserType } from '../../utils/dataService';
 import type { MenuItem } from '../ui/CollapsibleSidebar';
 import { ProfileCompletionCard } from './ProfileCompletionCard';
 import { getCurrentPortalBranding } from '../../utils/portalBranding';
+import { DataService } from '../../utils/dataService';
 
 // Get components from child theme global
 const MarketingSidebarOverlay = (window as any).FRSComponents?.MarketingSidebarOverlay;
@@ -33,6 +34,28 @@ export function DashboardLayout({ currentUser }: DashboardLayoutProps) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
     return typeof window !== 'undefined' && window.innerWidth < 768;
   });
+
+  // WordPress menu integration - fetch menu from WP if available
+  const [wpMenuItems, setWpMenuItems] = useState<MenuItem[] | null>(null);
+  const [wpMenuLoading, setWpMenuLoading] = useState(true);
+
+  // Fetch WordPress menu on mount
+  useEffect(() => {
+    const fetchMenu = async () => {
+      try {
+        const response = await DataService.get('/menu/lrh_lo_portal_menu');
+        if (response && Array.isArray(response)) {
+          setWpMenuItems(response);
+        }
+      } catch (error) {
+        console.log('[LRH] WordPress menu not configured, using default menu');
+      } finally {
+        setWpMenuLoading(false);
+      }
+    };
+
+    fetchMenu();
+  }, []);
 
   // Get dynamic branding based on portal type
   const branding = getCurrentPortalBranding();
@@ -263,7 +286,8 @@ export function DashboardLayout({ currentUser }: DashboardLayoutProps) {
   // Show profile-specific menu when on profile page
   const shouldShowProfileCard = isProfilePage && !hasReached100Percent && !isCardDismissed;
 
-  const menuItems: MenuItem[] = isProfilePage ? [
+  // Default menu items (fallback if WordPress menu not configured)
+  const defaultMenuItems: MenuItem[] = isProfilePage ? [
     { id: '/profile', label: 'Profile', icon: Users, url: '/profile' },
     { id: '/profile/settings', label: 'Settings', icon: Wrench, url: '/profile/settings' },
     // Only show ProfileCompletionCard if not at 100% and not dismissed
@@ -293,6 +317,7 @@ export function DashboardLayout({ currentUser }: DashboardLayoutProps) {
       ]
     },
     { id: '/leads', label: 'Lead Tracking', icon: TrendingUp, url: '/leads' },
+    { id: '/directory', label: 'Directory', icon: Users, url: '/directory' },
     {
       id: '/tools',
       label: 'Tools',
@@ -305,6 +330,9 @@ export function DashboardLayout({ currentUser }: DashboardLayoutProps) {
       ]
     },
   ];
+
+  // Use WordPress menu if available, otherwise use default
+  const menuItems = wpMenuItems || defaultMenuItems;
 
   // Check if on profile page
   const isOnProfile = location.pathname === '/profile' || location.pathname.startsWith('/profile/');

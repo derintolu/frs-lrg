@@ -52,6 +52,10 @@ export const createRouter = (config: RouteConfig) => {
           element: <LeadTracking userId={userId} />,
         },
         {
+          path: 'directory',
+          element: <Directory />,
+        },
+        {
           path: 'marketing',
           children: [
             {

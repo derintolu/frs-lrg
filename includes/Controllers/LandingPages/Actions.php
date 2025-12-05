@@ -555,4 +555,22 @@ class Actions {
 			)
 		);
 	}
+
+	/**
+	 * Check if user has permission to generate pages.
+	 *
+	 * @param WP_REST_Request $request The REST request object.
+	 * @return bool True if user can generate pages.
+	 */
+	public function check_generation_permissions( $request = null ) {
+		error_log('=== Landing Page Generation Permission Check ===');
+		error_log('User logged in: ' . (\is_user_logged_in() ? 'YES' : 'NO'));
+		error_log('Current user ID: ' . \get_current_user_id());
+		error_log('Can edit posts: ' . (\current_user_can('edit_posts') ? 'YES' : 'NO'));
+
+		$result = \is_user_logged_in() && \current_user_can( 'edit_posts' );
+		error_log('Permission result: ' . ($result ? 'TRUE' : 'FALSE'));
+
+		return $result;
+	}
 }

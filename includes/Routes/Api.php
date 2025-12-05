@@ -62,13 +62,13 @@ Route::prefix(
 		$route->get( '/landing-pages/templates', '\LendingResourceHub\Controllers\LandingPages\Actions@get_templates' );
 
 		// Page generation endpoints
-		$route->post( '/pages/generate/biolink', '\LendingResourceHub\Controllers\LandingPages\Actions@generate_biolink' );
-		$route->post( '/pages/generate/prequal', '\LendingResourceHub\Controllers\LandingPages\Actions@generate_prequal' );
-		$route->post( '/pages/generate/openhouse', '\LendingResourceHub\Controllers\LandingPages\Actions@generate_openhouse' );
-		$route->post( '/pages/generate/mortgage', '\LendingResourceHub\Controllers\LandingPages\Actions@generate_mortgage' );
-		$route->post( '/pages/generate/tools', '\LendingResourceHub\Controllers\LandingPages\Actions@generate_tools' );
-		$route->post( '/pages/generate/calculator', '\LendingResourceHub\Controllers\LandingPages\Actions@generate_calculator' );
-		$route->post( '/pages/generate/valuation', '\LendingResourceHub\Controllers\LandingPages\Actions@generate_valuation' );
+		$route->post( '/pages/generate/biolink', '\LendingResourceHub\Controllers\LandingPages\Actions@generate_biolink', '\LendingResourceHub\Controllers\LandingPages\Actions@check_generation_permissions' );
+		$route->post( '/pages/generate/prequal', '\LendingResourceHub\Controllers\LandingPages\Actions@generate_prequal', '\LendingResourceHub\Controllers\LandingPages\Actions@check_generation_permissions' );
+		$route->post( '/pages/generate/openhouse', '\LendingResourceHub\Controllers\LandingPages\Actions@generate_openhouse', '\LendingResourceHub\Controllers\LandingPages\Actions@check_generation_permissions' );
+		$route->post( '/pages/generate/mortgage', '\LendingResourceHub\Controllers\LandingPages\Actions@generate_mortgage', '\LendingResourceHub\Controllers\LandingPages\Actions@check_generation_permissions' );
+		$route->post( '/pages/generate/tools', '\LendingResourceHub\Controllers\LandingPages\Actions@generate_tools', '\LendingResourceHub\Controllers\LandingPages\Actions@check_generation_permissions' );
+		$route->post( '/pages/generate/calculator', '\LendingResourceHub\Controllers\LandingPages\Actions@generate_calculator', '\LendingResourceHub\Controllers\LandingPages\Actions@check_generation_permissions' );
+		$route->post( '/pages/generate/valuation', '\LendingResourceHub\Controllers\LandingPages\Actions@generate_valuation', '\LendingResourceHub\Controllers\LandingPages\Actions@check_generation_permissions' );
 
 		// ====== MARKETING ROUTES ======
 		$route->get( '/marketing-materials', '\LendingResourceHub\Controllers\Marketing\Actions@get_marketing_materials' );

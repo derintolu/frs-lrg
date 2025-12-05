@@ -6,10 +6,15 @@ use LendingResourceHub\Core\Redirects;
 use LendingResourceHub\Core\MortgageLandingGenerator;
 use LendingResourceHub\Core\UserPageRewrites;
 use LendingResourceHub\Core\Blocks as CoreBlocks;
+use LendingResourceHub\Core\BlockBindings;
 use LendingResourceHub\Core\DataKit;
 use LendingResourceHub\Core\PartnerCompanyImporter;
+use LendingResourceHub\Core\EditorConfig;
+use LendingResourceHub\Core\Navigation;
 use LendingResourceHub\CLI\PartnerCompanyCommands;
 use LendingResourceHub\Admin\Menu;
+use LendingResourceHub\Admin\SureDashSync;
+use LendingResourceHub\Admin\SureDashProfileFields;
 use LendingResourceHub\Core\Template;
 use LendingResourceHub\Assets\Frontend;
 use LendingResourceHub\Helpers\ProfileHelpers;
@@ -65,20 +70,27 @@ final class LendingResourceHub {
 	public function init() {
 		if ( is_admin() ) {
 			Menu::get_instance()->init();
+			SureDashSync::get_instance()->init();
 			// Note: Admin interface uses PHP templates (not React)
 			// React is only used for frontend shortcodes
 			// Admin::get_instance()->bootstrap(); // Removed - not needed for PHP admin
 		}
 
+		// Initialize SureDash profile fields integration
+		SureDashProfileFields::get_instance()->init();
+
 		// Initialize core functionalities.
 		Frontend::get_instance()->bootstrap();
 		API::get_instance()->init();
 		Template::get_instance()->init();
+		Navigation::get_instance()->init();
 		Shortcode::get_instance()->init();
 		PostTypes::get_instance()->init();
 		UserPageRewrites::get_instance()->init();
 		Redirects::get_instance()->init();
 		CoreBlocks::get_instance()->init();
+		BlockBindings::get_instance()->init();
+		EditorConfig::get_instance()->init();
 		BiolinkBlocks::get_instance()->init();
 		PrequalBlocks::get_instance()->init();
 		OpenHouseBlocks::get_instance()->init();
@@ -109,6 +121,11 @@ final class LendingResourceHub {
 
 		// Initialize WordPress Abilities API integration
 		AbilitiesRegistry::init();
+
+		// Initialize MCP Adapter for Abilities API
+		if ( class_exists( 'WP\MCP\Core\McpAdapter' ) ) {
+			\WP\MCP\Core\McpAdapter::instance();
+		}
 
 		// Check dependencies and show admin notices
 		add_action( 'admin_notices', array( $this, 'check_dependencies' ) );
