@@ -264,6 +264,7 @@ class Frontend {
 			if ( has_shortcode( $post->post_content, 'lrh_portal' ) ||
 				has_shortcode( $post->post_content, 'frs_partnership_portal' ) ||
 				has_shortcode( $post->post_content, 'lrh_portal_sidebar' ) ||
+				has_shortcode( $post->post_content, 'lrh_component' ) ||
 				has_shortcode( $post->post_content, 'lrh_content_marketing' ) ||
 				has_shortcode( $post->post_content, 'lrh_content_profile' ) ||
 				has_shortcode( $post->post_content, 'lrh_content_calendar' ) ||
