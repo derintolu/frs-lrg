@@ -84,23 +84,42 @@ class Frontend {
 		// This enables data-wp-router-link and data-wp-router-region to work
 		wp_enqueue_script_module( '@wordpress/interactivity-router' );
 
-		// Enqueue the main frontend bundle
-		// This uses @kucrut/vite-for-wp which automatically detects:
-		// - Development: Loads from vite-dev-server.json (localhost:5173)
-		// - Production: Loads from manifest.json (hashed assets)
-		Assets\enqueue_asset(
-			LRH_DIR . '/assets/frontend/dist',
-			self::DEV_SCRIPT,
-			array(
-				'handle'       => self::HANDLE,
-				'dependencies' => array( 'react', 'react-dom' ),
-				'in-footer'    => true,
-			)
-		);
+		// Check if welcome portal shortcode is present
+		global $post;
+		$has_welcome_shortcode = $post && is_object( $post ) && isset( $post->post_content ) && has_shortcode( $post->post_content, 'lrh_content_welcome' );
 
-		// Add configuration data using wp_localize_script
-		// This is MORE RELIABLE than wp_add_inline_script for ES6 modules
-		wp_localize_script( self::HANDLE, self::OBJ_NAME, $this->get_config_data() );
+		if ( $has_welcome_shortcode ) {
+			// Enqueue welcome portal bundle
+			Assets\enqueue_asset(
+				LRH_DIR . '/assets/welcome-portal/dist',
+				'src/frontend/welcome-portal-main.jsx',
+				array(
+					'handle'       => 'lrh-welcome-portal',
+					'dependencies' => array( 'react', 'react-dom' ),
+					'in-footer'    => true,
+				)
+			);
+			// Add configuration data for welcome portal
+			wp_localize_script( 'lrh-welcome-portal', self::OBJ_NAME, $this->get_config_data() );
+		} else {
+			// Enqueue the main frontend bundle
+			// This uses @kucrut/vite-for-wp which automatically detects:
+			// - Development: Loads from vite-dev-server.json (localhost:5173)
+			// - Production: Loads from manifest.json (hashed assets)
+			Assets\enqueue_asset(
+				LRH_DIR . '/assets/frontend/dist',
+				self::DEV_SCRIPT,
+				array(
+					'handle'       => self::HANDLE,
+					'dependencies' => array( 'react', 'react-dom' ),
+					'in-footer'    => true,
+				)
+			);
+
+			// Add configuration data using wp_localize_script
+			// This is MORE RELIABLE than wp_add_inline_script for ES6 modules
+			wp_localize_script( self::HANDLE, self::OBJ_NAME, $this->get_config_data() );
+		}
 
 		// Debug logging
 		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {

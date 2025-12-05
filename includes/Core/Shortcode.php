@@ -412,7 +412,7 @@ class Shortcode {
 	 */
 
 	public function render_content_welcome( $atts ) {
-		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_welcome_portal_assets();
+		// Assets are enqueued via wp_enqueue_scripts hook when shortcode is detected
 		return '<div id="lrh-welcome-portal-root" data-content-only="true" data-wp-interactive="lrh-portal"></div>';
 	}
 
