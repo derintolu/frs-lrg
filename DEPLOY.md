@@ -6,64 +6,51 @@ Your production server at `beta.frs.works` needs Composer installed.
 
 ## Deployment Methods
 
-### Method 1: Automated Script (Recommended)
+### Method 1: Git Pull + Docker Console (Recommended)
 
-SSH into your server and run the deployment script:
-
-```bash
-# SSH into server
-ssh -p 222 derin@my.frs.works
-
-# Navigate to plugin directory
-cd ~/public_html/wp-content/plugins/frs-lrg
-
-# Run deployment script
-bash deploy-production.sh
-```
-
-The script will:
-- Pull latest code from GitHub
-- Install Composer dependencies
-- Clear WordPress caches
-- Show current deployment status
-
-### Method 2: Manual Deployment
-
-If you prefer manual control:
+Your server uses Docker containers, so deployment is simple:
 
 ```bash
-# SSH into server
-ssh -p 222 derin@my.frs.works
-
-# Navigate to plugin directory
+# 1. SFTP or git pull to get latest code
+# From server (or via SFTP client):
 cd ~/public_html/wp-content/plugins/frs-lrg
-
-# Pull latest code
 git fetch origin main
 git reset --hard origin/main
 
-# Install production dependencies (no dev packages, optimized)
-composer install --no-dev -o
+# 2. Access Docker container console
+# (Method varies by hosting - Cloudways, RunCloud, etc.)
+# Example for typical Docker setup:
+docker exec -it <container-name> bash
 
-# Clear WordPress caches
+# 3. Inside container, run:
+cd /var/www/html/wp-content/plugins/frs-lrg
+composer install --no-dev -o
 wp cache flush
 wp rewrite flush
+exit
 ```
 
-### Method 3: GitHub Actions (Auto-Deploy)
+**Automated Script:** Run `deploy-production.sh` inside the Docker container
 
-Automatically deploy on every push to `main` branch:
+### Method 2: SFTP + Docker Console
 
-1. Add secrets to your GitHub repository:
-   - Go to Settings → Secrets and variables → Actions
-   - Add `SSH_USERNAME` (value: `derin`)
-   - Add `SSH_PASSWORD` (your SSH password)
+If git isn't available, use SFTP to upload files:
 
-2. Push to `main` branch - deployment happens automatically!
+```bash
+# Run locally to upload via SFTP
+bash deploy-sftp.sh
 
-3. Monitor deployment: Go to Actions tab in GitHub
+# Then access Docker container and run:
+docker exec -it <container-name> bash
+cd /var/www/html/wp-content/plugins/frs-lrg
+composer install --no-dev -o
+wp cache flush
+exit
+```
 
-**To disable auto-deploy:** Delete `.github/workflows/deploy.yml`
+### Method 3: Include Vendor Files (No Composer in Docker)
+
+If Composer isn't available inside the Docker container, vendor files are already committed to git
 
 ## One-Time Setup on Production
 

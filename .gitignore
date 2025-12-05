@@ -29,8 +29,8 @@ composer.lock
 *.sln
 *.sw?
 
-vendor/
-composer.lock
+# vendor/ - Included in git for SFTP-only production servers
+# composer.lock - Included in git to lock dependency versions
 
 # SFTP credentials
 .sftp-credentials

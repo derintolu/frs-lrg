@@ -1,0 +1,289 @@
+{
+    "packages": [
+        {
+            "name": "automattic/jetpack-autoloader",
+            "version": "v3.1.3",
+            "version_normalized": "3.1.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Automattic/jetpack-autoloader.git",
+                "reference": "e7e49a4e2f16cb2dfd3e58c478499a60d7d51839"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Automattic/jetpack-autoloader/zipball/e7e49a4e2f16cb2dfd3e58c478499a60d7d51839",
+                "reference": "e7e49a4e2f16cb2dfd3e58c478499a60d7d51839",
+                "shasum": ""
+            },
+            "require": {
+                "composer-plugin-api": "^1.1 || ^2.0",
+                "php": ">=7.0"
+            },
+            "require-dev": {
+                "automattic/jetpack-changelogger": "^4.2.8",
+                "composer/composer": "^1.1 || ^2.0",
+                "yoast/phpunit-polyfills": "^1.1.1"
+            },
+            "time": "2024-11-04T09:23:56+00:00",
+            "type": "composer-plugin",
+            "extra": {
+                "class": "Automattic\\Jetpack\\Autoloader\\CustomAutoloaderPlugin",
+                "autotagger": true,
+                "mirror-repo": "Automattic/jetpack-autoloader",
+                "branch-alias": {
+                    "dev-trunk": "3.1.x-dev"
+                },
+                "changelogger": {
+                    "link-template": "https://github.com/Automattic/jetpack-autoloader/compare/v${old}...v${new}"
+                },
+                "version-constants": {
+                    "::VERSION": "src/AutoloadGenerator.php"
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "Automattic\\Jetpack\\Autoloader\\": "src"
+                },
+                "classmap": [
+                    "src/AutoloadGenerator.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "description": "Creates a custom autoloader for a plugin or theme.",
+            "keywords": [
+                "autoload",
+                "autoloader",
+                "composer",
+                "jetpack",
+                "plugin",
+                "wordpress"
+            ],
+            "support": {
+                "source": "https://github.com/Automattic/jetpack-autoloader/tree/v3.1.3"
+            },
+            "install-path": "../automattic/jetpack-autoloader"
+        },
+        {
+            "name": "prappo/wp-eloquent",
+            "version": "v3.0.5",
+            "version_normalized": "3.0.5.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/prappo/wp-eloquent.git",
+                "reference": "394e285a573248b176f93dffd85f9d7256a2475b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/prappo/wp-eloquent/zipball/394e285a573248b176f93dffd85f9d7256a2475b",
+                "reference": "394e285a573248b176f93dffd85f9d7256a2475b",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "ext-pdo": "*",
+                "php": "^7.3|^8.0"
+            },
+            "suggest": {
+                "doctrine/dbal": "Required to rename columns and drop SQLite columns (^2.6).",
+                "fzaninotto/faker": "Required to use the eloquent factory builder (^1.9.1).",
+                "symfony/finder": "Required to use Eloquent model factories (^5.1)."
+            },
+            "time": "2024-08-25T08:30:07+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "files": [
+                    "src/Support/helpers.php"
+                ],
+                "psr-4": {
+                    "Prappo\\WpEloquent\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "prappo",
+                    "email": "prappo.prince@gmail.com"
+                }
+            ],
+            "description": "Eloquent ORM for wordpress.",
+            "homepage": "https://github.com/prappo/wp-eloquent",
+            "keywords": [
+                "database",
+                "laravel",
+                "orm",
+                "prappo",
+                "sql",
+                "wordpress",
+                "wp-eloquent"
+            ],
+            "support": {
+                "issues": "https://github.com/prappo/wp-eloquent/issues",
+                "source": "https://github.com/prappo/wp-eloquent"
+            },
+            "install-path": "../prappo/wp-eloquent"
+        },
+        {
+            "name": "wordpress/abilities-api",
+            "version": "v0.5.0-rc",
+            "version_normalized": "0.5.0.0-RC",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/WordPress/abilities-api.git",
+                "reference": "b2a53856c1ce0919539dbdc120c864a14de00384"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/WordPress/abilities-api/zipball/b2a53856c1ce0919539dbdc120c864a14de00384",
+                "reference": "b2a53856c1ce0919539dbdc120c864a14de00384",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.4 | ^8"
+            },
+            "require-dev": {
+                "automattic/vipwpcs": "^3.0",
+                "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+                "phpcompatibility/php-compatibility": "10.x-dev as 9.99.99",
+                "phpcompatibility/phpcompatibility-wp": "^2.1",
+                "phpstan/extension-installer": "^1.3",
+                "phpstan/phpstan": "^2.1.22",
+                "phpstan/phpstan-deprecation-rules": "^2.0.3",
+                "phpstan/phpstan-phpunit": "^2.0.3",
+                "phpunit/phpunit": "^8.5|^9.6",
+                "slevomat/coding-standard": "^8.0",
+                "squizlabs/php_codesniffer": "^3.9",
+                "szepeviktor/phpstan-wordpress": "^2.0.2",
+                "wp-coding-standards/wpcs": "^3.1",
+                "wp-phpunit/wp-phpunit": "^6.5",
+                "wpackagist-plugin/plugin-check": "^1.6",
+                "yoast/phpunit-polyfills": "^4.0"
+            },
+            "time": "2025-11-14T11:55:42+00:00",
+            "type": "library",
+            "extra": {
+                "installer-paths": {
+                    "vendor/{$vendor}/{$name}/": [
+                        "wpackagist-plugin/plugin-check"
+                    ]
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "files": [
+                    "includes/bootstrap.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "WordPress AI Team",
+                    "homepage": "https://make.wordpress.org/ai/"
+                }
+            ],
+            "description": "AI Abilities for WordPress.",
+            "homepage": "https://github.com/WordPress/abilities-api",
+            "keywords": [
+                "abilities",
+                "ai",
+                "api",
+                "llm",
+                "wordpress"
+            ],
+            "support": {
+                "issues": "https://github.com/WordPress/abilities-api/issues",
+                "source": "https://github.com/WordPress/abilities-api"
+            },
+            "install-path": "../wordpress/abilities-api"
+        },
+        {
+            "name": "wordpress/mcp-adapter",
+            "version": "v0.4.0",
+            "version_normalized": "0.4.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/WordPress/mcp-adapter.git",
+                "reference": "4262b27bf1057dcdd67daa413f2acc767441e8e9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/WordPress/mcp-adapter/zipball/4262b27bf1057dcdd67daa413f2acc767441e8e9",
+                "reference": "4262b27bf1057dcdd67daa413f2acc767441e8e9",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.4 || ^8.0"
+            },
+            "require-dev": {
+                "automattic/vipwpcs": "^3.0",
+                "php-stubs/wp-cli-stubs": "^2.12",
+                "phpcompatibility/php-compatibility": "10.x-dev as 9.99.99",
+                "phpcompatibility/phpcompatibility-wp": "^2.1",
+                "phpstan/extension-installer": "^1.3",
+                "phpstan/php-8-stubs": "^0.4.24",
+                "phpstan/phpstan": "^2.1.22",
+                "phpstan/phpstan-deprecation-rules": "^2.0.3",
+                "phpunit/phpunit": "^9.6",
+                "slevomat/coding-standard": "^8.0",
+                "szepeviktor/phpstan-wordpress": "^2.0",
+                "wp-phpunit/wp-phpunit": "^6.5",
+                "wpackagist-plugin/plugin-check": "^1.6",
+                "yoast/phpunit-polyfills": "^4.0"
+            },
+            "time": "2025-12-04T19:18:46+00:00",
+            "type": "library",
+            "extra": {
+                "installer-paths": {
+                    "vendor/{$vendor}/{$name}/": [
+                        "wpackagist-plugin/plugin-check"
+                    ]
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "WP\\MCP\\": "includes/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "WordPress AI Team",
+                    "homepage": "https://make.wordpress.org/ai/"
+                }
+            ],
+            "description": "Adapter for Abilities API, letting WordPress abilities to be used as MCP tools, resources or prompts",
+            "homepage": "https://github.com/wordpress/mcp-adapter",
+            "keywords": [
+                "abilities-api",
+                "adapter",
+                "ai",
+                "api",
+                "integration",
+                "mcp",
+                "model-context-protocol",
+                "wordpress"
+            ],
+            "support": {
+                "issues": "https://github.com/wordpress/mcp-adapter/issues",
+                "source": "https://github.com/wordpress/mcp-adapter"
+            },
+            "install-path": "../wordpress/mcp-adapter"
+        }
+    ],
+    "dev": false,
+    "dev-package-names": []
+}
