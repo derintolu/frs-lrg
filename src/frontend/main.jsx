@@ -25,6 +25,7 @@ import { MarketingTools } from './portal/components/realtor-portal/MarketingTool
 import { CalculatorTools } from './portal/components/realtor-portal/CalculatorTools';
 import { CompanyOverview } from './portal/components/realtor-portal/CompanyOverview';
 import { Resources } from './portal/components/realtor-portal/Resources';
+import { Profile } from './portal/components/realtor-portal/Profile';
 
 /**
  * Consolidated Frontend Entry Point
@@ -115,7 +116,8 @@ if (sidebarRoot) {
 }
 
 // Mount content-only pages (uses [lrh_content_*] shortcodes)
-document.addEventListener('DOMContentLoaded', async () => {
+// Function to mount components
+const mountComponents = async () => {
   const contentRoots = document.querySelectorAll('[data-lrh-content]');
 
   if (contentRoots.length === 0) return;
@@ -231,6 +233,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     'CalculatorTools': CalculatorTools,
     'CompanyOverview': CompanyOverview,
     'Resources': Resources,
+    'Profile': Profile,
   };
 
   const componentRoots = document.querySelectorAll('[data-lrh-component]');
@@ -283,7 +286,17 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     });
   }
-});
+};
+
+// Run mounting immediately if DOM is ready, otherwise wait for DOMContentLoaded
+console.log('[LRH] Document readyState:', document.readyState);
+if (document.readyState === 'loading') {
+  console.log('[LRH] Waiting for DOMContentLoaded...');
+  document.addEventListener('DOMContentLoaded', mountComponents);
+} else {
+  console.log('[LRH] DOM already loaded, mounting immediately...');
+  mountComponents();
+}
 
 // Log if no root elements found
 if (!portalRoot && !sidebarRoot) {

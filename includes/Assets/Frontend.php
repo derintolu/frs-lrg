@@ -278,7 +278,13 @@ class Frontend {
 				has_shortcode( $post->post_content, 'lrh_content_settings' ) ||
 				has_shortcode( $post->post_content, 'lrh_content_notifications' ) ||
 				has_shortcode( $post->post_content, 'lrh_content_welcome' ) ||
-				has_shortcode( $post->post_content, 'lrh_marketing_subnav' ) ) {
+				has_shortcode( $post->post_content, 'lrh_marketing_subnav' ) ||
+				has_shortcode( $post->post_content, 'lrh_content_realtor_overview' ) ||
+				has_shortcode( $post->post_content, 'lrh_content_company_overview' ) ||
+				has_shortcode( $post->post_content, 'lrh_content_marketing_tools' ) ||
+				has_shortcode( $post->post_content, 'lrh_content_calculator_tools' ) ||
+				has_shortcode( $post->post_content, 'lrh_content_resources' ) ||
+				has_shortcode( $post->post_content, 'lrh_content_realtor_profile' ) ) {
 				return true;
 			}
 		}

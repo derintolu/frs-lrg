@@ -58,6 +58,14 @@ class Shortcode {
 		add_shortcode( 'lrh_content_settings', array( $this, 'render_content_settings' ) );
 		add_shortcode( 'lrh_content_notifications', array( $this, 'render_content_notifications' ) );
 
+		// Realtor portal content-only shortcodes (without sidebar)
+		add_shortcode( 'lrh_content_realtor_overview', array( $this, 'render_content_realtor_overview' ) );
+		add_shortcode( 'lrh_content_company_overview', array( $this, 'render_content_company_overview' ) );
+		add_shortcode( 'lrh_content_marketing_tools', array( $this, 'render_content_marketing_tools' ) );
+		add_shortcode( 'lrh_content_calculator_tools', array( $this, 'render_content_calculator_tools' ) );
+		add_shortcode( 'lrh_content_resources', array( $this, 'render_content_resources' ) );
+		add_shortcode( 'lrh_content_realtor_profile', array( $this, 'render_content_realtor_profile' ) );
+
 		// Individual dashboard section cards (standalone components)
 		add_shortcode( 'lrh_booking_calendar_card', array( $this, 'render_booking_calendar_card' ) );
 		add_shortcode( 'lrh_landing_pages_card', array( $this, 'render_landing_pages_card' ) );
@@ -474,6 +482,40 @@ class Shortcode {
 	public function render_content_notifications( $atts ) {
 		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_portal_assets_public();
 		return '<div id="lrh-content-notifications-root" data-lrh-content="notifications" data-wp-interactive="lrh-portal" data-wp-router-region="lrh-content"></div>';
+	}
+
+	/**
+	 * Realtor portal content-only shortcodes (without sidebar)
+	 */
+
+	public function render_content_realtor_overview( $atts ) {
+		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_portal_assets_public();
+		return '<div id="lrh-content-realtor-overview-root" data-lrh-component="RealtorOverview"></div>';
+	}
+
+	public function render_content_company_overview( $atts ) {
+		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_portal_assets_public();
+		return '<div id="lrh-content-company-overview-root" data-lrh-component="CompanyOverview"></div>';
+	}
+
+	public function render_content_marketing_tools( $atts ) {
+		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_portal_assets_public();
+		return '<div id="lrh-content-marketing-tools-root" data-lrh-component="MarketingTools"></div>';
+	}
+
+	public function render_content_calculator_tools( $atts ) {
+		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_portal_assets_public();
+		return '<div id="lrh-content-calculator-tools-root" data-lrh-component="CalculatorTools"></div>';
+	}
+
+	public function render_content_resources( $atts ) {
+		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_portal_assets_public();
+		return '<div id="lrh-content-resources-root" data-lrh-component="Resources"></div>';
+	}
+
+	public function render_content_realtor_profile( $atts ) {
+		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_portal_assets_public();
+		return '<div id="lrh-content-realtor-profile-root" data-lrh-component="Profile"></div>';
 	}
 
 	/**
