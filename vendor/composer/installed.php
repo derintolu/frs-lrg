@@ -3,11 +3,11 @@
         'name' => 'prappo/wordpress-plugin-boilerplate',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => 'a99658fc6a7d76ac71fc3c4f25046d70f057a344',
+        'reference' => 'cefbd90096f9255a0459d5b6c45672620549017e',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'dev' => false,
+        'dev' => true,
     ),
     'versions' => array(
         'automattic/jetpack-autoloader' => array(
@@ -22,7 +22,7 @@
         'prappo/wordpress-plugin-boilerplate' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => 'a99658fc6a7d76ac71fc3c4f25046d70f057a344',
+            'reference' => 'cefbd90096f9255a0459d5b6c45672620549017e',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

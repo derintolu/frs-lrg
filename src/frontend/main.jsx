@@ -19,6 +19,10 @@ import { MarketingSubnav } from './portal/components/loan-officer-portal/Marketi
 import { DataService } from './portal/utils/dataService';
 import { BrowserRouter } from 'react-router-dom';
 
+// Lead Pages (Generation Station) Components
+import { LeadPagesCard } from './portal/components/features/LeadPagesCard';
+import { LeadPageSubmissions } from './portal/components/features/LeadPageSubmissions';
+
 // Realtor Portal Components
 import { RealtorOverview } from './portal/components/realtor-portal/RealtorOverview';
 import { MarketingTools } from './portal/components/realtor-portal/MarketingTools';
@@ -226,6 +230,10 @@ const mountComponents = async () => {
     'PropertyValuation': PropertyValuation,
     'Settings': Settings,
     'MarketingSubnav': MarketingSubnav,
+
+    // Lead Pages (Generation Station) Components
+    'LeadPagesCard': LeadPagesCard,
+    'LeadPageSubmissions': LeadPageSubmissions,
 
     // Realtor Partner Components
     'RealtorOverview': RealtorOverview,

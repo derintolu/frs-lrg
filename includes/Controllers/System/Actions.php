@@ -124,8 +124,8 @@ class Actions {
 		$admin_dist_path    = LRH_DIR . '/assets/admin/dist/';
 		$frontend_dist_path = LRH_DIR . '/assets/frontend/dist/';
 
-		$admin_manifest_exists    = file_exists( $admin_dist_path . 'manifest.json' );
-		$frontend_manifest_exists = file_exists( $frontend_dist_path . 'manifest.json' );
+		$admin_manifest_exists    = \LendingResourceHub\Libs\Assets\manifest_exists( $admin_dist_path );
+		$frontend_manifest_exists = \LendingResourceHub\Libs\Assets\manifest_exists( $frontend_dist_path );
 
 		$assets = array(
 			'admin'    => array(

@@ -3,10 +3,12 @@
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 **Plugin Name:** Lending Resource Hub (LRH)
-**Architecture:** WordPress Plugin Boilerplate + Eloquent ORM + React + TypeScript + Vite
+**Architecture:** WordPress Plugin Boilerplate + Eloquent ORM + React + TypeScript + Vite + WordPress Abilities API
 **Environment:** Local by Flywheel (hub21.local)
 **Live URL:** https://hub21.local
 **Portal URL:** https://hub21.local/dashboard (requires login)
+**React Apps:** 7 (Frontend, Admin, Welcome Portal, Partnerships, Realtor Portal, Widget, Partner Company)
+**Gutenberg Blocks:** 19 blocks
 
 ---
 
@@ -102,7 +104,7 @@ git status
 
 **Expected Output for frs-lrg (ACTIVE DEVELOPMENT):**
 ```
-/Users/derintolu/Local Sites/hub21/app/public/wp-content/plugins/frs-lrg
+.../wp-content/plugins/frs-lrg
 ```
 
 **Plugin Context:**
@@ -112,7 +114,7 @@ git status
 
 **If you find yourself in frs-partnership-portal:**
 1. STOP immediately
-2. Navigate to frs-lrg: `cd /Users/derintolu/Local\ Sites/hub21/app/public/wp-content/plugins/frs-lrg`
+2. Navigate to frs-lrg: `cd` to the `wp-content/plugins/frs-lrg` directory
 3. Verify location with `pwd`
 4. Continue work in correct plugin
 
@@ -125,13 +127,18 @@ Working in the wrong plugin wastes hours of development time. frs-partnership-po
 
 ```bash
 # Development (USE THIS - NOT npm run build)
-npm run dev              # Both frontend + admin with HMR
+npm run dev              # Both frontend (5173) + admin (5174) with HMR
 npm run dev:frontend     # Frontend only (port 5173)
 npm run dev:admin        # Admin only (port 5174)
+npm run dev:welcome-portal       # Welcome portal (port 5180)
+npm run dev:partnerships-section # Partnerships section (port 5179)
+npm run dev:realtor-portal       # Realtor portal (port 5181)
+npm run dev:widget               # Mortgage calculator widget (port 5182)
+npm run dev:all          # All frontends + blocks with HMR
 
 # Production build (ONLY WHEN DONE WITH DEVELOPMENT)
-npm run build            # Build all: frontend + admin + blocks
-npm run block:build      # Gutenberg blocks only
+npm run build            # Build all: 6 frontends + blocks
+npm run block:build      # Gutenberg blocks only (19 blocks)
 
 # WordPress CLI commands
 wp plugin activate frs-lrg
@@ -178,6 +185,10 @@ composer dump-autoload
 ### Dev Server Ports
 - **Frontend Vite:** http://localhost:5173
 - **Admin Vite:** http://localhost:5174
+- **Partnerships Section:** http://localhost:5179
+- **Welcome Portal:** http://localhost:5180
+- **Realtor Portal:** http://localhost:5181
+- **Widget:** http://localhost:5182
 - **Storybook:** http://localhost:6006
 
 ### Required User Roles
@@ -231,6 +242,17 @@ composer dump-autoload
 ### Migration Verification Checklist
 - **[.claude/docs/14-migration-verification-checklist.md](.claude/docs/14-migration-verification-checklist.md)** - Comprehensive verification of dual-interface architecture. Confirmed: ALL 35+ frontend tools migrated, shortcodes, post types, enhanced features (Rentcast API, Calendar). Verification status of blocks, roles, integrations.
 
+### WordPress Abilities API
+- **[.claude/docs/15-wordpress-abilities-api.md](.claude/docs/15-wordpress-abilities-api.md)** - WordPress 6.9+ Abilities API integration. 32 abilities across 5 categories (partnership-management, lead-management, portal-management, property-data, calendar-management). REST API exposure for AI agents and automation.
+
+### Landing Page System
+- **[.claude/docs/15-landing-page-migration-plan.md](.claude/docs/15-landing-page-migration-plan.md)** - Migration planning for landing pages
+- **[.claude/docs/16-landing-page-generation-spec.md](.claude/docs/16-landing-page-generation-spec.md)** - Complete specifications for page generation
+- **[.claude/docs/17-landing-page-system-summary.md](.claude/docs/17-landing-page-system-summary.md)** - Current state summary: 7 post types, 12+ blocks, generation methods
+
+### Frontend File Mappings
+- **[.claude/docs/18-frontend-file-mappings-inventory.md](.claude/docs/18-frontend-file-mappings-inventory.md)** - Complete inventory of 7 React applications, 19 Gutenberg blocks, Vite configs, build outputs, and WordPress integration points
+
 ---
 
 ## Project Overview
@@ -245,6 +267,27 @@ composer dump-autoload
 **Namespace:** `LendingResourceHub`
 **Route Prefix:** `lrh/v1`
 **Text Domain:** `lending-resource-hub`
+
+---
+
+## WordPress Abilities API
+
+This plugin integrates with the WordPress Abilities API (WP 6.9+), exposing **32 abilities** for AI agents and automation:
+
+**Categories:**
+- **partnership-management** (5): CRUD operations for partnerships
+- **lead-management** (4): Lead submission tracking
+- **portal-management** (5): Page assignments, portal tools/config
+- **property-data** (2): Rentcast API integration for property lookup/valuation
+- **calendar-management** (2): FluentBooking integration
+
+**REST Discovery:**
+```bash
+GET /wp-json/wp-abilities/v1/abilities              # List all abilities
+POST /wp-json/wp-abilities/v1/abilities/{name}/run  # Execute ability
+```
+
+See [15-wordpress-abilities-api.md](.claude/docs/15-wordpress-abilities-api.md) for full documentation.
 
 ---
 
@@ -269,22 +312,29 @@ composer dump-autoload
 
 ```
 frs-lrg/
-├── .claude/docs/        # Detailed documentation
+├── .claude/docs/        # Detailed documentation (18 files)
 ├── assets/
 │   ├── admin/dist/      # Built admin assets
-│   └── frontend/dist/   # Built frontend assets
-├── blocks/              # Gutenberg blocks (16 blocks)
+│   ├── frontend/dist/   # Built frontend assets
+│   ├── welcome-portal/dist/      # Welcome portal assets
+│   ├── partnerships-section/dist/ # Partnerships assets
+│   ├── realtor-portal/dist/      # Realtor portal assets
+│   ├── widget/dist/     # Mortgage calculator widget
+│   └── blocks/          # Built Gutenberg blocks (19 blocks)
 ├── database/Migrations/ # Schema migrations
 ├── includes/
-│   ├── Controllers/     # API endpoint controllers
-│   ├── Models/          # Eloquent models
+│   ├── Abilities/       # WordPress Abilities API (32 abilities)
+│   ├── Controllers/     # API endpoint controllers (18 controllers)
+│   ├── Models/          # Eloquent models (8 models)
 │   └── Routes/          # API route definitions
 ├── src/
-│   ├── frontend/        # React frontend source
-│   └── admin/           # React admin source
+│   ├── frontend/        # React frontend source (main portal)
+│   ├── admin/           # React admin source
+│   ├── blocks/          # Gutenberg block source (19 blocks)
+│   └── widget/          # Mortgage calculator widget source
 ├── composer.json        # PHP dependencies
 ├── package.json         # NPM dependencies
-└── vite.*.config.js     # Vite configs
+└── vite.*.config.js     # Vite configs (6 configs)
 ```
 
 ---

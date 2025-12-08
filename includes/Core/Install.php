@@ -29,6 +29,12 @@ class Install {
 		$this->install_pages();
 		$this->install_tables();
 		$this->insert_data();
+
+		// Register post types before flushing to ensure rules are generated
+		PostTypes::get_instance()->register_post_types();
+
+		// Flush rewrite rules to register our custom URLs
+		flush_rewrite_rules();
 	}
 
 	/**

@@ -182,11 +182,11 @@ class MortgageCalculator {
 		$user_data = self::get_user_data( $user_id );
 
 		// Get the widget JS URL from manifest
-		$manifest_path = LRH_DIR . '/assets/widget/dist/manifest.json';
+		$manifest_path = \LendingResourceHub\Libs\Assets\get_manifest_path( LRH_DIR . '/assets/widget/dist' );
 		$js_file = 'assets/widget.js';
 		$css_file = 'assets/widget.css';
 
-		if ( file_exists( $manifest_path ) ) {
+		if ( $manifest_path ) {
 			$manifest = json_decode( file_get_contents( $manifest_path ), true );
 			if ( isset( $manifest['src/widget/widget.tsx']['file'] ) ) {
 				$js_file = $manifest['src/widget/widget.tsx']['file'];

@@ -121,6 +121,55 @@ export interface DashboardStats {
   topPerformingPages: Array<{id: string; title: string; leads: number}>;
 }
 
+// Lead Pages (Generation Station) interfaces
+export interface LeadPage {
+  id: number;
+  title: string;
+  slug: string;
+  pageType: 'open_house' | 'customer_spotlight' | 'event' | 'general';
+  status: 'publish' | 'draft' | 'pending';
+  headline: string;
+  heroImageUrl: string;
+  views: number;
+  submissions: number;
+  loanOfficerId: number;
+  realtorId?: number;
+  createdAt: string;
+  updatedAt: string;
+  url: string;
+}
+
+export interface LeadPageSubmission {
+  id: number;
+  leadPageId: number;
+  leadPageTitle: string;
+  pageType: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  message?: string;
+  status: 'new' | 'contacted' | 'qualified' | 'closed' | 'lost';
+  loanOfficerId: number;
+  realtorId?: number;
+  createdAt: string;
+  formId?: number;
+  submissionId?: number;
+}
+
+export interface LeadPageStats {
+  totalPages: number;
+  totalViews: number;
+  totalSubmissions: number;
+  conversionRate: number;
+  pagesByType: {
+    open_house: number;
+    customer_spotlight: number;
+    event: number;
+    general: number;
+  };
+}
+
 declare global {
   interface Window {
     frsPortalConfig: {
@@ -754,6 +803,237 @@ class DataService {
     } catch (error) {
       console.warn('Failed to fetch person CPT data');
       return null;
+    }
+  }
+
+  // ============================================
+  // Lead Pages (Generation Station) API Methods
+  // ============================================
+
+  /**
+   * Get all lead pages for a loan officer
+   */
+  static async getLeadPagesForLO(userId: string): Promise<LeadPage[]> {
+    const wpData = this.getWpData();
+    try {
+      const response = await fetch(`/wp-json/frs-lead-pages/v1/pages?loan_officer_id=${userId}`, {
+        headers: {
+          'X-WP-Nonce': wpData.restNonce,
+        },
+        credentials: 'same-origin',
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      if (data.success && Array.isArray(data.data)) {
+        return data.data.map((page: any) => ({
+          id: page.id,
+          title: page.title,
+          slug: page.slug,
+          pageType: page.page_type || 'general',
+          status: page.status,
+          headline: page.headline || '',
+          heroImageUrl: page.hero_image_url || '',
+          views: page.views || 0,
+          submissions: page.submissions || 0,
+          loanOfficerId: page.loan_officer_id,
+          realtorId: page.realtor_id,
+          createdAt: page.created_at,
+          updatedAt: page.updated_at,
+          url: page.url || '',
+        }));
+      }
+      return [];
+    } catch (error) {
+      console.warn('Failed to fetch lead pages:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Get all lead pages for a realtor
+   */
+  static async getLeadPagesForRealtor(userId: string): Promise<LeadPage[]> {
+    const wpData = this.getWpData();
+    try {
+      const response = await fetch(`/wp-json/frs-lead-pages/v1/pages?realtor_id=${userId}`, {
+        headers: {
+          'X-WP-Nonce': wpData.restNonce,
+        },
+        credentials: 'same-origin',
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      if (data.success && Array.isArray(data.data)) {
+        return data.data.map((page: any) => ({
+          id: page.id,
+          title: page.title,
+          slug: page.slug,
+          pageType: page.page_type || 'general',
+          status: page.status,
+          headline: page.headline || '',
+          heroImageUrl: page.hero_image_url || '',
+          views: page.views || 0,
+          submissions: page.submissions || 0,
+          loanOfficerId: page.loan_officer_id,
+          realtorId: page.realtor_id,
+          createdAt: page.created_at,
+          updatedAt: page.updated_at,
+          url: page.url || '',
+        }));
+      }
+      return [];
+    } catch (error) {
+      console.warn('Failed to fetch lead pages for realtor:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Get lead page submissions for a loan officer
+   */
+  static async getLeadPageSubmissionsForLO(userId: string): Promise<LeadPageSubmission[]> {
+    const wpData = this.getWpData();
+    try {
+      const response = await fetch(`/wp-json/frs-lead-pages/v1/submissions?loan_officer_id=${userId}`, {
+        headers: {
+          'X-WP-Nonce': wpData.restNonce,
+        },
+        credentials: 'same-origin',
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      if (data.success && Array.isArray(data.data)) {
+        return data.data.map((sub: any) => ({
+          id: sub.id,
+          leadPageId: sub.lead_page_id,
+          leadPageTitle: sub.lead_page_title || 'Unknown Page',
+          pageType: sub.page_type || 'general',
+          firstName: sub.first_name || '',
+          lastName: sub.last_name || '',
+          email: sub.email || '',
+          phone: sub.phone || '',
+          message: sub.message || '',
+          status: sub.status || 'new',
+          loanOfficerId: sub.loan_officer_id,
+          realtorId: sub.realtor_id,
+          createdAt: sub.created_at,
+          formId: sub.form_id,
+          submissionId: sub.submission_id,
+        }));
+      }
+      return [];
+    } catch (error) {
+      console.warn('Failed to fetch lead page submissions:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Get lead page submissions for a realtor
+   */
+  static async getLeadPageSubmissionsForRealtor(userId: string): Promise<LeadPageSubmission[]> {
+    const wpData = this.getWpData();
+    try {
+      const response = await fetch(`/wp-json/frs-lead-pages/v1/submissions?realtor_id=${userId}`, {
+        headers: {
+          'X-WP-Nonce': wpData.restNonce,
+        },
+        credentials: 'same-origin',
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      if (data.success && Array.isArray(data.data)) {
+        return data.data.map((sub: any) => ({
+          id: sub.id,
+          leadPageId: sub.lead_page_id,
+          leadPageTitle: sub.lead_page_title || 'Unknown Page',
+          pageType: sub.page_type || 'general',
+          firstName: sub.first_name || '',
+          lastName: sub.last_name || '',
+          email: sub.email || '',
+          phone: sub.phone || '',
+          message: sub.message || '',
+          status: sub.status || 'new',
+          loanOfficerId: sub.loan_officer_id,
+          realtorId: sub.realtor_id,
+          createdAt: sub.created_at,
+          formId: sub.form_id,
+          submissionId: sub.submission_id,
+        }));
+      }
+      return [];
+    } catch (error) {
+      console.warn('Failed to fetch lead page submissions for realtor:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Get lead page statistics for a user
+   */
+  static async getLeadPageStats(userId: string, role: 'loan_officer' | 'realtor'): Promise<LeadPageStats> {
+    const wpData = this.getWpData();
+    const param = role === 'loan_officer' ? 'loan_officer_id' : 'realtor_id';
+
+    try {
+      const response = await fetch(`/wp-json/frs-lead-pages/v1/stats?${param}=${userId}`, {
+        headers: {
+          'X-WP-Nonce': wpData.restNonce,
+        },
+        credentials: 'same-origin',
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      if (data.success && data.data) {
+        return {
+          totalPages: data.data.total_pages || 0,
+          totalViews: data.data.total_views || 0,
+          totalSubmissions: data.data.total_submissions || 0,
+          conversionRate: data.data.conversion_rate || 0,
+          pagesByType: {
+            open_house: data.data.pages_by_type?.open_house || 0,
+            customer_spotlight: data.data.pages_by_type?.customer_spotlight || 0,
+            event: data.data.pages_by_type?.event || 0,
+            general: data.data.pages_by_type?.general || 0,
+          },
+        };
+      }
+      return {
+        totalPages: 0,
+        totalViews: 0,
+        totalSubmissions: 0,
+        conversionRate: 0,
+        pagesByType: { open_house: 0, customer_spotlight: 0, event: 0, general: 0 },
+      };
+    } catch (error) {
+      console.warn('Failed to fetch lead page stats:', error);
+      return {
+        totalPages: 0,
+        totalViews: 0,
+        totalSubmissions: 0,
+        conversionRate: 0,
+        pagesByType: { open_house: 0, customer_spotlight: 0, event: 0, general: 0 },
+      };
     }
   }
 }

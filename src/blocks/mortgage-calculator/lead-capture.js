@@ -25,7 +25,7 @@ export function LeadCaptureModal({ isOpen, onClose, attributes, calculationType,
 			// Get loan officer ID from page
 			const loanOfficerId = window.frsCalculatorConfig?.loanOfficerId || 0;
 
-			const response = await fetch('/wp-json/frs/v1/calculator-leads', {
+			const response = await fetch('/wp-json/lrh/v1/calculator-leads', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',

@@ -264,7 +264,7 @@ export function PortalSidebarLayout({ currentUser, viewedUser, isOwnProfile, chi
 
   // Profile link widget
   const profileLinkWidget = (
-    <div className="px-4 py-3" style={{
+    <div className="px-4 py-3 w-full" style={{
       backgroundColor: '#0B102C'
     }}>
       <div className="text-xs font-semibold text-white uppercase tracking-wider mb-2">
@@ -348,14 +348,13 @@ export function PortalSidebarLayout({ currentUser, viewedUser, isOwnProfile, chi
 
   // Sidebar header
   const sidebarHeader = (
-    <div className="relative overflow-hidden" style={{ backgroundColor: '#0B102C', width: '320px' }}>
+    <div className="relative overflow-hidden w-full" style={{ backgroundColor: '#0B102C' }}>
       {/* Header Background */}
       <div
-        className="relative overflow-visible"
+        className="relative overflow-visible w-full"
         style={{
           backgroundColor: '#0B102C',
           height: '100px',
-          width: '320px'
         }}
       >
         {/* Animated Video Background */}
@@ -366,8 +365,8 @@ export function PortalSidebarLayout({ currentUser, viewedUser, isOwnProfile, chi
               muted
               loop
               playsInline
-              className="absolute inset-0 object-cover"
-              style={{ zIndex: 0, width: '320px', height: '100px' }}
+              className="absolute inset-0 w-full h-full object-cover"
+              style={{ zIndex: 0 }}
             >
               <source src={gradientUrl} type="video/mp4" />
             </video>
@@ -829,10 +828,12 @@ export function PortalSidebarLayout({ currentUser, viewedUser, isOwnProfile, chi
   // Content-only mode: render just the children without sidebar or header
   if (contentOnly) {
     return (
-      <div className="w-full">
-        {typeof children === 'function'
-          ? children({ isEditMode, viewport, exitEditMode: () => setIsEditMode(false) })
-          : children}
+      <div className="w-full flex justify-center">
+        <div className="w-full max-w-[1290px]">
+          {typeof children === 'function'
+            ? children({ isEditMode, viewport, exitEditMode: () => setIsEditMode(false) })
+            : children}
+        </div>
       </div>
     );
   }
@@ -841,7 +842,7 @@ export function PortalSidebarLayout({ currentUser, viewedUser, isOwnProfile, chi
   if (sidebarOnly) {
     return (
       <div
-        className="overflow-hidden scrollbar-hide flex flex-col"
+        className="overflow-hidden scrollbar-hide flex flex-col w-full"
         style={{ height: 'calc(100dvh - 60px)', backgroundColor: '#0B102C' }}
       >
         {sidebarHeader}
@@ -906,10 +907,10 @@ export function PortalSidebarLayout({ currentUser, viewedUser, isOwnProfile, chi
 
           {/* Bottom widgets - stick to bottom */}
           {isOwnProfile && (
-            <div className="mt-auto">
+            <div className="mt-auto w-full">
               {/* Profile Completion - with video background - first */}
               <div
-                className="relative overflow-hidden"
+                className="relative overflow-hidden w-full"
                 style={{
                   minHeight: '80px',
                   background: gradientUrl ? 'transparent' : 'linear-gradient(135deg, #2563eb 0%, #2dd4da 100%)'

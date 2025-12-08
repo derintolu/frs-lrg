@@ -91,8 +91,8 @@ class SystemDiagnostic {
 		);
 
 		// Check built assets
-		$admin_manifest_exists    = file_exists( LRH_DIR . '/assets/admin/dist/manifest.json' );
-		$frontend_manifest_exists = file_exists( LRH_DIR . '/assets/frontend/dist/manifest.json' );
+		$admin_manifest_exists    = \LendingResourceHub\Libs\Assets\manifest_exists( LRH_DIR . '/assets/admin/dist' );
+		$frontend_manifest_exists = \LendingResourceHub\Libs\Assets\manifest_exists( LRH_DIR . '/assets/frontend/dist' );
 
 		// Check integrations
 		$integrations = array(

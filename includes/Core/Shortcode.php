@@ -89,6 +89,11 @@ class Shortcode {
 		add_shortcode( 'lrh_property_valuation', array( $this, 'render_property_valuation_page' ) );
 		add_shortcode( 'lrh_settings', array( $this, 'render_settings_page' ) );
 
+		// Lead Pages (Generation Station) shortcodes
+		add_shortcode( 'lrh_lead_pages_card', array( $this, 'render_lead_pages_card' ) );
+		add_shortcode( 'lrh_lead_page_submissions', array( $this, 'render_lead_page_submissions' ) );
+		add_shortcode( 'lrh_generation_station', array( $this, 'render_generation_station_page' ) );
+
 		// Legacy shortcode from old plugin (backward compatibility)
 		add_shortcode( 'frs_partnership_portal', array( $this, 'render_legacy_portal' ) );
 
@@ -710,6 +715,155 @@ class Shortcode {
 		}
 
 		return '<div id="frs-tools-landing-root" ' . $data_attrs . '></div>';
+	}
+
+	/**
+	 * Lead Pages (Generation Station) Shortcodes
+	 * ==========================================
+	 */
+
+	/**
+	 * Render the Lead Pages Card widget
+	 *
+	 * Dashboard widget showing lead pages overview with stats.
+	 *
+	 * Shortcode attributes:
+	 * - user_id: User ID (defaults to current user)
+	 * - role: 'loan_officer' or 'realtor' (auto-detected from user)
+	 * - compact: 'true' for compact card view (default: true)
+	 *
+	 * Example: [lrh_lead_pages_card]
+	 * Example: [lrh_lead_pages_card user_id="123" compact="false"]
+	 *
+	 * @param array $atts Shortcode attributes.
+	 * @return string The rendered HTML.
+	 */
+	public function render_lead_pages_card( $atts ) {
+		$atts = shortcode_atts(
+			array(
+				'user_id' => '',
+				'role'    => '',
+				'compact' => 'true',
+			),
+			$atts,
+			'lrh_lead_pages_card'
+		);
+
+		// Get user ID
+		$user_id = ! empty( $atts['user_id'] ) ? intval( $atts['user_id'] ) : get_current_user_id();
+		if ( ! $user_id ) {
+			return '<!-- [lrh_lead_pages_card] Error: User not logged in -->';
+		}
+
+		// Determine role
+		$role = $atts['role'];
+		if ( empty( $role ) ) {
+			$user = get_user_by( 'id', $user_id );
+			if ( $user ) {
+				if ( in_array( 'realtor_partner', $user->roles, true ) || in_array( 'realtor', $user->roles, true ) ) {
+					$role = 'realtor';
+				} else {
+					$role = 'loan_officer';
+				}
+			}
+		}
+
+		// Enqueue portal assets
+		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_portal_assets_public();
+
+		// Build props
+		$props = array(
+			'userId'   => (string) $user_id,
+			'userRole' => $role,
+			'compact'  => $atts['compact'] === 'true',
+		);
+
+		// Generate unique ID
+		$component_id = 'lrh-lead-pages-card-' . wp_rand( 1000, 9999 );
+
+		return sprintf(
+			'<div id="%s" data-lrh-component="LeadPagesCard" data-lrh-props="%s"></div>',
+			esc_attr( $component_id ),
+			esc_attr( wp_json_encode( $props ) )
+		);
+	}
+
+	/**
+	 * Render the Lead Page Submissions list
+	 *
+	 * Full page component showing all submissions from lead pages.
+	 *
+	 * Shortcode attributes:
+	 * - user_id: User ID (defaults to current user)
+	 * - role: 'loan_officer' or 'realtor' (auto-detected from user)
+	 *
+	 * Example: [lrh_lead_page_submissions]
+	 * Example: [lrh_lead_page_submissions user_id="123" role="realtor"]
+	 *
+	 * @param array $atts Shortcode attributes.
+	 * @return string The rendered HTML.
+	 */
+	public function render_lead_page_submissions( $atts ) {
+		$atts = shortcode_atts(
+			array(
+				'user_id' => '',
+				'role'    => '',
+			),
+			$atts,
+			'lrh_lead_page_submissions'
+		);
+
+		// Get user ID
+		$user_id = ! empty( $atts['user_id'] ) ? intval( $atts['user_id'] ) : get_current_user_id();
+		if ( ! $user_id ) {
+			return '<!-- [lrh_lead_page_submissions] Error: User not logged in -->';
+		}
+
+		// Determine role
+		$role = $atts['role'];
+		if ( empty( $role ) ) {
+			$user = get_user_by( 'id', $user_id );
+			if ( $user ) {
+				if ( in_array( 'realtor_partner', $user->roles, true ) || in_array( 'realtor', $user->roles, true ) ) {
+					$role = 'realtor';
+				} else {
+					$role = 'loan_officer';
+				}
+			}
+		}
+
+		// Enqueue portal assets
+		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_portal_assets_public();
+
+		// Build props
+		$props = array(
+			'userId'   => (string) $user_id,
+			'userRole' => $role,
+		);
+
+		// Generate unique ID
+		$component_id = 'lrh-lead-page-submissions-' . wp_rand( 1000, 9999 );
+
+		return sprintf(
+			'<div id="%s" data-lrh-component="LeadPageSubmissions" data-lrh-props="%s"></div>',
+			esc_attr( $component_id ),
+			esc_attr( wp_json_encode( $props ) )
+		);
+	}
+
+	/**
+	 * Render the Generation Station page
+	 *
+	 * Full page view for Generation Station (Lead Pages) management.
+	 *
+	 * Example: [lrh_generation_station]
+	 *
+	 * @param array $atts Shortcode attributes.
+	 * @return string The rendered HTML.
+	 */
+	public function render_generation_station_page( $atts ) {
+		\LendingResourceHub\Assets\Frontend::get_instance()->enqueue_portal_assets_public();
+		return '<div id="lrh-generation-station-root" data-lrh-page="generation-station" data-wp-interactive="lrh-portal"></div>';
 	}
 
 }
