@@ -265,7 +265,7 @@ export function EditPartnerCompany() {
                 <CardHeader>
                   <CardTitle>Portal Branding</CardTitle>
                   <CardDescription>
-                    Customize the look and feel of this partner company's portal
+                    Customize the look and feel of this partner company&apos;s portal
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">

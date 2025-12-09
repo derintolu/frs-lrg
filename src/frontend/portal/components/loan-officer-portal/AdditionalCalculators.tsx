@@ -1,4 +1,4 @@
-`import { useState } from 'react';
+import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { MortgageInput } from '../ui/mortgage-input';
 import { MortgageSelect } from '../ui/mortgage-select';
@@ -220,7 +220,7 @@ export function DSCRCalculator() {
 
           <div className="pt-4 border-t border-white/20">
             <p className="text-xs opacity-75 leading-relaxed">
-              Great! Your DSCR of {dscr.toFixed(2)} indicates you qualify for this Conventional Loan. Your Debt-to-Income Ratio is {dscrPercentage}%, which means you're in excellent shape for most DSCR loan programs.
+              Great! Your DSCR of {dscr.toFixed(2)} indicates you qualify for this Conventional Loan. Your Debt-to-Income Ratio is {dscrPercentage}%, which means you&apos;re in excellent shape for most DSCR loan programs.
             </p>
           </div>
         </CardContent>

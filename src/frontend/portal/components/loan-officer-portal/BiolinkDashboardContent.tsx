@@ -606,7 +606,7 @@ export function BiolinkDashboard({ userId, currentUser: initialUser }: BiolinkDa
         </div>
         <h3 className="text-2xl font-semibold text-gray-900 mb-4">{tabName} Features</h3>
         <p className="text-gray-600 mb-8 max-w-md mx-auto">
-          We're working on exciting new features for this section. Stay tuned for updates!
+          We&apos;re working on exciting new features for this section. Stay tuned for updates!
         </p>
         <Badge variant="secondary" className="px-4 py-2">
           Coming Soon
@@ -1614,7 +1614,9 @@ function LandingPagesOnly({ userRole, userId, currentUser }: LandingPagesOnlyPro
               const filteredPages = pages.filter(page => page.type !== 'biolink');
               setLandingPages(filteredPages);
             }
-          } catch (e) {}
+          } catch {
+            // Silently handle fetch errors
+          }
         })();
       }
 

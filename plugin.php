@@ -30,6 +30,9 @@ use LendingResourceHub\Controllers\PartnerPortals\Api as PartnerPortalApi;
 use LendingResourceHub\Controllers\PartnerPortals\PartnerCompanyPortal;
 use LendingResourceHub\Abilities\AbilitiesRegistry;
 use LendingResourceHub\Traits\Base;
+use LendingResourceHub\Shortcodes\WelcomeDashboard;
+use LendingResourceHub\Shortcodes\ContactWidget;
+use LendingResourceHub\Shortcodes\TeamWidget;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -51,7 +54,7 @@ final class LendingResourceHub {
 	 * @return void
 	 */
 	public function __construct() {
-		define( 'LRH_VERSION', '1.0.0' );
+		define( 'LRH_VERSION', '2.0.0' );
 		define( 'LRH_PLUGIN_FILE', __FILE__ );
 		define( 'LRH_DIR', plugin_dir_path( __FILE__ ) );
 		define( 'LRH_URL', plugin_dir_url( __FILE__ ) );
@@ -68,6 +71,9 @@ final class LendingResourceHub {
 	 * @return void
 	 */
 	public function init() {
+		// Check if old partnership portal is active - avoid conflicts
+		$legacy_portal_active = $this->is_legacy_portal_active();
+
 		if ( is_admin() ) {
 			Menu::get_instance()->init();
 			SureDashSync::get_instance()->init();
@@ -82,12 +88,17 @@ final class LendingResourceHub {
 		// Initialize core functionalities.
 		Frontend::get_instance()->bootstrap();
 		API::get_instance()->init();
-		Template::get_instance()->init();
-		Navigation::get_instance()->init();
+
+		// Skip these if legacy portal is active to avoid conflicts
+		if ( ! $legacy_portal_active ) {
+			Template::get_instance()->init();
+			Navigation::get_instance()->init();
+			UserPageRewrites::get_instance()->init();
+			Redirects::get_instance()->init();
+		}
+
 		Shortcode::get_instance()->init();
 		PostTypes::get_instance()->init();
-		UserPageRewrites::get_instance()->init();
-		Redirects::get_instance()->init();
 		CoreBlocks::get_instance()->init();
 		BlockBindings::get_instance()->init();
 		EditorConfig::get_instance()->init();
@@ -121,6 +132,11 @@ final class LendingResourceHub {
 
 		// Initialize WordPress Abilities API integration
 		AbilitiesRegistry::init();
+
+		// Initialize widget shortcodes
+		WelcomeDashboard::init();
+		ContactWidget::init();
+		TeamWidget::init();
 
 		// Initialize MCP Adapter for Abilities API
 		if ( class_exists( 'WP\MCP\Core\McpAdapter' ) ) {
@@ -193,6 +209,34 @@ final class LendingResourceHub {
 			</div>
 			<?php
 		}
+	}
+
+	/**
+	 * Check if legacy partnership portal plugin is active.
+	 *
+	 * @since 2.0.0
+	 * @return bool
+	 */
+	private function is_legacy_portal_active(): bool {
+		// Check for the old frs-partnership-portal plugin
+		if ( ! function_exists( 'is_plugin_active' ) ) {
+			include_once ABSPATH . 'wp-admin/includes/plugin.php';
+		}
+
+		// Check multiple possible plugin file names
+		$legacy_plugins = [
+			'frs-partnership-portal/frs-partnership-portal.php',
+			'frs-partnership-portal/plugin.php',
+			'partnership-portal/partnership-portal.php',
+		];
+
+		foreach ( $legacy_plugins as $plugin ) {
+			if ( is_plugin_active( $plugin ) || is_plugin_active_for_network( $plugin ) ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**

@@ -322,7 +322,7 @@ function EmailResultsModal({
                 htmlFor="wantsContact"
                 className="text-sm font-medium leading-relaxed cursor-pointer"
               >
-                I'd like {loanOfficerName} to contact me about these results
+                I&apos;d like {loanOfficerName} to contact me about these results
               </label>
             </div>
 

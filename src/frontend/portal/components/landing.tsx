@@ -1,4 +1,4 @@
-the import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { Home, Calculator, Shield, Star, Users, TrendingDown, Clock, CheckCircle, ArrowRight, Phone, Mail } from 'lucide-react';
 
 const MortgageLandingPages = () => {
@@ -245,13 +245,13 @@ const MortgageLandingPages = () => {
                 {isRateQuote ? "Let's Find Your Best Rate" : "Let's Get Started"}
               </h3>
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">What's your primary goal?</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">What&apos;s your primary goal?</label>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {isRateQuote ? (
                     <>
                       <button className="border-2 border-gray-300 hover:border-blue-600 rounded-lg p-4 text-left hover:bg-blue-50 transition">
                         <div className="font-semibold text-gray-900">Purchase a Home</div>
-                        <div className="text-sm text-gray-600">I'm buying a new property</div>
+                        <div className="text-sm text-gray-600">I&apos;m buying a new property</div>
                       </button>
                       <button className="border-2 border-gray-300 hover:border-blue-600 rounded-lg p-4 text-left hover:bg-blue-50 transition">
                         <div className="font-semibold text-gray-900">Refinance</div>
@@ -457,7 +457,7 @@ const MortgageLandingPages = () => {
                   <Star key={i} className="text-yellow-400 fill-yellow-400" size={20} />
                 ))}
               </div>
-              <p className="text-gray-700 mb-6 italic">"{testimonial.text}"</p>
+              <p className="text-gray-700 mb-6 italic">&quot;{testimonial.text}&quot;</p>
               <div className="flex items-center gap-3">
                 <img src={testimonial.photo} alt={testimonial.name} className="w-12 h-12 rounded-full" />
                 <div>

@@ -13,6 +13,8 @@ import {
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button"
 import { ModeToggle } from "../mode-toggle";
+
+/* global lrhAdmin */
 import {
     DropdownMenu,
     DropdownMenuContent,

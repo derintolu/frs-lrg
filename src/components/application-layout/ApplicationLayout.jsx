@@ -10,6 +10,8 @@ import { MenuItem, menuPopoverClass, menuContentClass } from "../menu/Menu";
 import { MenuTrigger, Menu, Popover } from "react-aria-components";
 import { ModeToggle } from "../mode-toggle";
 
+/* global lrhAdmin */
+
 const _startcase = (str) => {
   return str
     .toLowerCase() // Convert the whole string to lowercase

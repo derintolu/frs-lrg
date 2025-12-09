@@ -463,13 +463,13 @@ function RequestsSection({ userRole }: { userRole: 'loan-officer' | 'realtor' })
               {userRole === 'loan-officer' ? (
                 <div className="text-sm text-[var(--brand-slate)] space-y-2">
                   <p>1. Create a Typeform at <strong>typeform.com</strong> with fields for material type, description, deadlines, etc.</p>
-                  <p>2. Copy the embed URL from your Typeform's share settings</p>
+                  <p>2. Copy the embed URL from your Typeform&apos;s share settings</p>
                   <p>3. Paste it in the configuration section above</p>
                   <p>4. Your realtor partners will see the embedded form in their Print Marketing section</p>
                 </div>
               ) : (
                 <div className="text-sm text-[var(--brand-slate)] space-y-2">
-                  <p>Once your loan officer sets up the request form, you'll be able to:</p>
+                  <p>Once your loan officer sets up the request form, you&apos;ll be able to:</p>
                   <p>• Submit detailed requests for custom print materials</p>
                   <p>• Upload reference images or examples</p>
                   <p>• Set deadlines and priority levels</p>

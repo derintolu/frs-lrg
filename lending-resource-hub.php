@@ -1,11 +1,11 @@
- <?php
+<?php
 /**
  * Plugin Name: Lending Resource Hub
  * Description: Learning management and partnership platform for 21st Century Lending
  * Author: 21st Century Lending
  * Author URI: https://hub21loan.com
  * License: GPLv2
- * Version: 1.0.0
+ * Version: 2.1.0
  * Text Domain: lending-resource-hub
  * Domain Path: /languages
  *

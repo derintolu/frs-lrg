@@ -112,7 +112,7 @@ export function PartnershipsList({ userId }: PartnershipsListProps) {
               </div>
               <h3 className="text-2xl font-bold text-gray-900 mb-3">No Partner Companies Yet</h3>
               <p className="text-gray-600 leading-relaxed">
-                Partner companies will appear here once they're set up. Contact your administrator to get started.
+                Partner companies will appear here once they&apos;re set up. Contact your administrator to get started.
               </p>
             </div>
           </Card>

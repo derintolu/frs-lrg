@@ -72,7 +72,9 @@ export function CobrandedMarketing({ userRole, userId }: CobrandedMarketingProps
               const filteredPages = pages.filter(page => page.type !== 'biolink');
               setLandingPages(filteredPages);
             }
-          } catch (e) {}
+          } catch {
+            // Silently handle fetch errors
+          }
         })();
       }
 

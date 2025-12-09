@@ -144,7 +144,7 @@ export function PortalSidebar({
           <div className="flex flex-col items-center justify-center p-4 text-center">
             <div className="text-sm text-muted-foreground mb-2">No menu configured</div>
             <div className="text-xs text-muted-foreground">
-              Go to Appearance → Menus in WordPress admin to create a menu and assign it to "Portal - {userRole === 'loan_officer' ? 'Loan Officer' : 'Realtor Partner'}"
+              Go to Appearance → Menus in WordPress admin to create a menu and assign it to &quot;Portal - {userRole === 'loan_officer' ? 'Loan Officer' : 'Realtor Partner'}&quot;
             </div>
           </div>
         )}

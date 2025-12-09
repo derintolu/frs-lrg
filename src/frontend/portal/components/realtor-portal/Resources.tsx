@@ -80,7 +80,7 @@ export function Resources() {
           </CardHeader>
           <CardContent>
             <p className="text-gray-600 mb-4">
-              Can't find what you're looking for? Contact your 21st Century Lending loan officer for additional
+              Can&apos;t find what you&apos;re looking for? Contact your 21st Century Lending loan officer for additional
               resources, custom materials, or educational content specific to your needs.
             </p>
             <Button className="bg-black hover:bg-black/90 text-white">

@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { Dialog, Transition } from "@headlessui/react";
 import DeleteWindow from "./window/delete";
 
+/* global lrhAdmin */
+
 const fetchData = async () => {
   try {
     const response = await fetch(lrhAdmin.apiUrl + "accounts/get");

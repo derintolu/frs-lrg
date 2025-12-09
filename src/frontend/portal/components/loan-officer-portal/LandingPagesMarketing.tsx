@@ -84,7 +84,9 @@ export function LandingPagesMarketing({ userId, currentUser }: LandingPagesMarke
             // Filter out biolink pages - they have their own section
             const filteredPages = pages.filter(page => page.type !== 'biolink');
             setLandingPages(filteredPages);
-          } catch (e) {}
+          } catch {
+            // Silently handle fetch errors
+          }
         })();
       }
 
@@ -511,7 +513,7 @@ export function LandingPagesMarketing({ userId, currentUser }: LandingPagesMarke
                 <Globe className="h-12 w-12 text-[var(--brand-pale-blue)] mx-auto mb-4" />
                 <h3 className="text-lg font-medium text-[var(--brand-dark-navy)] mb-2">No Personal Landing Pages Yet</h3>
                 <p className="text-[var(--brand-slate)] mb-4">
-                  You've generated all available templates. Contact support to add more templates.
+                  You&apos;ve generated all available templates. Contact support to add more templates.
                 </p>
               </CardContent>
             </Card>

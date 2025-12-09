@@ -13,7 +13,7 @@ export default function Setp1({ stepCount, setProvider }: StepProps) {
               Connect Your Google Account
             </div>
             <p className="text-gray-600">
-              First, let's enable IMAP access for your Google account.
+              First, let&apos;s enable IMAP access for your Google account.
             </p>
           </div>
         </div>
@@ -22,7 +22,7 @@ export default function Setp1({ stepCount, setProvider }: StepProps) {
           <li>Click thegear icon in the top right corner.</li>
           <li>Click All Settings.</li>
           <li>Click the Forwarding and POP/IMAP tab.</li>
-          <li>In the "IMAP access" section, select Enable IMAP.</li>
+          <li>In the &quot;IMAP access&quot; section, select Enable IMAP.</li>
           <li>Click Save Changes.</li>
         </ol>
       </div>

@@ -491,7 +491,7 @@ export function Century21WelcomeOnboarding({
                   <div>
                     <h3 className="text-xl font-bold text-gray-900">All Set!</h3>
                     <p className="text-gray-700">
-                      You've completed all the onboarding tasks. You're ready to maximize your partnership!
+                      You&apos;ve completed all the onboarding tasks. You&apos;re ready to maximize your partnership!
                     </p>
                   </div>
                 </div>

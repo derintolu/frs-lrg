@@ -110,7 +110,7 @@ export function PartnershipsSection({ userId }: PartnershipsSectionProps) {
                 <Building2 className="h-8 w-8" />
               </div>
               <h3 className="brand-card-title text-xl mb-2">No Partner Companies Yet</h3>
-              <p className="brand-card-description mb-6">You haven't been added to any partner companies yet.</p>
+              <p className="brand-card-description mb-6">You haven&apos;t been added to any partner companies yet.</p>
               <p className="text-sm text-[var(--brand-slate)]">Contact your administrator to be added to partner company groups.</p>
             </CardContent>
           </Card>

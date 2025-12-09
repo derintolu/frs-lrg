@@ -288,7 +288,7 @@ export function CalendarReset() {
           <ul className="space-y-2 text-sm text-blue-800">
             <li className="flex items-start gap-2">
               <CheckCircle2 className="h-4 w-4 mt-0.5 flex-shrink-0" />
-              <span>Removes the "setup complete" flag from selected users</span>
+              <span>Removes the &quot;setup complete&quot; flag from selected users</span>
             </li>
             <li className="flex items-start gap-2">
               <CheckCircle2 className="h-4 w-4 mt-0.5 flex-shrink-0" />

@@ -129,7 +129,7 @@ export function WelcomeOnboarding({
                   Welcome to Your Portal!
                 </CardTitle>
                 <CardDescription className="text-base">
-                  Let's get you set up. Complete these steps to unlock the full potential of your profile.
+                  Let&apos;s get you set up. Complete these steps to unlock the full potential of your profile.
                 </CardDescription>
               </div>
             </div>
@@ -204,7 +204,7 @@ export function WelcomeOnboarding({
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="h-5 w-5 text-green-600" />
                 <p className="text-sm font-medium text-green-900">
-                  Great job! You've completed your onboarding. You're all set to start generating leads!
+                  Great job! You&apos;ve completed your onboarding. You&apos;re all set to start generating leads!
                 </p>
               </div>
             </div>

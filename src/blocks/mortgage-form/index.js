@@ -2,7 +2,7 @@ import { registerBlockType } from '@wordpress/blocks';
 import { useBlockProps } from '@wordpress/block-editor';
 
 registerBlockType('lrh/mortgage-form', {
-    edit: () => {
+    edit: function Edit() {
         const blockProps = useBlockProps();
         return (
             <div {...blockProps}>

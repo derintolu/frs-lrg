@@ -307,7 +307,7 @@ export function DSCRCalculator({
 
           <div className="pt-4 border-t border-white/20">
             <p className="text-xs opacity-75 leading-relaxed">
-              DSCR (Debt Service Coverage Ratio) measures the property's ability to cover debt payments with rental income. Lenders typically require a minimum DSCR of 1.0-1.25 for investment property loans.
+              DSCR (Debt Service Coverage Ratio) measures the property&apos;s ability to cover debt payments with rental income. Lenders typically require a minimum DSCR of 1.0-1.25 for investment property loans.
             </p>
           </div>
         </CardContent>

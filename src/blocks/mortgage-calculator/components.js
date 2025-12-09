@@ -1,4 +1,4 @@
-import { useState, useEffect } from '@wordpress/element';
+import React, { useState, useEffect } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import {
 	calculateConventional,
@@ -7,7 +7,6 @@ import {
 	calculateRefinance,
 	calculateAffordability,
 	formatCurrency,
-	formatCurrencyWithCents,
 	formatPercent
 } from './calculations.js';
 

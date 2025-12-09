@@ -3,6 +3,9 @@ import { createRoot } from 'react-dom/client';
 import { MortgageCalculatorWidget } from './MortgageCalculatorWidget';
 import { PropertyValuation } from '../frontend/portal/components/loan-officer-portal/PropertyValuation';
 import { ToolsLandingPage } from './ToolsLandingPage';
+import { WelcomeDashboardWidget } from './WelcomeDashboardWidget';
+import { LOContactWidget } from './LOContactWidget';
+import { TeamWidget } from './TeamWidget';
 import '../frontend/portal/index.css';
 
 console.log('Widget script loaded');
@@ -98,7 +101,95 @@ if (typeof document !== 'undefined') {
       }
     }
 
-    if (!toolsLandingContainer && !mortgageContainer && !propertyContainer) {
+    // Mount Welcome Dashboard Widget
+    const welcomeContainer = document.getElementById('frs-welcome-dashboard');
+    if (welcomeContainer) {
+      console.log('Mounting Welcome Dashboard Widget');
+
+      const props = {
+        userName: welcomeContainer.dataset.userName || 'Friend',
+        showMarketRates: welcomeContainer.dataset.showMarketRates !== 'false',
+      };
+
+      try {
+        const root = createRoot(welcomeContainer);
+        root.render(
+          <React.StrictMode>
+            <WelcomeDashboardWidget {...props} />
+          </React.StrictMode>
+        );
+        console.log('Welcome Dashboard mounted');
+      } catch (error) {
+        console.error('Error mounting Welcome Dashboard:', error);
+      }
+    }
+
+    // Mount LO Contact Widget(s) - supports multiple instances
+    const loContactContainers = document.querySelectorAll('.frs-lo-contact');
+    loContactContainers.forEach((container, index) => {
+      console.log(`Mounting LO Contact Widget #${index + 1}`);
+
+      const props = {
+        name: container.getAttribute('data-name') || 'Loan Officer',
+        title: container.getAttribute('data-title') || 'Loan Officer',
+        phone: container.getAttribute('data-phone') || '',
+        email: container.getAttribute('data-email') || '',
+        avatar: container.getAttribute('data-avatar') || '',
+        nmls: container.getAttribute('data-nmls') || '',
+        variant: (container.getAttribute('data-variant') as 'card' | 'inline' | 'minimal') || 'card',
+      };
+
+      try {
+        const root = createRoot(container as HTMLElement);
+        root.render(
+          <React.StrictMode>
+            <LOContactWidget {...props} />
+          </React.StrictMode>
+        );
+        console.log(`LO Contact Widget #${index + 1} mounted`);
+      } catch (error) {
+        console.error(`Error mounting LO Contact Widget #${index + 1}:`, error);
+      }
+    });
+
+    // Mount Team Widget
+    const teamContainer = document.getElementById('frs-team-widget');
+    if (teamContainer) {
+      console.log('Mounting Team Widget');
+
+      // Parse members from JSON data attribute
+      let members = [];
+      try {
+        const membersData = teamContainer.dataset.members;
+        if (membersData) {
+          members = JSON.parse(membersData);
+        }
+      } catch (e) {
+        console.error('Error parsing team members data:', e);
+      }
+
+      const props = {
+        title: teamContainer.dataset.title || 'Your 21st Century Lending Team!',
+        showTitle: teamContainer.dataset.showTitle !== 'false',
+        members: members,
+        layout: (teamContainer.dataset.layout as 'row' | 'column' | 'grid') || 'row',
+        size: (teamContainer.dataset.size as 'default' | 'large') || 'default',
+      };
+
+      try {
+        const root = createRoot(teamContainer);
+        root.render(
+          <React.StrictMode>
+            <TeamWidget {...props} />
+          </React.StrictMode>
+        );
+        console.log('Team Widget mounted');
+      } catch (error) {
+        console.error('Error mounting Team Widget:', error);
+      }
+    }
+
+    if (!toolsLandingContainer && !mortgageContainer && !propertyContainer && !welcomeContainer && loContactContainers.length === 0 && !teamContainer) {
       console.log('No widget containers found on this page');
     }
   });

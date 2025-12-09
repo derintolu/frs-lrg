@@ -507,7 +507,7 @@ function TestimonialBlockEditor({ block, onUpdate, isActive }: { block: Block; o
     return (
       <div className="p-8 bg-[var(--brand-pale-blue)]">
         <div className="max-w-2xl mx-auto text-center">
-          <div className="text-6xl mb-4">"</div>
+          <div className="text-6xl mb-4">&quot;</div>
           <p className="text-lg text-[var(--brand-dark-navy)] mb-6 italic">{block.content.quote}</p>
           <div className="flex items-center justify-center space-x-4">
             <div className="w-12 h-12 bg-[var(--brand-powder-blue)] rounded-full"></div>

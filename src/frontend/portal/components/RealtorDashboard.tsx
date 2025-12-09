@@ -363,7 +363,7 @@ export function RealtorDashboard({ userId }: RealtorDashboardProps) {
                 <Users className="h-12 w-12 text-[var(--brand-pale-blue)] mx-auto mb-3" />
                 <h4 className="font-medium text-[var(--brand-dark-navy)] mb-2">No Partnership Yet</h4>
                 <p className="text-sm text-[var(--brand-slate)]">
-                  You haven't been invited to partner with a loan officer yet.
+                  You haven&apos;t been invited to partner with a loan officer yet.
                 </p>
               </div>
             )}

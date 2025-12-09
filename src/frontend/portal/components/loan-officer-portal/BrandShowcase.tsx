@@ -15,7 +15,7 @@ export function BrandShowcase() {
       <Card>
         <CardHeader>
           <CardTitle style={{ color: 'var(--brand-navy)' }}>Brand Gradients</CardTitle>
-          <CardDescription>These gradients define your brand's visual identity</CardDescription>
+          <CardDescription>These gradients define your brand&apos;s visual identity</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="grid gap-4 md:grid-cols-2">

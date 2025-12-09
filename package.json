@@ -1,6 +1,6 @@
 {
-  "name": "wordpress-plugin-boilerplate",
-  "version": "1.0.0",
+  "name": "lending-resource-hub",
+  "version": "2.1.0",
   "type": "module",
   "scripts": {
     "dev": "concurrently \"vite -c vite.frontend.config.js --port 5173\" \"vite -c vite.admin.config.js --port 5174\"",
@@ -36,6 +36,7 @@
     "@ianvs/prettier-plugin-sort-imports": "^4.1.1",
     "@kucrut/vite-for-wp": "^0.7.0",
     "@nkzw/eslint-config": "^1.8.1",
+    "@storybook/addon-docs": "^10.1.4",
     "@storybook/addon-links": "^10.1.4",
     "@storybook/addon-onboarding": "^10.1.4",
     "@storybook/blocks": "^7.5.2",
@@ -79,10 +80,10 @@
     "sass-loader": "^16.0.3",
     "storybook": "^10.1.4",
     "tailwindcss": "^3.3.5",
+    "typescript": "^5.9.3",
     "vite": "^5.4.21",
     "vite-plugin-external": "^4.0.1",
-    "vitest": "^0.34.6",
-    "@storybook/addon-docs": "^10.1.4"
+    "vitest": "^0.34.6"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.17",
@@ -109,6 +110,7 @@
     "@wordpress/block-editor": "^14.7.0",
     "@wordpress/blocks": "^14.1.0",
     "@wordpress/i18n": "^5.12.0",
+    "ajv": "^8.17.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^0.2.1",

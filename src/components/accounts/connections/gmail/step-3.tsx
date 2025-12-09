@@ -25,13 +25,13 @@ export default function Step3({ stepCount }: StepProps) {
     appPassword: "",
   });
 
-  const [errorMessage, setErrorMessage] = useState<String>(
+  const [errorMessage, setErrorMessage] = useState<string>( // eslint-disable-line @typescript-eslint/no-unused-vars
     "Account already exists.",
   );
   const [errorMessageVisiblity, setErrorMessageVisiblity] =
-    useState<Boolean>(false);
+    useState<boolean>(false);
   const [successMessageVisiblity, setSuccessMessageVisiblity] =
-    useState<Boolean>(false);
+    useState<boolean>(false); // eslint-disable-line @typescript-eslint/no-wrapper-object-types
 
   const [formErrors, setFormErrors] = useState<FormErrors>({
     firstName: "",
@@ -48,7 +48,7 @@ export default function Step3({ stepCount }: StepProps) {
 
   // Function to validate form fields
   const validate = () => {
-    let errors: FormErrors = {
+    const errors: FormErrors = {
       firstName: "",
       lastName: "",
       email: "",

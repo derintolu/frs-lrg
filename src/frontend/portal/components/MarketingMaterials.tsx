@@ -160,7 +160,9 @@ function LandingPagesSection({ userRole, userId, currentUser }: { userRole: 'loa
               const pages = await DataService.getCoBrandedPagesForRealtor(userId);
               setLandingPages(pages);
             }
-          } catch (e) {}
+          } catch {
+            // Silently handle fetch errors
+          }
         })();
       }
       

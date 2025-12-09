@@ -215,7 +215,7 @@ function LeadCaptureForm({
       <CardContent className="pt-6 space-y-4">
         <h3 className="font-semibold text-lg">Get Started</h3>
         <p className="text-sm text-muted-foreground">
-          Ready to explore your mortgage options? Let's connect!
+          Ready to explore your mortgage options? Let&apos;s connect!
         </p>
 
         <div className="space-y-2">

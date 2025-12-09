@@ -83,7 +83,7 @@ export function RealtorOverview({ userId }: RealtorOverviewProps) {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-2">Welcome Back!</h1>
-          <p className="text-gray-600 text-lg">Here's an overview of your partnership portal</p>
+          <p className="text-gray-600 text-lg">Here&apos;s an overview of your partnership portal</p>
         </div>
 
         {/* Stats Cards */}

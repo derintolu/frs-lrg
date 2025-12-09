@@ -1,4 +1,4 @@
-1import { useState, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../ui/card';
 import { Button } from '../ui/button';
@@ -280,14 +280,14 @@ export function BulkUploadRealtors() {
             <div className="space-y-3 text-sm text-gray-600">
               <p>Your CSV file should have the following columns:</p>
               <ul className="list-disc list-inside space-y-1 ml-4">
-                <li><strong>email</strong> - Realtor's email address (required)</li>
+                <li><strong>email</strong> - Realtor&apos;s email address (required)</li>
                 <li><strong>first_name</strong> - First name (required)</li>
                 <li><strong>last_name</strong> - Last name (required)</li>
                 <li><strong>phone</strong> - Phone number (optional)</li>
               </ul>
               <p className="mt-4">
-                <strong>Note:</strong> If a user with the email already exists, they will be added to the partner company's BuddyPress group.
-                If they don't exist, a new WordPress user will be created automatically.
+                <strong>Note:</strong> If a user with the email already exists, they will be added to the partner company&apos;s BuddyPress group.
+                If they don&apos;t exist, a new WordPress user will be created automatically.
               </p>
             </div>
           </CardContent>

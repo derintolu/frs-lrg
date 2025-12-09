@@ -90,7 +90,7 @@ export function CalendarSetupWizard({ userId, onComplete }: CalendarSetupWizardP
           </div>
           <CardTitle className="text-2xl">Calendar Setup</CardTitle>
           <CardDescription>
-            Let's get your booking calendar ready in just a few steps
+            Let&apos;s get your booking calendar ready in just a few steps
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -151,7 +151,7 @@ export function CalendarSetupWizard({ userId, onComplete }: CalendarSetupWizardP
                       </div>
                       <div>
                         <h4 className="font-semibold mb-1">Set Your Availability</h4>
-                        <p className="text-sm text-gray-600">Control when you're available for meetings</p>
+                        <p className="text-sm text-gray-600">Control when you&apos;re available for meetings</p>
                       </div>
                     </div>
                   </CardContent>
@@ -176,7 +176,7 @@ export function CalendarSetupWizard({ userId, onComplete }: CalendarSetupWizardP
               <div className="text-center space-y-4">
                 <h3 className="text-xl font-semibold">Create Your Calendar</h3>
                 <p className="text-gray-600">
-                  We'll create a personalized booking calendar just for you. This only takes a moment.
+                  We&apos;ll create a personalized booking calendar just for you. This only takes a moment.
                 </p>
               </div>
 

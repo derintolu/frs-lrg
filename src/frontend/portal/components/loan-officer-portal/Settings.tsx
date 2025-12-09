@@ -620,7 +620,7 @@ export function Settings({ userId }: SettingsProps) {
                   <div>
                     <h3 className="font-semibold text-gray-900">Email Support</h3>
                     <p className="text-sm text-gray-500 mt-1">
-                      Send us an email and we'll get back to you within 24 hours
+                      Send us an email and we&apos;ll get back to you within 24 hours
                     </p>
                     <a
                       href="mailto:support@21stcenturylending.com"

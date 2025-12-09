@@ -1592,7 +1592,7 @@ export function ProfileEditorView({ userId, slug }: ProfileEditorViewProps) {
             </div>
             <div className="flex items-center justify-end gap-3 p-4 border-t">
               <p className="text-sm text-gray-500 flex-1">
-                Connect your calendar to enable scheduling. Click "Done" when finished.
+                Connect your calendar to enable scheduling. Click &quot;Done&quot; when finished.
               </p>
               <Button
                 variant="outline"
