@@ -47,6 +47,7 @@ Route::prefix(
 		$route->get( '/leads', '\LendingResourceHub\Controllers\Leads\Actions@get_leads' );
 		$route->post( '/leads', '\LendingResourceHub\Controllers\Leads\Actions@create_lead' );
 		$route->get( '/leads/lo/{id}', '\LendingResourceHub\Controllers\Leads\Actions@get_leads_for_lo' );
+		$route->get( '/leads/realtor/{id}', '\LendingResourceHub\Controllers\Leads\Actions@get_leads_for_realtor' );
 		$route->put( '/leads/{id}/status', '\LendingResourceHub\Controllers\Leads\Actions@update_lead_status' );
 		$route->delete( '/leads/{id}', '\LendingResourceHub\Controllers\Leads\Actions@delete_lead' );
 		$route->post( '/leads/{id}/notes', '\LendingResourceHub\Controllers\Leads\Actions@add_lead_note' );

@@ -6,6 +6,7 @@ import { ToolsLandingPage } from './ToolsLandingPage';
 import { WelcomeDashboardWidget } from './WelcomeDashboardWidget';
 import { LOContactWidget } from './LOContactWidget';
 import { TeamWidget } from './TeamWidget';
+import { LeadSubmissionsWidget } from './LeadSubmissionsWidget';
 import '../frontend/portal/index.css';
 
 console.log('Widget script loaded');
@@ -189,7 +190,35 @@ if (typeof document !== 'undefined') {
       }
     }
 
-    if (!toolsLandingContainer && !mortgageContainer && !propertyContainer && !welcomeContainer && loContactContainers.length === 0 && !teamContainer) {
+    // Mount Lead Submissions Widget
+    const leadSubmissionsContainer = document.getElementById('frs-lead-submissions');
+    if (leadSubmissionsContainer) {
+      console.log('Mounting Lead Submissions Widget');
+
+      const props = {
+        userId: parseInt(leadSubmissionsContainer.dataset.userId || '0'),
+        userRole: (leadSubmissionsContainer.dataset.userRole as 'loan_officer' | 'realtor') || 'loan_officer',
+        limit: parseInt(leadSubmissionsContainer.dataset.limit || '5'),
+        showHeader: leadSubmissionsContainer.dataset.showHeader !== 'false',
+        title: leadSubmissionsContainer.dataset.title || 'Recent Leads',
+        restUrl: leadSubmissionsContainer.dataset.restUrl || '/wp-json/lrh/v1',
+        nonce: leadSubmissionsContainer.dataset.nonce || '',
+      };
+
+      try {
+        const root = createRoot(leadSubmissionsContainer);
+        root.render(
+          <React.StrictMode>
+            <LeadSubmissionsWidget {...props} />
+          </React.StrictMode>
+        );
+        console.log('Lead Submissions Widget mounted');
+      } catch (error) {
+        console.error('Error mounting Lead Submissions Widget:', error);
+      }
+    }
+
+    if (!toolsLandingContainer && !mortgageContainer && !propertyContainer && !welcomeContainer && loContactContainers.length === 0 && !teamContainer && !leadSubmissionsContainer) {
       console.log('No widget containers found on this page');
     }
   });

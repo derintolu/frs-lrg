@@ -76,15 +76,156 @@ class Actions {
 			$query->where( 'created_date', '<=', $date_to );
 		}
 
-		$leads = $query->orderBy( 'created_date', 'desc' )->get();
+		$leads = $query->orderBy( 'created_date', 'desc' )->get()->toArray();
+
+		// Also get leads from FluentForms (frs-lead-pages)
+		$fluent_leads = self::get_fluent_form_leads( $lo_id, 'loan_officer', $date_from, $date_to );
+
+		// Merge and sort by date
+		$all_leads = array_merge( $leads, $fluent_leads );
+		usort( $all_leads, function( $a, $b ) {
+			$date_a = $a['created_date'] ?? $a['created_at'] ?? '';
+			$date_b = $b['created_date'] ?? $b['created_at'] ?? '';
+			return strtotime( $date_b ) - strtotime( $date_a );
+		});
 
 		return new WP_REST_Response(
 			array(
 				'success' => true,
-				'data'    => $leads,
+				'data'    => $all_leads,
 			),
 			200
 		);
+	}
+
+	/**
+	 * Get leads for specific realtor/agent.
+	 *
+	 * @param WP_REST_Request $request The REST request object.
+	 * @return WP_REST_Response The response.
+	 */
+	public function get_leads_for_realtor( WP_REST_Request $request ) {
+		$realtor_id = $request->get_param( 'id' );
+		$date_from  = $request->get_param( 'date_from' );
+		$date_to    = $request->get_param( 'date_to' );
+
+		$query = LeadSubmission::where( 'agent_id', $realtor_id );
+
+		if ( $date_from ) {
+			$query->where( 'created_date', '>=', $date_from );
+		}
+
+		if ( $date_to ) {
+			$query->where( 'created_date', '<=', $date_to );
+		}
+
+		$leads = $query->orderBy( 'created_date', 'desc' )->get()->toArray();
+
+		// Also get leads from FluentForms (frs-lead-pages)
+		$fluent_leads = self::get_fluent_form_leads( $realtor_id, 'realtor', $date_from, $date_to );
+
+		// Merge and sort by date
+		$all_leads = array_merge( $leads, $fluent_leads );
+		usort( $all_leads, function( $a, $b ) {
+			$date_a = $a['created_date'] ?? $a['created_at'] ?? '';
+			$date_b = $b['created_date'] ?? $b['created_at'] ?? '';
+			return strtotime( $date_b ) - strtotime( $date_a );
+		});
+
+		return new WP_REST_Response(
+			array(
+				'success' => true,
+				'data'    => $all_leads,
+			),
+			200
+		);
+	}
+
+	/**
+	 * Get leads from FluentForms submissions (frs-lead-pages).
+	 *
+	 * @param int         $user_id   The user ID.
+	 * @param string      $user_type 'loan_officer' or 'realtor'.
+	 * @param string|null $date_from Start date filter.
+	 * @param string|null $date_to   End date filter.
+	 * @return array Array of lead data.
+	 */
+	private static function get_fluent_form_leads( $user_id, $user_type, $date_from = null, $date_to = null ) {
+		global $wpdb;
+
+		// Check if FluentForms tables exist
+		$table_name = $wpdb->prefix . 'fluentform_submissions';
+		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table_name ) ) !== $table_name ) {
+			return [];
+		}
+
+		// Build the JSON path based on user type
+		$json_field = $user_type === 'realtor' ? 'realtor_id' : 'loan_officer_id';
+
+		// Build query
+		$query = "SELECT id, response, status, created_at, updated_at
+				  FROM {$table_name}
+				  WHERE JSON_EXTRACT(response, '$.{$json_field}') = %s";
+		$params = [ (string) $user_id ];
+
+		if ( $date_from ) {
+			$query .= ' AND created_at >= %s';
+			$params[] = $date_from;
+		}
+
+		if ( $date_to ) {
+			$query .= ' AND created_at <= %s';
+			$params[] = $date_to;
+		}
+
+		$query .= ' ORDER BY created_at DESC LIMIT 100';
+
+		$results = $wpdb->get_results( $wpdb->prepare( $query, $params ) );
+
+		if ( ! $results ) {
+			return [];
+		}
+
+		$leads = [];
+		foreach ( $results as $row ) {
+			$response = json_decode( $row->response, true );
+			if ( ! $response ) {
+				continue;
+			}
+
+			// Map FluentForms status to our status
+			$status_map = [
+				'unread'    => 'new',
+				'read'      => 'contacted',
+				'contacted' => 'contacted',
+				'converted' => 'closed',
+			];
+
+			// Get page type for lead source
+			$page_type = $response['page_type'] ?? 'lead_page';
+			$source_map = [
+				'open_house'         => 'open_house',
+				'customer_spotlight' => 'spotlight',
+				'special_event'      => 'event',
+			];
+
+			$leads[] = [
+				'id'           => 'ff_' . $row->id, // Prefix to distinguish from wp_lead_submissions
+				'first_name'   => $response['first_name'] ?? '',
+				'last_name'    => $response['last_name'] ?? '',
+				'email'        => $response['email'] ?? '',
+				'phone'        => $response['phone'] ?? '',
+				'lead_source'  => $source_map[ $page_type ] ?? 'lead_page',
+				'status'       => $status_map[ $row->status ] ?? 'new',
+				'created_date' => $row->created_at,
+				'updated_date' => $row->updated_at,
+				'source_type'  => 'fluent_forms', // Mark the source
+				'page_id'      => $response['lead_page_id'] ?? null,
+				'page_type'    => $page_type,
+			];
+		}
+
+		return $leads;
 	}
 
 	/**
