@@ -28,10 +28,9 @@ class MortgageCalculator {
 	 * Initialize the shortcode
 	 */
 	public static function init() {
-		// DISABLED: Moved to standalone frs-mortgage-calculator plugin
-		// add_shortcode( 'frs_mortgage_calculator', [ __CLASS__, 'render' ] );
-		// add_shortcode( 'frs_mortgage_calculator_embed_code', [ __CLASS__, 'render_embed_code' ] );
-		// add_action( 'wp_enqueue_scripts', [ __CLASS__, 'enqueue_assets' ] );
+		add_shortcode( 'frs_mortgage_calculator', [ __CLASS__, 'render' ] );
+		add_shortcode( 'frs_mortgage_calculator_embed_code', [ __CLASS__, 'render_embed_code' ] );
+		add_action( 'wp_enqueue_scripts', [ __CLASS__, 'enqueue_assets' ] );
 	}
 
 	/**

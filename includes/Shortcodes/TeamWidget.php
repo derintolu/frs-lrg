@@ -6,9 +6,9 @@
  * Each member links to their SureDash profile.
  *
  * Usage:
- * [frs_team_widget user_ids="3,12"] - Show specific users by ID (Holley=3, Jacquelyn=12)
- * [frs_team_widget user_ids="3,12" title="Your Lending Team"]
- * [frs_team_widget user_ids="3,12" layout="column"]
+ * [frs_team_widget user_ids="123,456,789"] - Show specific users by ID
+ * [frs_team_widget user_ids="123,456,789" title="Your Lending Team"]
+ * [frs_team_widget user_ids="123,456,789" layout="column"]
  *
  * Layouts: row (default), column, grid
  *
