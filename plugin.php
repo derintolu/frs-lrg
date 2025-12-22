@@ -34,6 +34,7 @@ use LendingResourceHub\Shortcodes\WelcomeDashboard;
 use LendingResourceHub\Shortcodes\ContactWidget;
 use LendingResourceHub\Shortcodes\TeamWidget;
 use LendingResourceHub\Shortcodes\LeadSubmissions;
+use LendingResourceHub\Shortcodes\CommunityPosts;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -139,6 +140,7 @@ final class LendingResourceHub {
 		ContactWidget::init();
 		TeamWidget::init();
 		LeadSubmissions::init();
+		CommunityPosts::init();
 
 		// Initialize MCP Adapter for Abilities API
 		if ( class_exists( 'WP\MCP\Core\McpAdapter' ) ) {

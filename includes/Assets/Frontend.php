@@ -238,7 +238,7 @@ class Frontend {
 			LRH_DIR . '/assets/widget/dist',
 			'src/widget/widget.tsx',
 			array(
-				'handle'       => 'frs-mortgage-calculator',
+				'handle'       => 'frs-lrg-widget',
 				'dependencies' => array( 'react', 'react-dom' ),
 				'in-footer'    => true,
 			)

@@ -241,7 +241,7 @@ class PostTypes {
 			)
 		);
 
-		// LO Portal Pages
+		// LO Portal Pages (frontend routing disabled - using frs-profile-directory instead)
 		register_post_type(
 			'lo_portal_page',
 			array(
@@ -252,17 +252,15 @@ class PostTypes {
 					'add_new'       => __( 'Add LO Page', 'lending-resource-hub' ),
 					'edit_item'     => __( 'Edit LO Page', 'lending-resource-hub' ),
 				),
-				'public'          => true,
+				'public'          => false,
+				'publicly_queryable' => false,
 				'show_ui'         => true,
 				'show_in_menu'    => 'lending-resource-hub',
 				'show_in_rest'    => true,
 				'supports'        => array( 'title', 'editor', 'custom-fields', 'page-attributes' ),
 				'hierarchical'    => true,
 				'has_archive'     => false,
-				'rewrite'         => array(
-					'slug'       => 'lo',
-					'with_front' => false,
-				),
+				'rewrite'         => false,
 				'menu_icon'       => 'dashicons-businessman',
 				'capability_type' => 'page',
 				'map_meta_cap'    => true,

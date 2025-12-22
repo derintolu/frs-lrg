@@ -29,7 +29,8 @@ class Redirects {
 	 * @return void
 	 */
 	public function init() {
-		add_action( 'template_redirect', array( $this, 'redirect_logged_in_users_from_homepage' ) );
+		// Disabled - no automatic redirects
+		// add_action( 'template_redirect', array( $this, 'redirect_logged_in_users_from_homepage' ) );
 	}
 
 	/**

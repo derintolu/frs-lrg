@@ -7,6 +7,7 @@ import { WelcomeDashboardWidget } from './WelcomeDashboardWidget';
 import { LOContactWidget } from './LOContactWidget';
 import { TeamWidget } from './TeamWidget';
 import { LeadSubmissionsWidget } from './LeadSubmissionsWidget';
+import { CommunityPostsWidget } from './CommunityPostsWidget';
 import '../frontend/portal/index.css';
 
 console.log('Widget script loaded');
@@ -218,7 +219,33 @@ if (typeof document !== 'undefined') {
       }
     }
 
-    if (!toolsLandingContainer && !mortgageContainer && !propertyContainer && !welcomeContainer && loContactContainers.length === 0 && !teamContainer && !leadSubmissionsContainer) {
+    // Mount Community Posts Widget
+    const communityPostsContainer = document.getElementById('frs-community-posts');
+    if (communityPostsContainer) {
+      console.log('Mounting Community Posts Widget');
+
+      const props = {
+        limit: parseInt(communityPostsContainer.dataset.limit || '5'),
+        showHeader: communityPostsContainer.dataset.showHeader !== 'false',
+        title: communityPostsContainer.dataset.title || 'The Pulse',
+        restUrl: communityPostsContainer.dataset.restUrl || '/wp-json/wp/v2',
+        layout: (communityPostsContainer.dataset.layout as 'list' | 'grid' | 'compact') || 'list',
+      };
+
+      try {
+        const root = createRoot(communityPostsContainer);
+        root.render(
+          <React.StrictMode>
+            <CommunityPostsWidget {...props} />
+          </React.StrictMode>
+        );
+        console.log('Community Posts Widget mounted');
+      } catch (error) {
+        console.error('Error mounting Community Posts Widget:', error);
+      }
+    }
+
+    if (!toolsLandingContainer && !mortgageContainer && !propertyContainer && !welcomeContainer && loContactContainers.length === 0 && !teamContainer && !leadSubmissionsContainer && !communityPostsContainer) {
       console.log('No widget containers found on this page');
     }
   });

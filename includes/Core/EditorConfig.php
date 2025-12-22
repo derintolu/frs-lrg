@@ -164,6 +164,20 @@ class EditorConfig {
 				border-bottom: 1px solid #e5e7eb !important;
 				box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
 			}
+
+			/* Hide native back button when embedded in iframe */
+			.editor-header__back-button,
+			.edit-post-fullscreen-mode-close,
+			.edit-post-fullscreen-mode-close__view-mode-toggle {
+				display: none !important;
+			}
+
+			/* Ensure editor header is at the top when in iframe */
+			.interface-interface-skeleton__header {
+				position: sticky !important;
+				top: 0 !important;
+				z-index: 100 !important;
+			}
 		";
 
 		wp_add_inline_style( 'wp-edit-blocks', $custom_css );

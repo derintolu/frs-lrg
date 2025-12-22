@@ -7,119 +7,46 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 **Environment:** Local by Flywheel (hub21.local)
 **Live URL:** https://hub21.local
 **Portal URL:** https://hub21.local/dashboard (requires login)
-**React Apps:** 7 (Frontend, Admin, Welcome Portal, Partnerships, Realtor Portal, Widget, Partner Company)
+**React Apps:** 6 (Frontend, Admin, Welcome Portal, Partnerships, Realtor Portal, Widget)
 **Gutenberg Blocks:** 19 blocks
 
 ---
 
-## 🚨 CRITICAL RULES 🚨
+## CRITICAL RULES
 
 ### 0. NEVER MAKE CHANGES WITHOUT EXPLICIT INSTRUCTION
-
-**MANDATORY - Do NOT make any changes unless the user explicitly tells you to:**
 
 - Do NOT revert files with git checkout/restore unless specifically asked
 - Do NOT rebuild or restructure code unless specifically asked
 - Do NOT guess what the user wants - ASK FIRST
-- If unsure what to do, ASK instead of doing anything
 - Wait for explicit confirmation before making ANY changes
 
 ### 1. RESEARCH-FIRST APPROACH
 
-**MANDATORY - Before making ANY changes:**
-
+Before making ANY changes:
 1. **READ THE ACTUAL CODE** - Never assume how something works
 2. **STUDY EXISTING PATTERNS** - Look at how similar functionality is implemented
 3. **EXAMINE DEPENDENCIES** - Read plugin/theme code to understand their system
 4. **VERIFY YOUR UNDERSTANDING** - Use Grep, Read, Bash tools to confirm
 5. **ASK CLARIFYING QUESTIONS** - Ask instead of guessing
 
-**NEVER:**
-- Assume how a WordPress plugin/theme works without reading its code
-- Suggest solutions based on general knowledge instead of examining this codebase
-- Make changes without understanding the existing architecture
-- Guess at API endpoints, hooks, or data structures
-- Say "it should work" without verifying it actually works
-
 ### 2. ALWAYS USE DEV SERVER
 
-**NEVER run `npm run build` repeatedly during development.**
+**NEVER run `npm run build` repeatedly during development.** Use `npm run dev` for HMR.
 
-```bash
-npm run dev              # Start both frontend (5173) and admin (5174)
-```
+### 3. PORTAL URL
 
-**Why:**
-- Hot Module Replacement (HMR) - changes apply INSTANTLY
-- No build step required - edit code and see changes immediately
-- Only build when done: `npm run build`
+Portal is at `https://hub21.local/dashboard` (NOT `/portal/lo` or `/lo/`). Requires login as `loan_officer` or `realtor_partner` role.
 
-**CORS Configuration Required:**
-```javascript
-// vite.frontend.config.js & vite.admin.config.js
-server: {
-  cors: true,
-  origin: 'http://localhost:5173',  // Match the port
-  host: 'localhost',
-  port: 5173,  // 5173 for frontend, 5174 for admin
-}
-```
+### 4. NEVER BLAME CACHING
 
-### 2.5. PORTAL URL AND LOGIN
+There is NO caching in dev. If changes aren't showing: check HMR terminal output, browser console, and verify correct file was edited.
 
-**CRITICAL - Portal URL:**
-- Portal is located at: `https://hub21.local/dashboard`
-- **NOT** at `/portal/lo` or `/lo/`
-- **REQUIRES LOGIN** - You must be logged in as a user with `loan_officer` or `realtor_partner` role
+### 5. PLUGIN CONTEXT
 
-**When using Chrome DevTools MCP:**
-1. Navigate to: `https://hub21.local/dashboard`
-2. If not logged in, you'll need to login first
-3. Then you can inspect portal components
-
-### 3. NEVER BLAME CACHING
-
-When changes aren't showing, **NEVER** assume it's caching. There is **NO** caching in dev.
-
-**Action steps:**
-1. Check if dev server detected the change (look for HMR update in terminal)
-2. Verify computed styles in browser DevTools
-3. Check for JavaScript errors in browser console
-4. Verify correct file was edited
-
-### 4. PRE-WORK VERIFICATION CHECKLIST
-
-**MANDATORY - Before starting ANY task, verify you are in the correct plugin:**
-
-```bash
-# 1. Verify working directory
-pwd
-
-# 2. Check current branch
-git branch --show-current
-
-# 3. Verify clean working tree
-git status
-```
-
-**Expected Output for frs-lrg (ACTIVE DEVELOPMENT):**
-```
-.../wp-content/plugins/frs-lrg
-```
-
-**Plugin Context:**
-- **frs-lrg** = ACTIVE development plugin ✅ (ALL new work happens here)
-- **frs-wp-users** = ACTIVE user profile plugin ✅ (User CRUD, webhooks, sync)
-- **frs-partnership-portal** = DEPRECATED ⚠️ (reference only, being sunset)
-
-**If you find yourself in frs-partnership-portal:**
-1. STOP immediately
-2. Navigate to frs-lrg: `cd` to the `wp-content/plugins/frs-lrg` directory
-3. Verify location with `pwd`
-4. Continue work in correct plugin
-
-**Why This Matters:**
-Working in the wrong plugin wastes hours of development time. frs-partnership-portal is only kept for reference during migration to frs-lrg. Any work done there must be discarded and redone in frs-lrg.
+- **frs-lrg** = ACTIVE development plugin (ALL new work here)
+- **frs-wp-users** = ACTIVE user profile plugin (User CRUD, webhooks, sync)
+- **frs-partnership-portal** = DEPRECATED (reference only)
 
 ---
 
@@ -140,6 +67,11 @@ npm run dev:all          # All frontends + blocks with HMR
 npm run build            # Build all: 6 frontends + blocks
 npm run block:build      # Gutenberg blocks only (19 blocks)
 
+# Linting & Type Checking
+npm run lint             # ESLint check
+npm run lint:fix         # ESLint auto-fix
+npm run type-check       # TypeScript type checking
+
 # WordPress CLI commands
 wp plugin activate frs-lrg
 wp plugin deactivate frs-lrg
@@ -149,19 +81,16 @@ wp rewrite flush
 wp db query "SHOW TABLES LIKE 'wp_partnerships'"
 wp db query "SELECT * FROM wp_partnerships LIMIT 5"
 
-# PHP debugging (quick testing without writing files)
+# PHP debugging
 wp eval "echo 'Debug: ' . get_current_user_id();"
-wp eval-file path/to/debug-script.php
 
-# Post type operations
+# Post type & User operations
 wp post-type list
 wp post list --post_type=partnership --format=table
-
-# User operations
 wp user list --role=loan_officer
 wp user meta get <user_id> <meta_key>
 
-# Composer operations (after model changes)
+# Composer (REQUIRED after adding new PHP classes)
 composer dump-autoload
 ```
 
@@ -288,23 +217,6 @@ POST /wp-json/wp-abilities/v1/abilities/{name}/run  # Execute ability
 ```
 
 See [15-wordpress-abilities-api.md](.claude/docs/15-wordpress-abilities-api.md) for full documentation.
-
----
-
-## Most Important Rules Summary
-
-1. **Always use dev server** - `npm run dev`, NOT constant rebuilds
-2. **Configure CORS** - Required for Vite dev server with local WordPress
-3. **Research first** - Read actual code before making changes
-4. **Never blame caching** - Assume issue is in your code
-5. **Understand the math** - CSS transform scale = targetWidth ÷ actualWidth
-6. **Verify in browser** - Use DevTools to check computed styles
-7. **Use Eloquent ORM** - Never raw SQL queries
-8. **Use md: breakpoint** - For desktop (768px), NOT lg: (1024px)
-9. **Tailwind patterns** - Start with display type, add max-md:hidden or md:hidden
-10. **Git workflow** - Branch → Develop → Test → Commit → Push → Merge → Push
-
-**These rules prevent wasting hours on issues that could be avoided by understanding the tooling and architecture.**
 
 ---
 

@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { LoadingSpinner } from '../ui/loading';
+import { ArrowLeft, ExternalLink, X } from 'lucide-react';
 
 interface WordPressEditorIframeProps {
   pageId: string;
@@ -10,13 +11,20 @@ interface WordPressEditorIframeProps {
 export function WordPressEditorIframe({ pageId, onClose, onSave }: WordPressEditorIframeProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [iframeKey, setIframeKey] = useState(0);
+  const [pageTitle, setPageTitle] = useState('Edit Page');
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
-  // Use WordPress editor in inline mode (not fullscreen)
   const editorUrl = `/wp-admin/post.php?post=${pageId}&action=edit`;
 
   useEffect(() => {
-    // Listen for save events from the iframe
+    // Prevent body scroll when editor is open
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, []);
+
+  useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
       if (event.data?.type === 'wp-save-post' || event.data === 'wp-save-post') {
         console.log('Page saved in WordPress editor');
@@ -27,85 +35,51 @@ export function WordPressEditorIframe({ pageId, onClose, onSave }: WordPressEdit
     };
 
     window.addEventListener('message', handleMessage);
-
-    return () => {
-      window.removeEventListener('message', handleMessage);
-    };
+    return () => window.removeEventListener('message', handleMessage);
   }, [onSave]);
 
   const handleIframeLoad = () => {
     setIsLoading(false);
 
-    // Inject CSS to hide WordPress admin elements and add return button
     try {
       const iframe = iframeRef.current;
       if (iframe?.contentWindow?.document) {
         const iframeDoc = iframe.contentWindow.document;
 
-        console.log('✅ Editor loaded - PHP CSS handles styling');
+        // Get the page title
+        const titleEl = iframeDoc.querySelector('.editor-post-title__input, .wp-block-post-title');
+        if (titleEl) {
+          setPageTitle((titleEl as HTMLElement).innerText || 'Edit Page');
+        }
 
-        // Add close button for all users, curate controls only for authors
         setTimeout(() => {
           if (iframe.contentWindow) {
             const iframeDoc = iframe.contentWindow.document;
-            const wp = iframe.contentWindow.wp;
+            const wp = (iframe.contentWindow as any).wp;
 
-            if (wp && wp.element && wp.components) {
-              const { createElement } = wp.element;
-              const { Button } = wp.components;
+            // Check if user is author
+            const body = iframeDoc.body;
+            const isAuthor = body.classList.contains('author') || body.classList.contains('role-author');
 
-              // Check if user is author
-              const body = iframeDoc.body;
-              const isAuthor = body.classList.contains('author') || body.classList.contains('role-author');
-
-              // Hide unnecessary editor controls for authors only
-              if (isAuthor) {
-                const hideControlsStyle = iframeDoc.createElement('style');
-                hideControlsStyle.textContent = `
-                  /* Hide all header buttons except preview and responsive controls */
-                  .edit-post-header__settings > *:not(.edit-post-header-preview__button-external):not(.edit-post-header__device-preview):not([data-frs-close-button]) {
-                    display: none !important;
-                  }
-
-                  /* Keep only preview and responsive device controls visible */
-                  .edit-post-header-preview__button-external,
-                  .edit-post-header__device-preview {
-                    display: flex !important;
-                  }
-                `;
-                iframeDoc.head.appendChild(hideControlsStyle);
-                console.log('✅ Curated editor controls for author');
-              }
-
-              // Add close button for all users
-              const headerSettings = iframeDoc.querySelector('.edit-post-header__settings');
-              if (headerSettings) {
-                const closeButtonContainer = iframeDoc.createElement('div');
-                closeButtonContainer.style.cssText = 'display: flex; align-items: center; margin-right: 12px; order: -1;';
-                closeButtonContainer.setAttribute('data-frs-close-button', 'true');
-
-                headerSettings.insertBefore(closeButtonContainer, headerSettings.firstChild);
-
-                const { render } = wp.element;
-                render(
-                  createElement(Button, {
-                    variant: 'secondary',
-                    onClick: () => {
-                      window.parent.postMessage({ type: 'frs:lp:close' }, '*');
-                    },
-                    children: 'Close'
-                  }),
-                  closeButtonContainer
-                );
-
-                console.log('✅ Added close button');
-              }
+            // Hide unnecessary editor controls for authors only
+            if (isAuthor && wp?.element) {
+              const hideControlsStyle = iframeDoc.createElement('style');
+              hideControlsStyle.textContent = `
+                .edit-post-header__settings > *:not(.edit-post-header-preview__button-external):not(.edit-post-header__device-preview):not([data-frs-close-button]) {
+                  display: none !important;
+                }
+                .edit-post-header-preview__button-external,
+                .edit-post-header__device-preview {
+                  display: flex !important;
+                }
+              `;
+              iframeDoc.head.appendChild(hideControlsStyle);
             }
           }
         }, 1500);
       }
     } catch (error) {
-      console.error('Failed to inject CSS into iframe:', error);
+      console.error('Failed to customize iframe:', error);
     }
   };
 
@@ -113,64 +87,71 @@ export function WordPressEditorIframe({ pageId, onClose, onSave }: WordPressEdit
     window.open(editorUrl, '_blank');
   };
 
-  const handleRefresh = () => {
-    setIsLoading(true);
-    setIframeKey(prev => prev + 1);
-  };
-
-  const handleSave = () => {
-    try {
-      // Trigger save in the iframe by dispatching a save event
-      const iframe = iframeRef.current;
-      if (iframe?.contentWindow) {
-        iframe.contentWindow.postMessage({ type: 'trigger-save' }, '*');
-
-        // Also try to click the save button
-        const iframeDoc = iframe.contentWindow.document;
-        const saveButton = iframeDoc.querySelector('.editor-post-publish-button, .editor-post-save-draft') as HTMLButtonElement;
-        if (saveButton) {
-          saveButton.click();
-        }
-      }
-    } catch (error) {
-      console.error('Failed to trigger save:', error);
-    }
-  };
-
   return (
-    <div className="fixed bottom-0 right-0 bg-white" style={{ top: '60px', left: '320px', zIndex: 1002 }}>
-      {/* Floating Close Button - Top Right */}
-      <button
-        onClick={onClose}
-        className="fixed bg-black text-white hover:bg-gray-800 transition-colors duration-200 font-medium px-4 py-2 rounded shadow-lg"
-        style={{
-          top: '12px',
-          right: '32px',
-          zIndex: 10002
-        }}
+    <div className="fixed inset-0 z-[9999] flex flex-col bg-white">
+      {/* Top Bar */}
+      <div
+        className="flex items-center justify-between px-6 py-3 bg-gradient-to-r from-[#0B102C] to-[#1a2040] text-white shadow-lg"
+        style={{ minHeight: '56px' }}
       >
-        ← Back to Landing Pages
-      </button>
+        {/* Left: Back Button */}
+        <button
+          onClick={onClose}
+          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors font-medium text-sm"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Back to Landing Pages
+        </button>
 
-      {/* Loading Overlay */}
-      {isLoading && (
-        <div className="absolute inset-0 bg-white flex items-center justify-center" style={{ zIndex: 10001 }}>
-          <div className="text-center">
-            <LoadingSpinner size="lg" />
-            <p className="mt-4 text-gray-600">Loading Editor...</p>
-          </div>
+        {/* Center: Title */}
+        <div className="flex-1 text-center">
+          <h2 className="text-lg font-semibold truncate max-w-md mx-auto">
+            {pageTitle}
+          </h2>
         </div>
-      )}
 
-      {/* Editor Iframe - Positioned right after sidebar (319px) and header (60px) */}
-      <iframe
-        ref={iframeRef}
-        key={iframeKey}
-        src={editorUrl}
-        className="w-full h-full border-0"
-        onLoad={handleIframeLoad}
-        title="WordPress Block Editor"
-      />
+        {/* Right: Actions */}
+        <div className="flex items-center gap-3">
+          <button
+            onClick={handleOpenInNewTab}
+            className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors text-sm"
+            title="Open in new tab"
+          >
+            <ExternalLink className="w-4 h-4" />
+            <span className="hidden sm:inline">New Tab</span>
+          </button>
+          <button
+            onClick={onClose}
+            className="p-2 rounded-lg bg-white/10 hover:bg-red-500/80 transition-colors"
+            title="Close editor"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+      </div>
+
+      {/* Iframe Container */}
+      <div className="flex-1 relative">
+        {/* Loading Overlay */}
+        {isLoading && (
+          <div className="absolute inset-0 bg-white flex items-center justify-center z-10">
+            <div className="text-center">
+              <LoadingSpinner size="lg" />
+              <p className="mt-4 text-gray-600">Loading Editor...</p>
+            </div>
+          </div>
+        )}
+
+        {/* Editor Iframe - Fullscreen below the top bar */}
+        <iframe
+          ref={iframeRef}
+          key={iframeKey}
+          src={editorUrl}
+          className="w-full h-full border-0"
+          onLoad={handleIframeLoad}
+          title="WordPress Block Editor"
+        />
+      </div>
     </div>
   );
 }

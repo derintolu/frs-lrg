@@ -5,7 +5,7 @@
  * Author: 21st Century Lending
  * Author URI: https://hub21loan.com
  * License: GPLv2
- * Version: 2.1.0
+ * Version: 2.1.2
  * Text Domain: lending-resource-hub
  * Domain Path: /languages
  *

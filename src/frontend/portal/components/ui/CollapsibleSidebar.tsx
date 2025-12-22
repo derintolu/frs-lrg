@@ -52,7 +52,15 @@ export function CollapsibleSidebar({
   topOffset = '0',
 }: CollapsibleSidebarProps) {
   const [isCollapsed, setIsCollapsed] = useState(defaultCollapsed);
-  const [expandedMenus, setExpandedMenus] = useState<string[]>([]);
+  // Persist expandedMenus in localStorage to survive route changes
+  const [expandedMenus, setExpandedMenus] = useState<string[]>(() => {
+    try {
+      const saved = localStorage.getItem('frs-sidebar-expanded-menus');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
   const [isMobile, setIsMobile] = useState(false);
   const [isTablet, setIsTablet] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -125,6 +133,15 @@ export function CollapsibleSidebar({
   //     document.body.style.transition = '';
   //   };
   // }, [isCollapsed, width, collapsedWidth, position, isMobile]);
+
+  // Save expandedMenus to localStorage whenever it changes
+  useEffect(() => {
+    try {
+      localStorage.setItem('frs-sidebar-expanded-menus', JSON.stringify(expandedMenus));
+    } catch {
+      // Ignore localStorage errors
+    }
+  }, [expandedMenus]);
 
   // Auto-expand parent menu if child is active, or if item itself is active and has customWidget
   useEffect(() => {

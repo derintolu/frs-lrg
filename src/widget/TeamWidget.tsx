@@ -5,7 +5,8 @@
  * Perfect for showing "Your 21st Century Lending Team!"
  */
 
-import { Phone, Mail } from 'lucide-react';
+import { Phone, Mail, Users } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '../frontend/portal/components/ui/card';
 
 interface TeamMember {
   id: string;
@@ -52,37 +53,19 @@ export function TeamWidget({
   };
 
   return (
-    <div
-      className="frs-team-widget"
-      style={{
-        fontFamily: 'Poppins, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-        background: 'transparent',
-        overflow: 'hidden',
-      }}
-    >
+    <Card className="frs-team-widget h-full">
       {/* Header */}
       {showTitle && (
-        <div
-          style={{
-            padding: '12px 20px',
-            textAlign: 'center',
-          }}
-        >
-          <h3
-            style={{
-              margin: 0,
-              color: '#1e293b',
-              fontSize: isLarge ? '1.25rem' : '1.125rem',
-              fontWeight: 700,
-            }}
-          >
+        <CardHeader>
+          <CardTitle className="flex items-center justify-center gap-2">
             {title}
-          </h3>
-        </div>
+          </CardTitle>
+        </CardHeader>
       )}
 
       {/* Team Members */}
-      <div style={{ padding: isLarge ? '12px' : '16px', ...getLayoutStyle() }}>
+      <CardContent>
+        <div style={{ ...getLayoutStyle() }}>
         {members.map((member, index) => (
           <div
             key={member.id || index}
@@ -252,7 +235,8 @@ export function TeamWidget({
             </div>
           </div>
         ))}
-      </div>
-    </div>
+        </div>
+      </CardContent>
+    </Card>
   );
 }

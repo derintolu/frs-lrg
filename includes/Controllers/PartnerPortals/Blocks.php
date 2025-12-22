@@ -64,12 +64,16 @@ class Blocks {
 		// (header, button, social, form components can be reused)
 
 		// Register partner portal page wrapper block with dynamic rendering
-		register_block_type(
-			$blocks_dir . 'partner-portal-page',
-			array(
-				'render_callback' => array( $this, 'render_partner_portal_page_block' ),
-			)
-		);
+		// Only register if block directory exists (block may not be built yet)
+		$partner_portal_block = $blocks_dir . 'partner-portal-page';
+		if ( file_exists( $partner_portal_block . '/block.json' ) ) {
+			register_block_type(
+				$partner_portal_block,
+				array(
+					'render_callback' => array( $this, 'render_partner_portal_page_block' ),
+				)
+			);
+		}
 	}
 
 	/**

@@ -399,19 +399,43 @@ export function MortgageCalculatorWidget({ config = {} }: { config?: WidgetConfi
   };
 
   return (
-    <div className="w-full max-w-7xl mx-auto p-6 font-sans">
+    <div
+      className="calc-widget w-full max-w-7xl mx-auto p-6 font-sans"
+      style={{
+        '--gradient-start': gradientStart,
+        '--gradient-end': gradientEnd,
+      } as React.CSSProperties}
+    >
+      <style>{`
+        .calc-widget {
+          --input: ${gradientStart};
+          --border: ${gradientStart};
+          --ring: ${gradientEnd};
+        }
+        .calc-widget input,
+        .calc-widget select,
+        .calc-widget textarea,
+        .calc-widget [role="combobox"],
+        .calc-widget button[role="combobox"],
+        .calc-widget .border,
+        .calc-widget .border-input {
+          border-color: ${gradientStart} !important;
+        }
+        .calc-widget input:focus,
+        .calc-widget select:focus,
+        .calc-widget textarea:focus,
+        .calc-widget [role="combobox"]:focus,
+        .calc-widget input:focus-visible,
+        .calc-widget select:focus-visible {
+          border-color: ${gradientEnd} !important;
+          box-shadow: 0 0 0 3px ${gradientEnd}40 !important;
+          outline: none !important;
+        }
+      `}</style>
       {logoUrl && (
         <div className="mb-6 text-center">
           <img src={logoUrl} alt="Logo" className="h-12 mx-auto" />
         </div>
-      )}
-
-      {loanOfficer && (
-        <LoanOfficerProfile
-          loanOfficer={loanOfficer}
-          gradientStart={gradientStart}
-          gradientEnd={gradientEnd}
-        />
       )}
 
       {/* Calculator Section - Full Width */}
@@ -467,7 +491,7 @@ export function MortgageCalculatorWidget({ config = {} }: { config?: WidgetConfi
               showButtons={showLeadForm}
               onEmailMe={handleEmailMe}
               onShare={handleShare}
-              brandColor={brandColor}
+              brandColor={gradientStart}
               ButtonsComponent={ButtonsCard}
             />
           </TabsContent>
@@ -477,7 +501,7 @@ export function MortgageCalculatorWidget({ config = {} }: { config?: WidgetConfi
               showButtons={showLeadForm}
               onEmailMe={handleEmailMe}
               onShare={handleShare}
-              brandColor={brandColor}
+              brandColor={gradientStart}
               ButtonsComponent={ButtonsCard}
             />
           </TabsContent>
@@ -487,7 +511,7 @@ export function MortgageCalculatorWidget({ config = {} }: { config?: WidgetConfi
               showButtons={showLeadForm}
               onEmailMe={handleEmailMe}
               onShare={handleShare}
-              brandColor={brandColor}
+              brandColor={gradientStart}
               ButtonsComponent={ButtonsCard}
             />
           </TabsContent>
@@ -497,7 +521,7 @@ export function MortgageCalculatorWidget({ config = {} }: { config?: WidgetConfi
               showButtons={showLeadForm}
               onEmailMe={handleEmailMe}
               onShare={handleShare}
-              brandColor={brandColor}
+              brandColor={gradientStart}
               ButtonsComponent={ButtonsCard}
             />
           </TabsContent>
@@ -507,7 +531,7 @@ export function MortgageCalculatorWidget({ config = {} }: { config?: WidgetConfi
               showButtons={showLeadForm}
               onEmailMe={handleEmailMe}
               onShare={handleShare}
-              brandColor={brandColor}
+              brandColor={gradientStart}
               ButtonsComponent={ButtonsCard}
             />
           </TabsContent>
@@ -517,7 +541,7 @@ export function MortgageCalculatorWidget({ config = {} }: { config?: WidgetConfi
               showButtons={showLeadForm}
               onEmailMe={handleEmailMe}
               onShare={handleShare}
-              brandColor={brandColor}
+              brandColor={gradientStart}
               ButtonsComponent={ButtonsCard}
             />
           </TabsContent>
@@ -527,7 +551,7 @@ export function MortgageCalculatorWidget({ config = {} }: { config?: WidgetConfi
               showButtons={showLeadForm}
               onEmailMe={handleEmailMe}
               onShare={handleShare}
-              brandColor={brandColor}
+              brandColor={gradientStart}
               ButtonsComponent={ButtonsCard}
             />
           </TabsContent>
