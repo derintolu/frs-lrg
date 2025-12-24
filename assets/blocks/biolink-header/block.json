@@ -1,0 +1,63 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "lrh/biolink-header",
+  "version": "1.0.0",
+  "title": "Biolink Header",
+  "category": "frs-blocks",
+  "description": "Header section for biolink pages with name, title, and avatar",
+  "keywords": [
+    "biolink",
+    "header",
+    "profile"
+  ],
+  "textdomain": "lending-resource-hub",
+  "editorScript": "file:./index.js",
+  "attributes": {
+    "name": {
+      "type": "string",
+      "default": ""
+    },
+    "title": {
+      "type": "string",
+      "default": "Licensed Loan Officer"
+    },
+    "company": {
+      "type": "string",
+      "default": "21st Century Lending"
+    },
+    "logoUrl": {
+      "type": "string",
+      "default": ""
+    },
+    "companyLogoUrl": {
+      "type": "string",
+      "default": ""
+    },
+    "backgroundColor": {
+      "type": "string",
+      "default": "linear-gradient(135deg, #1e3a8a 0%, #2563eb 50%, #2dd4da 100%)"
+    },
+    "videoAutoplay": {
+      "type": "boolean",
+      "default": true
+    },
+    "videoMuted": {
+      "type": "boolean",
+      "default": true
+    },
+    "videoLoop": {
+      "type": "boolean",
+      "default": true
+    },
+    "autoDetect": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "supports": {
+    "html": false,
+    "customClassName": false
+  },
+  "example": {}
+}

@@ -1,0 +1,29 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "lrh/biolink-page",
+  "version": "1.0.0",
+  "title": "Biolink Page",
+  "category": "lrh-biolink",
+  "description": "Complete biolink page with all components",
+  "keywords": [
+    "biolink",
+    "page",
+    "complete"
+  ],
+  "textdomain": "lending-resource-hub",
+  "editorScript": "file:./index.js",
+  "style": "file:./style.css",
+  "render": "file:./render.php",
+  "attributes": {
+    "user_id": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "supports": {
+    "html": false,
+    "customClassName": false
+  },
+  "example": {}
+}

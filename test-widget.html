@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mortgage Calculator Widget Test</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #f9fafb;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    h1 {
+      color: #111827;
+      margin: 0 0 10px 0;
+    }
+    .status {
+      padding: 15px;
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .loading {
+      color: #6b7280;
+    }
+    .error {
+      color: #dc2626;
+      background: #fef2f2;
+      border-color: #fecaca;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>🏠 Mortgage Calculator Widget</h1>
+    <p>Test Page</p>
+  </div>
+
+  <div id="status" class="status loading">
+    Loading widget...
+  </div>
+
+  <div id="mortgage-calculator"
+       data-webhook-url="https://webhook.site/your-webhook-url"
+       data-brand-color="#3b82f6"
+       data-loan-officer-name="Test Loan Officer"
+       data-loan-officer-email="test@example.com"
+       data-loan-officer-phone="(555) 123-4567"
+       data-show-lead-form="true"
+       data-frs-mortgage-calculator
+  ></div>
+
+  <script>
+    // Check if build files exist
+    window.addEventListener('DOMContentLoaded', () => {
+      // Try to load CSS
+      const css = document.createElement('link');
+      css.rel = 'stylesheet';
+      css.href = './assets/widget/dist/frs-mortgage-calculator.css';
+      css.onerror = () => {
+        document.getElementById('status').innerHTML =
+          '<div class="error"><strong>Build files not found!</strong><br>' +
+          'Run: <code>npm run build</code> in the plugin directory</div>';
+      };
+      document.head.appendChild(css);
+
+      // Try to load JS
+      const script = document.createElement('script');
+      script.src = './assets/widget/dist/frs-mortgage-calculator.js';
+      script.onload = () => {
+        document.getElementById('status').innerHTML =
+          '<div style="color: #059669; background: #d1fae5; border-color: #6ee7b7;">' +
+          '<strong>✓ Widget loaded successfully!</strong></div>';
+      };
+      script.onerror = () => {
+        document.getElementById('status').innerHTML =
+          '<div class="error"><strong>JavaScript file not found!</strong><br>' +
+          'Run: <code>npm run build</code> in the plugin directory<br>' +
+          'Expected: ./assets/widget/dist/frs-mortgage-calculator.js</div>';
+      };
+      document.body.appendChild(script);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,36 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "lrh/biolink-thankyou",
+  "version": "1.0.0",
+  "title": "Biolink Thank You",
+  "category": "frs-biolink",
+  "description": "Thank you message for biolink page form submissions",
+  "keywords": [
+    "biolink",
+    "thank you",
+    "form",
+    "success"
+  ],
+  "textdomain": "lending-resource-hub",
+  "editorScript": "file:./index.js",
+  "attributes": {
+    "purpose": {
+      "type": "string",
+      "default": "general"
+    },
+    "title": {
+      "type": "string",
+      "default": "Thank You!"
+    },
+    "message": {
+      "type": "string",
+      "default": "Your submission has been received. I will get back to you within 24 hours."
+    }
+  },
+  "supports": {
+    "html": false,
+    "customClassName": false
+  },
+  "example": {}
+}

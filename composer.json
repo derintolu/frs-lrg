@@ -1,0 +1,28 @@
+{
+  "name": "prappo/wordpress-plugin-boilerplate",
+  "description": "Wordpress Plugin boilerplate",
+  "autoload": {
+    "psr-4": {
+      "LendingResourceHub\\": "includes/",
+      "LendingResourceHub\\Database\\": "database/",
+      "LendingResourceHub\\Libs\\": "libs/"
+    },
+    "files": [
+      "libs/assets.php",
+      "libs/db.php",
+      "includes/functions.php"
+    ]
+  },
+  "require": {
+    "prappo/wp-eloquent": "^3.0",
+    "wordpress/abilities-api": "^0.5",
+    "wordpress/mcp-adapter": "^0.4",
+    "automattic/jetpack-autoloader": "^3.0"
+  },
+  "minimum-stability": "RC",
+  "config": {
+    "allow-plugins": {
+      "automattic/jetpack-autoloader": true
+    }
+  }
+}

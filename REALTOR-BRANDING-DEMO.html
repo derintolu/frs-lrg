@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mortgage Calculator - Realtor Partner Branding Demo</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .demo-section {
+            background: white;
+            padding: 30px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .demo-header {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e5e5e5;
+        }
+        .demo-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin: 0 0 10px 0;
+        }
+        .demo-description {
+            color: #666;
+            line-height: 1.5;
+        }
+        .code-block {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        .code-block code {
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+        .brand-label {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+        .brand-default {
+            background: linear-gradient(135deg, #2563eb 0%, #2dd4da 100%);
+            color: white;
+        }
+        .brand-realtor1 {
+            background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%);
+            color: white;
+        }
+        .brand-realtor2 {
+            background: linear-gradient(135deg, #5f27cd 0%, #48dbfb 100%);
+            color: white;
+        }
+        .brand-realtor3 {
+            background: linear-gradient(135deg, #00b894 0%, #6c5ce7 100%);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-section">
+        <div class="demo-header">
+            <h1 class="demo-title">🎨 Mortgage Calculator - Realtor Partner Branding</h1>
+            <p class="demo-description">
+                This demo showcases how realtor partners can customize the mortgage calculator widget
+                with their own brand colors. Each example below shows different gradient combinations.
+            </p>
+        </div>
+    </div>
+
+    <!-- Demo 1: Default Branding (Loan Officer Blue/Teal) -->
+    <div class="demo-section">
+        <div class="demo-header">
+            <span class="brand-label brand-default">Default Loan Officer Branding</span>
+            <h2 class="demo-title">Default Blue → Teal Gradient</h2>
+            <p class="demo-description">
+                The default branding uses the loan officer's blue and teal gradient.
+            </p>
+        </div>
+        <div class="code-block">
+            <code>&lt;div id="mortgage-calculator-default"
+     data-loan-officer-id="1"
+     data-webhook-url="https://your-site.com/webhook"&gt;
+&lt;/div&gt;</code>
+        </div>
+        <div id="mortgage-calculator-default"></div>
+    </div>
+
+    <!-- Demo 2: Realtor Partner Example 1 (Red/Orange) -->
+    <div class="demo-section">
+        <div class="demo-header">
+            <span class="brand-label brand-realtor1">Realtor Partner #1</span>
+            <h2 class="demo-title">Warm Red → Orange Gradient</h2>
+            <p class="demo-description">
+                Example for a realtor partner using warm red and orange brand colors.
+            </p>
+        </div>
+        <div class="code-block">
+            <code>&lt;div id="mortgage-calculator-realtor1"
+     data-loan-officer-id="1"
+     data-webhook-url="https://your-site.com/webhook"
+     data-gradient-start="#ff6b6b"
+     data-gradient-end="#feca57"&gt;
+&lt;/div&gt;</code>
+        </div>
+        <div id="mortgage-calculator-realtor1"
+             data-gradient-start="#ff6b6b"
+             data-gradient-end="#feca57"></div>
+    </div>
+
+    <!-- Demo 3: Realtor Partner Example 2 (Purple/Blue) -->
+    <div class="demo-section">
+        <div class="demo-header">
+            <span class="brand-label brand-realtor2">Realtor Partner #2</span>
+            <h2 class="demo-title">Deep Purple → Bright Blue Gradient</h2>
+            <p class="demo-description">
+                Example for a realtor partner using purple and bright blue brand colors.
+            </p>
+        </div>
+        <div class="code-block">
+            <code>&lt;div id="mortgage-calculator-realtor2"
+     data-loan-officer-id="1"
+     data-webhook-url="https://your-site.com/webhook"
+     data-gradient-start="#5f27cd"
+     data-gradient-end="#48dbfb"&gt;
+&lt;/div&gt;</code>
+        </div>
+        <div id="mortgage-calculator-realtor2"
+             data-gradient-start="#5f27cd"
+             data-gradient-end="#48dbfb"></div>
+    </div>
+
+    <!-- Demo 4: Realtor Partner Example 3 (Green/Purple) -->
+    <div class="demo-section">
+        <div class="demo-header">
+            <span class="brand-label brand-realtor3">Realtor Partner #3</span>
+            <h2 class="demo-title">Fresh Green → Purple Gradient</h2>
+            <p class="demo-description">
+                Example for a realtor partner using green and purple brand colors.
+            </p>
+        </div>
+        <div class="code-block">
+            <code>&lt;div id="mortgage-calculator-realtor3"
+     data-loan-officer-id="1"
+     data-webhook-url="https://your-site.com/webhook"
+     data-gradient-start="#00b894"
+     data-gradient-end="#6c5ce7"&gt;
+&lt;/div&gt;</code>
+        </div>
+        <div id="mortgage-calculator-realtor3"
+             data-gradient-start="#00b894"
+             data-gradient-end="#6c5ce7"></div>
+    </div>
+
+    <!-- Configuration Documentation -->
+    <div class="demo-section">
+        <div class="demo-header">
+            <h2 class="demo-title">📝 Configuration Options</h2>
+        </div>
+        <div class="code-block">
+            <code>Available Data Attributes:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+<strong>Core Settings:</strong>
+data-loan-officer-id     → Loan officer profile ID
+data-webhook-url         → Webhook endpoint for lead capture
+data-show-lead-form      → Show/hide lead form (true/false)
+
+<strong>Branding Options:</strong>
+data-gradient-start      → Starting color of gradient (#hex)
+data-gradient-end        → Ending color of gradient (#hex)
+data-border-color        → Optional border color override
+data-brand-color         → Button color (#hex)
+data-logo-url            → Custom logo URL
+
+<strong>Custom Gradient Examples:</strong>
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Warm & Vibrant:      #ff6b6b → #feca57
+Professional Blue:   #3742fa → #5352ed
+Nature Green:        #00b894 → #55efc4
+Sunset Orange:       #ff7675 → #fdcb6e
+Ocean Deep:          #0984e3 → #74b9ff
+Royal Purple:        #6c5ce7 → #a29bfe
+Modern Dark:         #2d3436 → #636e72
+
+<strong>Brand Color Application:</strong>
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+The gradient colors will be applied to:
+  ✓ Tab active states
+  ✓ Loan officer profile avatar border
+  ✓ Loan officer name text
+  ✓ NMLS number text
+  ✓ Page header icon background
+  ✓ All branded UI elements</code>
+        </div>
+    </div>
+
+    <!-- Load the widget script -->
+    <script>
+        // Note: In production, this would load from the built widget file
+        console.log('Realtor branding demo loaded. Replace this with actual widget script in production.');
+
+        // Placeholder message for demo containers
+        const containers = [
+            'mortgage-calculator-default',
+            'mortgage-calculator-realtor1',
+            'mortgage-calculator-realtor2',
+            'mortgage-calculator-realtor3'
+        ];
+
+        containers.forEach(id => {
+            const container = document.getElementById(id);
+            if (container) {
+                container.innerHTML = '<div style="padding: 40px; text-align: center; background: #f5f5f5; border-radius: 8px; border: 2px dashed #ddd;"><p style="color: #666; font-size: 16px;">Widget will render here in production.<br>Load the actual widget JavaScript to see the live calculator with custom branding.</p></div>';
+            }
+        });
+    </script>
+</body>
+</html>

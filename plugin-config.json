@@ -1,0 +1,15 @@
+{
+    "plugin_name":"Lending Resource Hub",
+    "plugin_description":"Learning management and partnership platform for 21st Century Lending",
+    "plugin_version":"1.0.0",
+    "plugin_file_name":"lending-resource-hub.php",
+    "author_name":"21st Century Lending",
+    "author_uri":"https://hub21loan.com",
+    "text_domain":"lending-resource-hub",
+    "domain_path":"/languages",
+    "main_class_name":"LendingResourceHub",
+    "main_function_name":"lending_resource_hub_init",
+    "namespace":"LendingResourceHub",
+    "plugin_prefix":"lrh",
+    "constant_prefix":"LRH"
+}

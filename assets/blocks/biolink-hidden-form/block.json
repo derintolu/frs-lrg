@@ -1,0 +1,35 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "lrh/biolink-hidden-form",
+  "version": "1.0.0",
+  "title": "Biolink Hidden Form",
+  "category": "frs-blocks",
+  "description": "Hidden form that slides up from bottom for biolink pages",
+  "keywords": [
+    "biolink",
+    "form",
+    "modal"
+  ],
+  "textdomain": "lending-resource-hub",
+  "editorScript": "file:./index.js",
+  "attributes": {
+    "form_id": {
+      "type": "string",
+      "default": "6"
+    },
+    "form_type": {
+      "type": "string",
+      "default": "conversational"
+    },
+    "form_purpose": {
+      "type": "string",
+      "default": "rate_quote"
+    }
+  },
+  "supports": {
+    "html": false,
+    "customClassName": false
+  },
+  "example": {}
+}
