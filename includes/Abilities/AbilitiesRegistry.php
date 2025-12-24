@@ -46,9 +46,11 @@ class AbilitiesRegistry {
 	 */
 	public static function register_abilities(): void {
 		PartnershipAbilities::register();
-		LeadAbilities::register();
+		// DEACTIVATED: Moved to frs-lead-pages plugin
+		// LeadAbilities::register();
 		PortalAbilities::register();
-		PropertyAbilities::register();
+		// DEACTIVATED: Moved to frs-property-valuation plugin
+		// PropertyAbilities::register();
 		CalendarAbilities::register();
 	}
 }

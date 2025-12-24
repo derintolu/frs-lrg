@@ -44,12 +44,13 @@ Route::prefix(
 		$route->put( '/partnerships/{id}/notifications', '\LendingResourceHub\Controllers\Partnerships\Actions@update_notification_preferences' );
 
 		// ====== LEAD ROUTES ======
-		$route->get( '/leads', '\LendingResourceHub\Controllers\Leads\Actions@get_leads' );
-		$route->post( '/leads', '\LendingResourceHub\Controllers\Leads\Actions@create_lead' );
-		$route->get( '/leads/lo/{id}', '\LendingResourceHub\Controllers\Leads\Actions@get_leads_for_lo' );
-		$route->put( '/leads/{id}/status', '\LendingResourceHub\Controllers\Leads\Actions@update_lead_status' );
-		$route->delete( '/leads/{id}', '\LendingResourceHub\Controllers\Leads\Actions@delete_lead' );
-		$route->post( '/leads/{id}/notes', '\LendingResourceHub\Controllers\Leads\Actions@add_lead_note' );
+		// DEACTIVATED: Moved to frs-lead-pages plugin
+		// $route->get( '/leads', '\LendingResourceHub\Controllers\Leads\Actions@get_leads' );
+		// $route->post( '/leads', '\LendingResourceHub\Controllers\Leads\Actions@create_lead' );
+		// $route->get( '/leads/lo/{id}', '\LendingResourceHub\Controllers\Leads\Actions@get_leads_for_lo' );
+		// $route->put( '/leads/{id}/status', '\LendingResourceHub\Controllers\Leads\Actions@update_lead_status' );
+		// $route->delete( '/leads/{id}', '\LendingResourceHub\Controllers\Leads\Actions@delete_lead' );
+		// $route->post( '/leads/{id}/notes', '\LendingResourceHub\Controllers\Leads\Actions@add_lead_note' );
 
 		// ====== DASHBOARD STATS ROUTES ======
 		$route->get( '/dashboard/stats', '\LendingResourceHub\Controllers\Dashboard\Stats@get_stats' );
@@ -90,11 +91,13 @@ Route::prefix(
 		$route->post( '/partnership-webhook', '\LendingResourceHub\Controllers\Forms\Actions@handle_partnership_webhook' );
 
 		// ====== CALCULATOR & MORTGAGE LEAD ROUTES ======
-		$route->post( '/calculator-leads', '\LendingResourceHub\Controllers\Leads\Actions@create_calculator_lead' );
-		$route->post( '/mortgage-lead', '\LendingResourceHub\Controllers\Leads\Actions@create_mortgage_lead' );
+		// DEACTIVATED: Moved to frs-mortgage-calculator plugin
+		// $route->post( '/calculator-leads', '\LendingResourceHub\Controllers\Leads\Actions@create_calculator_lead' );
+		// $route->post( '/mortgage-lead', '\LendingResourceHub\Controllers\Leads\Actions@create_mortgage_lead' );
 
 		// ====== RENTCAST API ROUTES ======
-		$route->get( '/rentcast/valuation', '\LendingResourceHub\Controllers\Rentcast\Actions@get_valuation' );
+		// DEACTIVATED: Moved to frs-property-valuation plugin
+		// $route->get( '/rentcast/valuation', '\LendingResourceHub\Controllers\Rentcast\Actions@get_valuation' );
 
 		// ====== CALENDAR ROUTES ======
 		$route->post( '/calendar/setup', '\LendingResourceHub\Controllers\Calendar\Actions@setup_calendar' );

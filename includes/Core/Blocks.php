@@ -54,10 +54,10 @@ class Blocks {
 			)
 		);
 
-		// Register mortgage calculator block
-		register_block_type(
-			$blocks_dir . 'mortgage-calculator/block.json'
-		);
+		// DEACTIVATED: Moved to frs-mortgage-calculator plugin
+		// register_block_type(
+		// 	$blocks_dir . 'mortgage-calculator/block.json'
+		// );
 
 		// Register loan officer block
 		register_block_type(
