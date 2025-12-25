@@ -39,8 +39,10 @@ class Shortcode {
 		add_shortcode( 'lrh_welcome_portal', array( $this, 'render_welcome_portal' ) );
 		add_shortcode( 'lrh_partnerships_section', array( $this, 'render_partnerships_section' ) );
 		add_shortcode( 'lrh_realtor_portal', array( $this, 'render_realtor_portal' ) );
-		add_shortcode( 'frs_mortgage_calculator', array( $this, 'render_mortgage_calculator' ) );
-		add_shortcode( 'frs_property_valuation', array( $this, 'render_property_valuation' ) );
+		// DEACTIVATED: Moved to frs-mortgage-calculator plugin
+		// add_shortcode( 'frs_mortgage_calculator', array( $this, 'render_mortgage_calculator' ) );
+		// DEACTIVATED: Moved to frs-property-valuation plugin
+		// add_shortcode( 'frs_property_valuation', array( $this, 'render_property_valuation' ) );
 		add_shortcode( 'frs_tools_landing', array( $this, 'render_tools_landing_page' ) );
 
 		// Content-only shortcodes (without sidebar - for use in portal frames)
