@@ -81,7 +81,7 @@ if (!$user) {
 }
 
 // Get data from Profile model (FRSUsers plugin)
-$profile = Profile::where('user_id', $user_id)->first();
+$profile = Profile::get_by_user_id($user_id);
 
 if ($profile) {
     $name = trim($profile->first_name . ' ' . $profile->last_name);

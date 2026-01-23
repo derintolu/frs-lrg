@@ -22,7 +22,7 @@ if (!class_exists('LendingResourceHub\Models\Profile')) {
     }
 }
 
-use LendingResourceHub\Models\Profile;
+use FRSUsers\Models\Profile;
 
 // Find all biolink posts
 $args = array(
@@ -50,7 +50,7 @@ foreach ($biolink_posts as $post) {
     }
 
     // Check if profile exists
-    $profile = Profile::where('user_id', $user_id)->first();
+    $profile = Profile::get_by_user_id($user_id);
 
     if (!$profile) {
         echo "❌ No Profile found for user_id {$user_id}\n";
