@@ -21,7 +21,6 @@ use LendingResourceHub\Helpers\ProfileHelpers;
 // use LendingResourceHub\Assets\Admin; // Not needed - admin uses PHP templates, not React
 use LendingResourceHub\Integrations\FluentBooking;
 use LendingResourceHub\Integrations\FluentForms;
-use LendingResourceHub\Integrations\FluentCRMSync;
 use LendingResourceHub\Controllers\Biolinks\Blocks as BiolinkBlocks;
 use LendingResourceHub\Controllers\Prequal\Blocks as PrequalBlocks;
 use LendingResourceHub\Controllers\OpenHouse\Blocks as OpenHouseBlocks;
@@ -125,10 +124,7 @@ final class LendingResourceHub {
 			FluentForms::get_instance()->init();
 		}
 
-		// Initialize FluentCRM partnership sync if plugin is active
-		if ( function_exists('FluentCrmApi') ) {
-			FluentCRMSync::get_instance()->init();
-		}
+		// FluentCRM sync handled by frs-wp-users plugin
 
 		// Initialize WordPress Abilities API integration
 		AbilitiesRegistry::init();
