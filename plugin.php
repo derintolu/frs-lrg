@@ -189,9 +189,11 @@ final class LendingResourceHub {
 			$missing[] = 'FRS User Profiles';
 		}
 
-		// Check for FluentCRM
-		if ( !function_exists('FluentCrmApi') ) {
-			$missing[] = 'FluentCRM (optional - required for partnership sync)';
+		// Check for FluentCRM (only on main site - it runs there in multisite)
+		if ( ! is_multisite() || is_main_site() ) {
+			if ( !function_exists('FluentCrmApi') ) {
+				$missing[] = 'FluentCRM (optional - required for partnership sync)';
+			}
 		}
 
 		// Show notice if dependencies are missing
