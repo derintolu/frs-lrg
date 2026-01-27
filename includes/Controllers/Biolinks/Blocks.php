@@ -53,24 +53,35 @@ class Blocks {
 	public function register_blocks() {
 		$blocks_dir = LRH_DIR . 'assets/blocks/';
 
-		// Register biolink component blocks
-		register_block_type( $blocks_dir . 'biolink-header' );
-		register_block_type( $blocks_dir . 'biolink-button' );
-		register_block_type( $blocks_dir . 'biolink-social' );
-		register_block_type( $blocks_dir . 'biolink-form' );
-		register_block_type( $blocks_dir . 'biolink-hidden-form' );
-		register_block_type( $blocks_dir . 'biolink-spacer' );
-		register_block_type( $blocks_dir . 'biolink-thankyou' );
-
-		// Register biolink page wrapper block with dynamic rendering
-		register_block_type(
-			$blocks_dir . 'biolink-page',
-			array(
-				'render_callback' => function( $attributes, $content, $block ) {
-					return include LRH_DIR . 'src/blocks/biolink-page/render.php';
-				},
-			)
+		// Register biolink component blocks (skip if already registered)
+		$blocks = array(
+			'biolink-header',
+			'biolink-button',
+			'biolink-social',
+			'biolink-form',
+			'biolink-hidden-form',
+			'biolink-spacer',
+			'biolink-thankyou',
 		);
+
+		foreach ( $blocks as $block ) {
+			$block_name = 'lrh/' . $block;
+			if ( ! \WP_Block_Type_Registry::get_instance()->is_registered( $block_name ) ) {
+				register_block_type( $blocks_dir . $block );
+			}
+		}
+
+		// Register biolink page wrapper block with dynamic rendering (skip if already registered)
+		if ( ! \WP_Block_Type_Registry::get_instance()->is_registered( 'lrh/biolink-page' ) ) {
+			register_block_type(
+				$blocks_dir . 'biolink-page',
+				array(
+					'render_callback' => function( $attributes, $content, $block ) {
+						return include LRH_DIR . 'src/blocks/biolink-page/render.php';
+					},
+				)
+			);
+		}
 	}
 
 	/**
