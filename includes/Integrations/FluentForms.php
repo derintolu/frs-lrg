@@ -122,6 +122,15 @@ class FluentForms {
 		$agent_id        = $form_data['agent_id'] ?? ( $_GET['agent_id'] ?? null );
 		$partnership_id  = $form_data['partnership_id'] ?? ( $_GET['partnership_id'] ?? null );
 
+		// If no loan_officer_id and current user is a loan officer, use their ID
+		if ( empty( $loan_officer_id ) && is_user_logged_in() ) {
+			$current_user = wp_get_current_user();
+			$lo_roles     = array( 'loan_officer', 'administrator', 'editor' );
+			if ( array_intersect( $lo_roles, $current_user->roles ) ) {
+				$loan_officer_id = $current_user->ID;
+			}
+		}
+
 		// Get property/loan information if available
 		$property_address = $form_data['property_address'] ?? $form_data['address'] ?? '';
 		$property_city    = $form_data['property_city'] ?? $form_data['city'] ?? '';
